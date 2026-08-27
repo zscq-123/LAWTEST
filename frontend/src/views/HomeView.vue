@@ -131,13 +131,13 @@ function goFavorites() {
 <style scoped>
 .home-page {
   padding: clamp(28px, 5vh, 72px) clamp(32px, 6vw, 100px);
-  gap: clamp(18px, 2.6vh, 34px);
+  gap: clamp(32px, 4.5vh, 64px);
 }
 
 /* 顶部 */
 .home-head {
   text-align: center;
-  padding-top: clamp(10px, 1.8vh, 28px);
+  padding-top: clamp(6px, 1.2vh, 20px);
 }
 
 .home-tag {
@@ -178,7 +178,7 @@ function goFavorites() {
 
 /* 步骤条 */
 .home-steps {
-  margin: clamp(14px, 2.2vh, 28px) auto 0;
+  margin: clamp(12px, 2vh, 28px) auto 0;
   max-width: 760px;
   padding: clamp(14px, 2vh, 24px) clamp(20px, 2.6vw, 40px);
   background: var(--bg-panel);
@@ -199,6 +199,7 @@ function goFavorites() {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: clamp(8px, 1.4vh, 20px);
 }
 
 .home-grid {
@@ -301,7 +302,8 @@ function goFavorites() {
 /* 底部 */
 .home-footer {
   text-align: center;
-  padding-bottom: clamp(24px, 3.6vh, 40px);
+  padding-bottom: clamp(20px, 3vh, 36px);
+  margin-top: clamp(8px, 1.4vh, 20px);
 }
 
 .home-footer :deep(.ant-btn-lg) {
