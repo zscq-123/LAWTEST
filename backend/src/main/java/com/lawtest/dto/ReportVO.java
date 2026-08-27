@@ -5,6 +5,7 @@ import com.lawtest.entity.FitnessRequirement;
 import com.lawtest.entity.Mentor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** 完整报告视图对象 */
@@ -13,6 +14,8 @@ public class ReportVO {
 
     /** 报告编号 */
     private String code;
+    /** 生成时间 */
+    private LocalDateTime createdAt;
     /** 报告页URL（二维码内容） */
     private String qrUrl;
     /** 二维码图片（base64 data URL） */

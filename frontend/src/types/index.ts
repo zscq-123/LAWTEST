@@ -75,6 +75,7 @@ export interface Mentor {
 /** 完整报告 */
 export interface Report {
   code: string
+  createdAt?: string
   qrUrl: string
   qrImage: string
   match: MatchResult

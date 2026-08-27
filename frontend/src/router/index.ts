@@ -11,6 +11,7 @@ const router = createRouter({
     { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView.vue') },
     { path: '/fitness', name: 'fitness', component: () => import('@/views/FitnessView.vue') },
     { path: '/report/:code', name: 'report', component: () => import('@/views/ReportView.vue') },
+    { path: '/favorites', name: 'favorites', component: () => import('@/views/FavoritesView.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior() {

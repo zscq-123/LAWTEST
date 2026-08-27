@@ -124,6 +124,12 @@
       <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
     </div>
 
+    <div v-if="report && !error" class="fav-entry" @click="router.push('/favorites')">
+      <star-outlined />
+      我的收藏
+      <right-outlined class="fav-entry-arrow" />
+    </div>
+
     <!-- 底部操作栏 -->
     <div v-if="report && !error" class="action-bar">
       <a-button size="large" class="action-btn" :loading="saving" @click="saveImage">
@@ -144,7 +150,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import {
   BulbFilled,
@@ -152,6 +158,7 @@ import {
   LinkOutlined,
   PhoneOutlined,
   PictureOutlined,
+  RightOutlined,
   StarFilled,
   StarOutlined
 } from '@ant-design/icons-vue'
@@ -162,6 +169,7 @@ import { RADAR_AXES, radarValues } from '@/utils/radar'
 import type { Report } from '@/types'
 
 const route = useRoute()
+const router = useRouter()
 const store = useTestStore()
 const loading = ref(true)
 const error = ref(false)
@@ -244,7 +252,7 @@ function toggleFavorite() {
     message.success('已取消收藏')
   } else {
     favorites.value.push(code)
-    message.success('已收藏，可在浏览器书签中随时查看')
+    message.success('已收藏，可在「我的收藏」中随时查看')
   }
   localStorage.setItem(FAV_KEY, JSON.stringify(favorites.value))
 }
@@ -458,6 +466,22 @@ onMounted(() => {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.4);
   padding: 20px 16px 90px;
+}
+
+.fav-entry {
+  text-align: center;
+  font-size: 14px;
+  color: #1677ff;
+  padding: 4px 0 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fav-entry-arrow {
+  font-size: 12px;
 }
 
 .action-bar {

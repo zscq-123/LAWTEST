@@ -77,6 +77,8 @@ public class ReportServiceImpl implements ReportService {
         report.setCode(code);
         report.setQrUrl(qrUrl);
         reportMapper.insert(report);
+        // 回查数据库，拿到默认生成时间等完整字段
+        report = reportMapper.selectById(report.getId());
 
         return buildReportVO(report, match);
     }
@@ -123,6 +125,7 @@ public class ReportServiceImpl implements ReportService {
 
         ReportVO vo = new ReportVO();
         vo.setCode(report.getCode());
+        vo.setCreatedAt(report.getCreatedAt());
         vo.setQrUrl(report.getQrUrl());
         vo.setQrImage(QrCodeUtil.toBase64DataUrl(report.getQrUrl(), 320));
         vo.setMatch(match);
