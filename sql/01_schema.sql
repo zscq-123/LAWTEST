@@ -13,7 +13,9 @@ SET NAMES utf8mb4;
 
 -- ---------------------------------------------------------------------
 -- 1. career 职业配置
+--    说明：participant 由 03_alter.sql 创建（增量脚本），此处仅在重建时先删除
 -- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS participant;
 DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS test_record;
 DROP TABLE IF EXISTS mentor;
