@@ -1,7 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  // history 模式：报告链接 /report/{code} 直接可访问，刷新与在新页面打开均生效
+  history: createWebHistory(),
   routes: [
     { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
     { path: '/select', name: 'select', component: () => import('@/views/SelectView.vue') },
