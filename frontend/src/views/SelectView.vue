@@ -1,55 +1,80 @@
 <template>
   <ScreenFrame>
-    <div class="screen-page">
-      <div class="select-head">
+    <div class="screen-page select-page">
+      <!-- 顶部：标题 + 进度 -->
+      <header class="select-head">
         <div>
-          <h1 class="screen-title">选择最像你的 10 个特质词</h1>
+          <h1 class="screen-title">勾选最像你的特质词</h1>
           <p class="screen-subtitle">
-            每个词都属于一个职业方向，颜色代表该职业 · 核心词有虚线边框
+            每词对应一个职业方向，颜色即该职业 · 虚线边框为核心词
           </p>
         </div>
-        <div class="select-count">
-          <a-badge :count="store.selectedCount" :max="10" show-zero>
-            <div class="count-box">已选</div>
-          </a-badge>
+        <div class="select-progress">
+          <a-progress
+            :percent="progressPercent"
+            :show-info="false"
+            :stroke-color="progressColor"
+            :stroke-width="6"
+            stroke-linecap="round"
+            class="progress-bar"
+          />
+          <div class="progress-label">
+            <a-statistic :value="store.selectedCount" :value-style="{ color: '#fff', fontSize: '28px', fontWeight: 700 }">
+              <template #suffix>
+                <span class="progress-suffix">/ 10</span>
+              </template>
+            </a-statistic>
+            <span class="progress-hint">已选 {{ store.selectedCount }} 个词</span>
+          </div>
         </div>
-      </div>
+      </header>
 
+      <!-- 词卡列表 -->
       <div class="select-groups">
-        <div
-          v-for="(career, index) in store.careers"
+        <a-empty
+          v-if="!store.careers.length"
+          description="词库加载中…"
+          class="select-empty"
+        />
+        <section
+          v-for="career in store.careers"
           :key="career.id"
           class="word-group"
           :style="{ '--career-color': career.colorCode }"
+          :aria-label="`${career.name} 词库`"
         >
-          <div class="group-head">
-            <span class="group-dot" :style="{ background: career.colorCode }" />
-            {{ career.name }} · {{ career.colorName }}
-          </div>
+          <header class="group-head">
+            <span class="group-dot" />
+            <span class="group-name">{{ career.name }}</span>
+            <a-tag :color="career.colorCode" bordered class="group-color">
+              {{ career.colorName }}
+            </a-tag>
+          </header>
           <div class="group-words">
-            <div
+            <button
               v-for="(keyword, kwIndex) in career.keywords"
               :key="keyword.id"
+              type="button"
               class="word-card"
               :class="{
                 selected: isSelected(keyword.id),
                 'core-tag': keyword.core && !isSelected(keyword.id)
               }"
               :style="{
-                ...selectedStyle(career, keyword.id),
-                animationDelay: `${0.05 + (index * 15 + kwIndex) * 0.035}s`
+                animationDelay: `${0.04 + (kwIndex) * 0.025}s`
               }"
+              :aria-pressed="isSelected(keyword.id)"
               :ref="(el) => setWordRef(keyword.id, el as HTMLElement | null)"
               @click="handleToggle(career, keyword.id, $event)"
             >
               {{ keyword.word }}
-            </div>
+            </button>
           </div>
-        </div>
+        </section>
       </div>
 
       <!-- 光点飞入能量池的飞行轨迹层 -->
-      <div ref="flyLayerRef" class="fly-layer">
+      <div ref="flyLayerRef" class="fly-layer" aria-hidden="true">
         <span
           v-for="f in flyingDots"
           :key="f.id"
@@ -64,56 +89,83 @@
         />
       </div>
 
-      <div class="energy-bar">
-        <div class="energy-label">实时职业能量池</div>
+      <!-- 实时能量池 -->
+      <section class="energy-bar panel-in">
+        <div class="energy-label">
+          <span class="label-dot" />
+          实时职业能量池
+        </div>
         <div class="energy-tracks">
           <div
             v-for="career in store.careers"
             :key="career.id"
             class="energy-track"
-            :title="`${career.name}：${liveScores[career.id] || 0} 分`"
           >
-            <div class="energy-fill-wrap" :ref="(el) => setEnergyRef(career.id, el as HTMLElement | null)">
+            <div
+              class="energy-fill-wrap"
+              :ref="(el) => setEnergyRef(career.id, el as HTMLElement | null)"
+            >
               <div
                 class="energy-fill"
                 :class="{ pulse: liveScores[career.id] > 0 }"
                 :style="{
                   height: pct(liveScores[career.id]),
-                  background: career.colorCode,
+                  background: `linear-gradient(180deg, ${career.colorCode}, ${career.colorCode}55)`,
                   boxShadow: `0 0 14px ${career.colorCode}88`
                 }"
               />
             </div>
-            <div class="energy-name">{{ career.name }}</div>
-            <div class="energy-score">{{ liveScores[career.id] || 0 }}</div>
+            <div class="energy-info">
+              <div class="energy-name">{{ career.name }}</div>
+              <div class="energy-score">{{ liveScores[career.id] || 0 }} 分</div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="select-actions">
-        <span v-if="store.selectedCount < 3" class="hint-warn">再多选几个词，结果会更准确</span>
-        <span v-else class="hint-ok">已满足测试条件，可以开始匹配</span>
-        <a-space :size="24">
-          <a-button size="large" @click="router.push('/')">返回首页</a-button>
+      <!-- 提示与操作 -->
+      <footer class="select-actions">
+        <a-alert
+          v-if="store.selectedCount < 3"
+          type="warning"
+          show-icon
+          class="select-hint"
+          message="再多选几个词，结果会更准确"
+        />
+        <a-alert
+          v-else
+          type="success"
+          show-icon
+          class="select-hint"
+          message="已满足测试条件，可以开始匹配"
+        />
+        <a-space :size="16" wrap>
+          <a-button size="large" @click="router.push('/')">
+            <template #icon><arrow-left-outlined /></template>
+            返回首页
+          </a-button>
           <a-button
             type="primary"
             size="large"
             class="btn-primary-glow"
             :disabled="store.selectedCount < 3"
+            :loading="matching"
             @click="goMatching"
           >
             开始匹配
+            <template #icon><arrow-right-outlined /></template>
           </a-button>
         </a-space>
-      </div>
+      </footer>
     </div>
   </ScreenFrame>
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import { postMatching } from '@/api'
 import { useTestStore } from '@/stores/test'
@@ -122,6 +174,7 @@ import type { Career } from '@/types'
 const store = useTestStore()
 const router = useRouter()
 const liveScores = reactive<Record<string, number>>({})
+const matching = ref(false)
 let debounceTimer: number | undefined
 
 /** 词卡 DOM 引用：keywordId → 元素 */
@@ -150,17 +203,15 @@ interface FlyDot {
 const flyingDots = ref<FlyDot[]>([])
 let dotId = 0
 
+const progressPercent = computed(() => (store.selectedCount / 10) * 100)
+const progressColor = computed(() => {
+  if (store.selectedCount < 3) return '#faad14'
+  if (store.selectedCount >= 8) return '#52c41a'
+  return '#1677ff'
+})
+
 function isSelected(id: number) {
   return store.selectedIds.includes(id)
-}
-
-function selectedStyle(career: Career, id: number) {
-  if (!isSelected(id)) return {}
-  return {
-    background: career.colorCode + '2e',
-    borderColor: career.colorCode,
-    boxShadow: `0 0 16px ${career.colorCode}66`
-  }
 }
 
 function pct(score?: number) {
@@ -197,13 +248,11 @@ function handleToggle(career: Career, id: number, e: MouseEvent) {
   const wasSelected = isSelected(id)
   const ok = store.toggleKeyword(id)
   if (!ok) {
-    message.warning('最多只能选择10个特质词')
+    message.warning('最多只能选择 10 个特质词')
     return
   }
-  // 选中时触发光点飞入能量池
   if (!wasSelected) {
     flyDot(career, id)
-    // 词卡上触发一次光效
     const el = e.currentTarget as HTMLElement
     el.classList.remove('card-light')
     void el.offsetWidth
@@ -248,37 +297,68 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.select-page {
+  padding: clamp(20px, 3.6vh, 48px) clamp(20px, 4.6vw, 80px);
+  gap: clamp(10px, 1.4vh, 20px);
+}
+
+/* 顶部 */
 .select-head {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
+  gap: var(--space-6);
+  flex-shrink: 0;
 }
 
-.select-count :deep(.ant-badge-count) {
-  font-size: clamp(14px, 1.4vw, 22px);
-  height: clamp(20px, 2.2vh, 30px);
-  line-height: clamp(20px, 2.2vh, 30px);
-  min-width: clamp(20px, 2.2vh, 30px);
-  padding: 0 clamp(4px, 0.5vw, 10px);
+.select-progress {
+  width: clamp(220px, 22vw, 360px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.count-box {
-  font-size: clamp(14px, 1.3vw, 20px);
-  color: rgba(255, 255, 255, 0.7);
+.progress-bar {
+  margin: 0;
 }
 
+.progress-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.progress-suffix {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.progress-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* 词卡分组 */
 .select-groups {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: clamp(10px, 1.3vw, 22px);
+  gap: clamp(10px, 1.3vw, 20px);
   overflow: hidden;
-  margin-top: clamp(8px, 1.6vh, 20px);
+  min-height: 0;
+}
+
+.select-empty {
+  grid-column: 1 / -1;
+  margin: auto;
 }
 
 .word-group {
-  border-left: 3px solid var(--career-color);
-  padding-left: clamp(8px, 0.9vw, 16px);
+  border-left: 2px solid var(--career-color);
+  padding-left: clamp(8px, 0.9vw, 14px);
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -287,68 +367,95 @@ onBeforeUnmount(() => {
 .group-head {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 0.5vw, 9px);
-  font-size: clamp(13px, 1.15vw, 19px);
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: clamp(6px, 1.1vh, 14px);
+  gap: var(--space-2);
+  font-size: clamp(13px, 1.15vw, 18px);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
   flex-shrink: 0;
 }
 
 .group-dot {
-  width: clamp(9px, 0.7vw, 13px);
-  height: clamp(9px, 0.7vw, 13px);
+  width: clamp(8px, 0.6vw, 12px);
+  height: clamp(8px, 0.6vw, 12px);
   border-radius: 50%;
-  display: inline-block;
+  background: var(--career-color);
+  box-shadow: 0 0 8px var(--career-color);
+}
+
+.group-name {
+  flex: 1;
+  letter-spacing: 1px;
+}
+
+.group-color {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
 }
 
 .group-words {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(6px, 0.75vw, 12px);
+  gap: clamp(6px, 0.7vw, 10px);
   overflow-y: auto;
-  padding: clamp(2px, 0.4vh, 6px) clamp(2px, 0.3vw, 6px) clamp(4px, 0.8vh, 10px) 0;
+  padding: 2px clamp(2px, 0.3vw, 6px) clamp(4px, 0.6vh, 10px) 0;
 }
 
-/* 词卡悬浮入场：按行交错延迟 */
 .group-words .word-card {
-  animation: cardFloatIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cardFloatIn 0.45s var(--ease-out) both;
 }
 
-/* 点击光效（与全局 .card-light 不同名，避免与选中动画冲突） */
 .card-light {
-  animation: cardLight 0.45s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+  animation: cardLight 0.45s var(--ease-in-out) !important;
 }
 
+/* 能量池 */
 .energy-bar {
-  margin-top: clamp(8px, 1.5vh, 20px);
+  padding: clamp(10px, 1.4vh, 18px) clamp(14px, 1.8vw, 26px);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .energy-label {
-  font-size: clamp(12px, 1vw, 16px);
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: clamp(4px, 0.7vh, 10px);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
   letter-spacing: 2px;
+}
+
+.label-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 8px var(--brand-primary);
 }
 
 .energy-tracks {
   display: flex;
-  gap: clamp(10px, 1.6vw, 28px);
+  gap: clamp(10px, 1.6vw, 24px);
 }
 
 .energy-track {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: clamp(6px, 0.7vw, 12px);
+  gap: clamp(8px, 0.8vw, 12px);
 }
 
 .energy-fill-wrap {
-  width: clamp(8px, 0.7vw, 14px);
-  height: clamp(28px, 4.2vh, 52px);
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  width: clamp(10px, 0.8vw, 14px);
+  height: clamp(32px, 4.6vh, 56px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -356,24 +463,31 @@ onBeforeUnmount(() => {
 
 .energy-fill {
   width: 100%;
-  border-radius: 6px;
-  transition: height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-radius: var(--radius-sm);
+  transition: height 0.5s var(--ease-out);
 }
 
 .energy-fill.pulse {
-  animation: energyPulse 1.2s ease-in-out infinite;
+  animation: energyPulse 1.4s ease-in-out infinite;
+}
+
+.energy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .energy-name {
-  font-size: clamp(11px, 0.95vw, 15px);
-  color: rgba(255, 255, 255, 0.7);
-  white-space: nowrap;
+  font-size: clamp(11px, 0.95vw, 14px);
+  color: var(--text-secondary);
+  letter-spacing: 1px;
 }
 
 .energy-score {
-  font-size: clamp(12px, 1.05vw, 16px);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(12px, 1.05vw, 15px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  font-feature-settings: 'tnum';
 }
 
 /* 飞行光点层 */
@@ -391,7 +505,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: flyTo 0.65s cubic-bezier(0.3, 0.6, 0.4, 1) forwards;
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 12px 2px rgba(255, 255, 255, 0.4);
 }
 
 @keyframes flyTo {
@@ -408,28 +522,32 @@ onBeforeUnmount(() => {
   }
 }
 
+/* 提示与操作 */
 .select-actions {
-  margin-top: clamp(8px, 1.6vh, 20px);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-4);
   flex-shrink: 0;
+  padding-top: var(--space-2);
+}
+
+.select-hint {
+  flex: 1;
+  max-width: 380px;
+  margin: 0;
+}
+
+.select-hint :deep(.ant-alert-message) {
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 .select-actions :deep(.ant-btn-lg) {
-  height: clamp(36px, 4vh, 52px);
-  padding: 0 clamp(16px, 1.8vw, 30px);
-  font-size: clamp(14px, 1.25vw, 19px);
-  border-radius: 24px;
-}
-
-.hint-warn {
-  color: #faad14;
-  font-size: clamp(13px, 1.1vw, 17px);
-}
-
-.hint-ok {
-  color: #52c41a;
-  font-size: clamp(13px, 1.1vw, 17px);
+  height: clamp(38px, 4vh, 54px);
+  padding: 0 clamp(20px, 2.4vw, 36px);
+  font-size: clamp(14px, 1.25vw, 18px);
+  border-radius: var(--radius-pill);
+  letter-spacing: 1px;
 }
 </style>

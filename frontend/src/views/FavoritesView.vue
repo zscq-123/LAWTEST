@@ -1,69 +1,101 @@
 <template>
   <div class="mobile-page fav-page">
-    <div class="fav-head">
+    <header class="fav-head">
       <div class="fav-title">
         <star-filled style="color: #faad14" />
         我的收藏
-        <span class="fav-count">{{ favorites.length }}</span>
+        <a-tag color="warning" bordered class="fav-count">{{ favorites.length }}</a-tag>
       </div>
       <a-space :size="8">
-        <a-button size="small" @click="router.push('/')">首页</a-button>
+        <a-button size="small" @click="router.push('/')">
+          <template #icon><home-outlined /></template>
+          首页
+        </a-button>
         <a-popconfirm
           title="确定清空全部收藏吗？"
           ok-text="清空"
           cancel-text="取消"
           @confirm="clearAll"
         >
-          <a-button size="small" danger :disabled="!favorites.length">清空</a-button>
+          <a-button size="small" danger :disabled="!favorites.length">
+            <template #icon><delete-outlined /></template>
+            清空
+          </a-button>
         </a-popconfirm>
       </a-space>
-    </div>
+    </header>
 
     <a-spin v-if="loading" class="fav-loading" size="large" />
 
-    <a-empty v-else-if="!favorites.length" description="还没有收藏报告，快去收藏一份吧" />
+    <a-empty
+      v-else-if="!favorites.length"
+      description="还没有收藏报告，快去测试并收藏一份吧"
+      class="fav-empty"
+    >
+      <a-button type="primary" @click="router.push('/')">前往测试</a-button>
+    </a-empty>
 
     <div v-else class="fav-list">
-      <div
-        v-for="item in favorites"
-        :key="item.code"
-        class="fav-card"
-        :style="{ borderLeftColor: item.report ? item.report.career.colorCode : '#999' }"
-      >
-        <template v-if="item.report">
-          <div class="fav-main" @click="openReport(item.code)">
-            <div class="fav-avatar" :style="{ background: item.report.career.colorCode }">
-              {{ item.report.career.name.charAt(0) }}
-            </div>
-            <div class="fav-info">
-              <div class="fav-name">
-                {{ item.report.career.name }}
-                <span class="fav-rate">{{ item.report.match.first.matchRate }}%</span>
-              </div>
-              <div class="fav-code">{{ item.code }}</div>
-              <div class="fav-time">{{ formatTime(item.report.createdAt) }}</div>
-            </div>
-          </div>
-          <div class="fav-actions">
-            <a-button size="small" type="primary" ghost @click="openReport(item.code)">
-              打开报告
-            </a-button>
-            <a-button size="small" danger @click="remove(item.code)">取消收藏</a-button>
-          </div>
+      <a-list :data-source="favorites" :split="false">
+        <template #renderItem="{ item }">
+          <a-list-item class="fav-item">
+            <template v-if="item.report">
+              <a-card
+                class="fav-card"
+                :bordered="false"
+                :style="{ borderLeftColor: item.report.career.colorCode }"
+                @click="openReport(item.code)"
+              >
+                <div class="fav-main">
+                  <CareerAvatar
+                    :id="item.report.career.id"
+                    :name="item.report.career.name"
+                    :color="item.report.career.colorCode"
+                    size="md"
+                  />
+                  <div class="fav-info">
+                    <div class="fav-name">
+                      {{ item.report.career.name }}
+                      <a-tag :color="item.report.career.colorCode" bordered class="fav-tag">
+                        {{ item.report.career.matchRate || item.report.match.first.matchRate }}%
+                      </a-tag>
+                    </div>
+                    <div class="fav-code">编号 {{ item.code }}</div>
+                    <div class="fav-time">
+                      <clock-circle-outlined /> 生成于 {{ formatTime(item.report.createdAt) }}
+                    </div>
+                  </div>
+                  <right-outlined class="fav-arrow" />
+                </div>
+                <div class="fav-actions">
+                  <a-button size="small" type="primary" ghost @click.stop="openReport(item.code)">
+                    <template #icon><eye-outlined /></template>
+                    打开报告
+                  </a-button>
+                  <a-button size="small" danger @click.stop="remove(item.code)">
+                    <template #icon><delete-outlined /></template>
+                    取消收藏
+                  </a-button>
+                </div>
+              </a-card>
+            </template>
+            <template v-else>
+              <a-card class="fav-card failed" :bordered="false">
+                <div class="fav-main">
+                  <div class="failed-avatar">?</div>
+                  <div class="fav-info">
+                    <div class="fav-name">报告已失效</div>
+                    <div class="fav-code">编号 {{ item.code }}</div>
+                  </div>
+                </div>
+                <div class="fav-actions">
+                  <a-button size="small" danger @click="remove(item.code)">移除</a-button>
+                </div>
+              </a-card>
+            </template>
+          </a-list-item>
         </template>
-        <template v-else>
-          <div class="fav-main">
-            <div class="fav-avatar failed">?</div>
-            <div class="fav-info">
-              <div class="fav-name">报告已失效</div>
-              <div class="fav-code">{{ item.code }}</div>
-            </div>
-          </div>
-          <div class="fav-actions">
-            <a-button size="small" danger @click="remove(item.code)">移除</a-button>
-          </div>
-        </template>
-      </div>
+      </a-list>
     </div>
   </div>
 </template>
@@ -72,7 +104,15 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { StarFilled } from '@ant-design/icons-vue'
+import {
+  ClockCircleOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  HomeOutlined,
+  RightOutlined,
+  StarFilled
+} from '@ant-design/icons-vue'
+import CareerAvatar from '@/components/CareerAvatar.vue'
 import { getReport } from '@/api'
 import type { Report } from '@/types'
 
@@ -132,7 +172,7 @@ function clearAll() {
 
 function formatTime(value?: string) {
   if (!value) return ''
-  return `生成于 ${value.replace('T', ' ')}`
+  return value.replace('T', ' ').slice(0, 16)
 }
 
 onMounted(() => {
@@ -163,15 +203,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: 1px;
 }
 
 .fav-count {
-  background: #faad14;
-  color: #fff;
-  border-radius: 999px;
-  font-size: 12px;
-  padding: 0 8px;
-  line-height: 18px;
+  margin: 0;
+  font-weight: 600;
 }
 
 .fav-loading {
@@ -179,8 +216,16 @@ onMounted(() => {
   margin: 80px auto;
 }
 
+.fav-empty {
+  margin: 80px 16px;
+}
+
 .fav-list {
   padding: 14px 16px;
+}
+
+.fav-item {
+  padding: 0 0 12px !important;
 }
 
 .fav-card {
@@ -188,37 +233,38 @@ onMounted(() => {
   border-radius: 10px;
   border-left: 4px solid #1677ff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  padding: 14px;
-  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fav-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .fav-main {
   display: flex;
   align-items: center;
   gap: 12px;
-  cursor: pointer;
 }
 
-.fav-avatar {
-  width: 46px;
-  height: 46px;
+.failed-avatar {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  background: #d9d9d9;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   flex-shrink: 0;
 }
 
-.fav-avatar.failed {
-  background: #d9d9d9;
-}
-
 .fav-info {
-  min-width: 0;
   flex: 1;
+  min-width: 0;
 }
 
 .fav-name {
@@ -229,10 +275,10 @@ onMounted(() => {
   gap: 8px;
 }
 
-.fav-rate {
-  color: #faad14;
-  font-size: 13px;
+.fav-tag {
+  margin: 0;
   font-weight: 700;
+  font-feature-settings: 'tnum';
 }
 
 .fav-code {
@@ -246,8 +292,16 @@ onMounted(() => {
 
 .fav-time {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.35);
+  color: rgba(0, 0, 0, 0.4);
   margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fav-arrow {
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 14px;
 }
 
 .fav-actions {
@@ -255,5 +309,7 @@ onMounted(() => {
   gap: 8px;
   justify-content: flex-end;
   margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #f0f0f0;
 }
 </style>

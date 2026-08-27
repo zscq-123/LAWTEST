@@ -2,50 +2,61 @@
   <ScreenFrame>
     <a-config-provider :theme="careerTheme">
       <div class="screen-page fitness-page">
-        <div class="fitness-head">
+        <header class="fitness-head">
           <div>
             <h1 class="screen-title">
-              {{ report?.career?.name || '' }} · 体能赋能方案
+              <span :style="{ color: careerColor }">{{ report?.career?.name || '' }}</span>
+              · 体能赋能方案
             </h1>
-            <p class="screen-subtitle">
-              身体是职业长跑的本钱，大学四年一步一步来
-            </p>
+            <p class="screen-subtitle">身体是职业长跑的本钱，大学四年一步一步来</p>
           </div>
-          <a-button size="large" @click="router.push('/profile')">返回画像</a-button>
-        </div>
+          <a-space :size="8" wrap>
+            <a-button size="large" @click="router.push('/profile')">
+              <template #icon><arrow-left-outlined /></template>
+              返回画像
+            </a-button>
+          </a-space>
+        </header>
 
         <a-spin v-if="!report" class="fitness-loading" size="large" />
 
         <template v-else>
-          <div class="fitness-body">
-            <div class="fitness-side panel-in" v-if="careerIllustration(report.career.id)">
+          <section class="fitness-body">
+            <aside v-if="careerIllustration(report.career.id)" class="fitness-side panel-in">
               <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
-              <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
-              <div class="side-slogan">“{{ report.profile.slogan }}”</div>
-            </div>
-
-            <div class="panel glass-panel panel-in">
-              <div class="panel-title">
-                <check-circle-outlined :style="{ color: careerColor }" />
-                身体素质达标要求
+              <div class="side-meta">
+                <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
+                <a-tag :color="careerColor" bordered class="side-color">
+                  {{ report.career.colorName }}
+                </a-tag>
+                <div class="side-slogan">“{{ report.profile.slogan }}”</div>
               </div>
+            </aside>
+
+            <article class="panel glass-panel panel-in">
+              <header class="panel-header">
+                <check-circle-outlined :style="{ color: careerColor }" class="panel-icon" />
+                <h3 class="panel-title">身体素质达标要求</h3>
+                <a-tag :color="careerColor" bordered>{{ report.fitnessRequirements.length }} 项</a-tag>
+              </header>
               <a-list :data-source="report.fitnessRequirements" :split="false">
                 <template #renderItem="{ item }">
-                    <a-list-item class="req-item">
-                      <span class="req-badge" :style="{ background: careerColor }">
-                        {{ item.seq }}
-                      </span>
-                      <span class="req-text">{{ item.content }}</span>
-                    </a-list-item>
+                  <a-list-item class="req-item">
+                    <span class="req-badge" :style="{ background: careerColor }">
+                      {{ item.seq }}
+                    </span>
+                    <span class="req-text">{{ item.content }}</span>
+                  </a-list-item>
                 </template>
               </a-list>
-            </div>
+            </article>
 
-            <div class="panel glass-panel panel-in">
-              <div class="panel-title">
-                <rise-outlined :style="{ color: careerColor }" />
-                大学四年阶梯式锻炼计划
-              </div>
+            <article class="panel glass-panel panel-in">
+              <header class="panel-header">
+                <rise-outlined :style="{ color: careerColor }" class="panel-icon" />
+                <h3 class="panel-title">大学四年阶梯式锻炼计划</h3>
+                <a-tag :color="careerColor" bordered>{{ report.fitnessPlans.length }} 年</a-tag>
+              </header>
               <a-timeline class="plan-timeline">
                 <a-timeline-item
                   v-for="plan in report.fitnessPlans"
@@ -56,21 +67,24 @@
                   <div class="plan-content">{{ plan.content }}</div>
                 </a-timeline-item>
               </a-timeline>
-            </div>
-          </div>
+            </article>
+          </section>
 
-          <div class="fitness-actions">
-            <a-button size="large" type="primary" class="btn-primary-glow" @click="qrOpen = true">
-              <template #icon><qrcode-outlined /></template>
-              扫码带走
-            </a-button>
-            <a-button size="large" @click="mentorOpen = true">
-              <template #icon><team-outlined /></template>
-              导师对接
-            </a-button>
-          </div>
+          <footer class="fitness-actions">
+            <a-space :size="12" wrap>
+              <a-button size="large" type="primary" class="btn-primary-glow" @click="qrOpen = true">
+                <template #icon><qrcode-outlined /></template>
+                扫码带走
+              </a-button>
+              <a-button size="large" ghost @click="mentorOpen = true">
+                <template #icon><team-outlined /></template>
+                导师对接
+              </a-button>
+            </a-space>
+          </footer>
 
           <div class="fitness-disclaimer">
+            <info-circle-outlined />
             {{ disclaimer }} · {{ report.match.disclaimer }}
           </div>
         </template>
@@ -94,7 +108,9 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import {
+  ArrowLeftOutlined,
   CheckCircleOutlined,
+  InfoCircleOutlined,
   QrcodeOutlined,
   RiseOutlined,
   TeamOutlined
@@ -125,14 +141,23 @@ const careerTheme = computed(() => ({
 
 <style scoped>
 .fitness-page {
-  padding-top: clamp(14px, 3vh, 44px);
+  padding: clamp(14px, 3vh, 44px) clamp(20px, 4.6vw, 80px);
+  gap: clamp(12px, 1.6vh, 22px);
 }
 
 .fitness-head {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
+  gap: var(--space-4);
   flex-shrink: 0;
+}
+
+.fitness-head :deep(.ant-btn-lg) {
+  height: clamp(38px, 4vh, 52px);
+  padding: 0 clamp(16px, 1.8vw, 26px);
+  font-size: clamp(13px, 1.2vw, 17px);
+  border-radius: var(--radius-pill);
 }
 
 .fitness-loading {
@@ -142,22 +167,23 @@ const careerTheme = computed(() => ({
 .fitness-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(180px, 0.8fr) 1fr 1.2fr;
-  gap: clamp(14px, 2vw, 32px);
-  margin-top: clamp(10px, 2vh, 28px);
+  grid-template-columns: minmax(200px, 0.8fr) 1fr 1.2fr;
+  gap: clamp(14px, 1.8vw, 28px);
   min-height: 0;
   overflow-y: auto;
+  padding-right: 4px;
 }
 
-/* 体能页侧边插画卡 */
+/* 侧边插画卡 */
 .fitness-side {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  text-align: center;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
 }
 
 .fitness-side img {
@@ -166,63 +192,93 @@ const careerTheme = computed(() => ({
   min-height: 0;
   object-fit: cover;
   object-position: center 22%;
-  display: block;
+}
+
+.side-meta {
+  padding: clamp(10px, 1.4vh, 18px) clamp(12px, 1.4vw, 20px) clamp(14px, 2vh, 22px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
 }
 
 .side-name {
-  font-size: clamp(16px, 1.6vw, 24px);
-  font-weight: 800;
-  letter-spacing: clamp(2px, 0.3vw, 6px);
-  padding-top: clamp(8px, 1.2vh, 16px);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: var(--fw-heavy);
+  letter-spacing: 2px;
+}
+
+.side-color {
+  margin: 0;
+  font-weight: 400;
 }
 
 .side-slogan {
-  font-size: clamp(12px, 1.05vw, 16px);
-  color: rgba(255, 255, 255, 0.6);
-  padding: clamp(4px, 0.6vh, 10px) clamp(10px, 1vw, 18px) clamp(10px, 1.6vh, 20px);
+  font-size: clamp(12px, 1.05vw, 14px);
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  font-style: italic;
+  margin-top: var(--space-2);
 }
 
+/* 面板 */
 .panel {
-  padding: clamp(14px, 1.9vh, 30px) clamp(16px, 2vw, 34px);
+  padding: clamp(14px, 1.9vh, 28px) clamp(14px, 1.8vw, 28px);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: clamp(8px, 1.2vh, 18px);
+}
+
+.panel-icon {
+  font-size: 18px;
 }
 
 .panel-title {
-  font-size: clamp(16px, 1.6vw, 24px);
-  font-weight: 600;
-  margin-bottom: clamp(8px, 1.3vh, 20px);
-  color: rgba(255, 255, 255, 0.92);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: var(--fw-semibold);
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+  letter-spacing: 1px;
 }
 
 .req-item {
-  padding: clamp(5px, 0.8vh, 12px) 0 !important;
+  padding: clamp(6px, 0.8vh, 12px) 0 !important;
   display: flex !important;
-  justify-content: flex-start !important;
-  align-items: flex-start;
+  align-items: flex-start !important;
   gap: clamp(8px, 0.8vw, 14px);
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.req-item:last-child {
+  border-bottom: none;
 }
 
 .req-badge {
   flex-shrink: 0;
-  width: clamp(20px, 1.8vh, 28px);
-  height: clamp(20px, 1.8vh, 28px);
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(11px, 1vw, 15px);
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  margin-top: 2px;
 }
 
 .req-text {
   flex: 1;
   min-width: 0;
-  font-size: clamp(13px, 1.15vw, 17px);
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(13px, 1.15vw, 16px);
+  line-height: 1.7;
+  color: var(--text-secondary);
 }
 
 .plan-timeline {
@@ -230,42 +286,44 @@ const careerTheme = computed(() => ({
 }
 
 .plan-stage {
-  font-size: clamp(14px, 1.35vw, 20px);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(14px, 1.35vw, 18px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: 1px;
 }
 
 .plan-content {
-  font-size: clamp(13px, 1.15vw, 17px);
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: clamp(2px, 0.4vh, 6px);
+  font-size: clamp(13px, 1.15vw, 16px);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
 }
 
 .fitness-actions {
-  margin-top: clamp(8px, 1.6vh, 22px);
-  display: flex;
-  gap: clamp(10px, 1vw, 18px);
-  justify-content: center;
   flex-shrink: 0;
 }
 
 .fitness-actions :deep(.ant-btn-lg) {
-  height: clamp(38px, 4vh, 56px);
-  padding: 0 clamp(20px, 2.4vw, 40px);
-  font-size: clamp(14px, 1.25vw, 19px);
-  border-radius: 26px;
+  height: clamp(40px, 4.2vh, 56px);
+  padding: 0 clamp(20px, 2.4vw, 36px);
+  font-size: clamp(13px, 1.2vw, 17px);
+  border-radius: var(--radius-pill);
 }
 
 .fitness-actions :deep(.ant-btn-primary) {
-  color: #000;
+  color: var(--text-inverse);
+  font-weight: var(--fw-bold);
 }
 
 .fitness-disclaimer {
-  margin-top: clamp(6px, 1.2vh, 16px);
-  text-align: center;
-  font-size: clamp(12px, 0.9vw, 15px);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  margin: 0 auto;
+  text-align: center;
   flex-shrink: 0;
 }
 </style>

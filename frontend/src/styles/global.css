@@ -1,13 +1,101 @@
+/* ============================================================
+ * 五彩法途 · 企业级设计系统
+ * 设计原则：克制、专业、信息层次清晰、深色科技风
+ * ============================================================ */
+
+/* ---------- 色彩 token ---------- */
 :root {
-  --bg-deep: #0b1220;
-  --bg-panel: rgba(255, 255, 255, 0.06);
-  --text-main: rgba(255, 255, 255, 0.92);
-  --text-sub: rgba(255, 255, 255, 0.62);
-  --border-light: rgba(255, 255, 255, 0.14);
-  --primary: #1677ff;
-  --radius: 8px;
+  /* 中性色（深色科技风） */
+  --bg-deep: #060d1a;
+  --bg-base: #0b1220;
+  --bg-elevated: #131e33;
+  --bg-panel: rgba(255, 255, 255, 0.04);
+  --bg-panel-strong: rgba(255, 255, 255, 0.06);
+  --bg-overlay: rgba(11, 18, 32, 0.78);
+
+  /* 边框 */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.22);
+
+  /* 文字层级（WCAG 对比度合规） */
+  --text-primary: rgba(255, 255, 255, 0.96);
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-disabled: rgba(255, 255, 255, 0.3);
+  --text-inverse: rgba(0, 0, 0, 0.88);
+
+  /* 品牌主色（Ant Design 默认 + 五色职业色） */
+  --brand-primary: #1677ff;
+  --brand-primary-hover: #4096ff;
+  --brand-success: #52c41a;
+  --brand-warning: #faad14;
+  --brand-error: #c8102e;
+
+  /* 五职业色（与后端 t_career.colorCode 保持一致） */
+  --career-lawyer: #f5f7fa; /* 皓月白 */
+  --career-judge: #2e6be6; /* 苍穹蓝 */
+  --career-prosecutor: #c8102e; /* 中国红 */
+  --career-legal: #7b5ea7; /* 琉璃紫 */
+  --career-ai: #12b5a5; /* 科创青 */
+
+  /* ---------- 字号阶梯 ---------- */
+  --fs-display: clamp(36px, 4.4vw, 72px); /* 揭晓大标题 */
+  --fs-title: clamp(28px, 3vw, 48px); /* 页面主标题 */
+  --fs-h2: clamp(20px, 2vw, 32px); /* 区块标题 */
+  --fs-h3: clamp(16px, 1.6vw, 24px); /* 卡片标题 */
+  --fs-body: clamp(14px, 1.3vw, 18px); /* 正文 */
+  --fs-caption: clamp(12px, 1vw, 14px); /* 辅助 */
+  --fs-stat: clamp(40px, 4vw, 64px); /* 匹配度数字 */
+
+  /* ---------- 字重 ---------- */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-heavy: 800;
+
+  /* ---------- 间距阶梯（4 倍数） ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---------- 圆角 ---------- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* ---------- 阴影（深色场景调亮） ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-glow-brand: 0 0 24px rgba(22, 119, 255, 0.45);
+
+  /* ---------- 缓动（Ant Design 风格） */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- 字体 ---------- */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', Consolas, Menlo, monospace;
 }
 
+/* ============================================================
+ * 重置与基础
+ * ============================================================ */
 * {
   box-sizing: border-box;
 }
@@ -21,24 +109,52 @@ body,
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg-deep);
-  color: var(--text-main);
+  color: var(--text-primary);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
 
-/* 大屏页面基础容器（深色科技感背景 + 五色光晕） */
+/* 全局滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 焦点环（可访问性） */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+ * 大屏背景层（深色科技感 + 五色光晕 + 网格底纹）
+ * ============================================================ */
 .screen-bg {
   position: relative;
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(46, 107, 230, 0.22), transparent 60%),
-    radial-gradient(1000px 500px at 85% 0%, rgba(18, 181, 165, 0.16), transparent 55%),
-    radial-gradient(900px 600px at 50% 110%, rgba(123, 94, 167, 0.2), transparent 60%),
-    radial-gradient(700px 400px at 90% 90%, rgba(200, 16, 46, 0.14), transparent 55%),
-    linear-gradient(160deg, #0b1220 0%, #0e1626 55%, #0b1220 100%);
+    radial-gradient(1200px 600px at 18% -8%, rgba(46, 107, 230, 0.22), transparent 60%),
+    radial-gradient(1000px 500px at 86% 0%, rgba(18, 181, 165, 0.18), transparent 55%),
+    radial-gradient(900px 600px at 50% 110%, rgba(123, 94, 167, 0.22), transparent 60%),
+    radial-gradient(700px 400px at 92% 88%, rgba(200, 16, 46, 0.14), transparent 55%),
+    linear-gradient(160deg, #060d1a 0%, #0b1220 55%, #060d1a 100%);
   overflow: hidden;
 }
 
@@ -47,14 +163,14 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9), transparent 75%);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85), transparent 78%);
   pointer-events: none;
 }
 
-/* 大屏 1920×1080 画布缩放 */
+/* 大屏画布（保留兼容性，但实际流式布局） */
 .screen-canvas {
   position: relative;
   width: 1920px;
@@ -62,46 +178,80 @@ body {
   transform-origin: top left;
 }
 
-.screen-page {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: clamp(20px, 3.6vh, 56px) clamp(20px, 4.6vw, 80px);
-  display: flex;
-  flex-direction: column;
+/* ============================================================
+ * 玻璃面板（统一规格）
+ * ============================================================ */
+.glass-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
+/* ============================================================
+ * 文本样式工具
+ * ============================================================ */
 .screen-title {
-  font-size: clamp(28px, 3.2vw, 56px);
-  font-weight: 700;
-  letter-spacing: 4px;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-heavy);
+  letter-spacing: 2px;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .screen-subtitle {
-  font-size: clamp(13px, 1.4vw, 22px);
-  color: var(--text-sub);
-  letter-spacing: 2px;
-  margin-top: 8px;
-}
-
-.glass-panel {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  backdrop-filter: blur(12px);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  letter-spacing: 1.5px;
+  margin-top: var(--space-2);
 }
 
 .glow-text {
-  background: linear-gradient(90deg, #7ab8ff, #12b5a5, #ffd166, #c8102e, #7b5ea7);
+  background: linear-gradient(
+    100deg,
+    #7ab8ff 0%,
+    #12b5a5 25%,
+    #c8102e 50%,
+    #7b5ea7 75%,
+    #2e6be6 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
+.shine-text {
+  background: linear-gradient(
+    100deg,
+    currentColor 0%,
+    #fff 30%,
+    currentColor 55%,
+    currentColor 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShine 3s linear infinite;
+}
+
+.fade-in {
+  animation: floatUp 0.5s var(--ease-in-out) both;
+}
+
+.panel-in {
+  animation: panelReveal 0.55s var(--ease-out) both;
+}
+
+/* ============================================================
+ * 按钮（统一主按钮光晕增强）
+ * ============================================================ */
 .btn-primary-glow {
   box-shadow: 0 0 24px rgba(22, 119, 255, 0.45);
-  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition:
+    box-shadow 0.3s var(--ease-in-out),
+    transform 0.3s var(--ease-in-out);
 }
 
 .btn-primary-glow:hover {
@@ -109,36 +259,74 @@ body {
   transform: translateY(-2px);
 }
 
-/* 词卡光效 */
+/* 触控大屏：禁用 webkit tap highlight，统一交互反馈 */
+button,
+.word-card,
+.career-card,
+.fav-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+ * 词卡（统一规格）
+ * ============================================================ */
 .word-card {
   cursor: pointer;
   user-select: none;
-  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: clamp(5px, 0.7vh, 11px) clamp(5px, 0.7vw, 14px);
+  transition: all 0.25s var(--ease-in-out);
+  border: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
   text-align: center;
-  font-size: clamp(12px, 1vw, 17px);
-  color: rgba(255, 255, 255, 0.88);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
 }
 
 .word-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  background: var(--bg-panel-strong);
+  color: var(--text-primary);
 }
 
 .word-card.selected {
   color: #fff;
-  animation: cardLight 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-color: var(--career-color, var(--brand-primary));
+  background: var(--career-color, var(--brand-primary));
+  background: color-mix(in srgb, var(--career-color, var(--brand-primary)) 22%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--career-color, var(--brand-primary)) 35%, transparent);
+  animation: cardLight 0.5s var(--ease-in-out);
 }
 
 .word-card.core-tag {
   border-style: dashed;
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--border-strong);
 }
 
+/* ============================================================
+ * 手机端基础
+ * ============================================================ */
+.mobile-page {
+  min-height: 100%;
+  background: #f5f7fa;
+  color: var(--text-inverse);
+  overflow-y: auto;
+  padding-bottom: 48px;
+}
+
+.report-section {
+  margin: 0 16px 16px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 18px 16px;
+}
+
+/* ============================================================
+ * 动画关键帧库
+ * ============================================================ */
 @keyframes cardLight {
   0% {
     transform: scale(0.92);
@@ -156,7 +344,7 @@ body {
 @keyframes floatUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -164,15 +352,24 @@ body {
   }
 }
 
-/* 计划书「选词阶段」：词卡悬浮入场（stagger 由 animationDelay 控制） */
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(255, 255, 255, 0.5);
+  }
+}
+
 @keyframes cardFloatIn {
   0% {
     opacity: 0;
-    transform: translateY(18px) scale(0.9);
+    transform: translateY(16px) scale(0.94);
   }
   60% {
     opacity: 1;
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-3px) scale(1.02);
   }
   100% {
     opacity: 1;
@@ -180,20 +377,16 @@ body {
   }
 }
 
-/* 计划书「匹配阶段」：五色星球/能量脉冲 */
 @keyframes energyPulse {
   0%,
   100% {
     filter: brightness(1);
-    transform: scaleY(1);
   }
   50% {
     filter: brightness(1.35);
-    transform: scaleY(1.015);
   }
 }
 
-/* 计划书「揭晓阶段」：大字标题光效字幕 */
 @keyframes textShine {
   0% {
     background-position: -200% center;
@@ -203,7 +396,6 @@ body {
   }
 }
 
-/* 计划书「揭晓阶段」：全屏粒子绽放时的中心光爆 */
 @keyframes burstGlow {
   0% {
     opacity: 0;
@@ -218,11 +410,10 @@ body {
   }
 }
 
-/* 计划书「画像阶段」：雷达图/面板动态展开 */
 @keyframes panelReveal {
   from {
     opacity: 0;
-    transform: translateY(14px) scale(0.985);
+    transform: translateY(12px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -230,11 +421,10 @@ body {
   }
 }
 
-/* 计划书「扫码页」：二维码光效旋转光环 */
 @keyframes qrRing {
   0% {
     transform: rotate(0deg) scale(0.96);
-    opacity: 0.55;
+    opacity: 0.5;
   }
   100% {
     transform: rotate(360deg) scale(1.06);
@@ -242,79 +432,9 @@ body {
   }
 }
 
-@keyframes pulseGlow {
-  0%,
-  100% {
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
-  }
-  50% {
-    box-shadow: 0 0 42px rgba(255, 255, 255, 0.5);
-  }
-}
-
-.fade-in {
-  animation: floatUp 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) both;
-}
-
-/* 面板展开动画（画像/体能页使用，可与 fade-in 叠加） */
-.panel-in {
-  animation: panelReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* 流光文字（揭晓标题/首页标题） */
-.shine-text {
-  background: linear-gradient(
-    100deg,
-    currentColor 0%,
-    #fff 30%,
-    currentColor 55%,
-    currentColor 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: textShine 2.8s linear infinite;
-}
-
-/* 滚动条 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* 手机端报告页 */
-.mobile-page {
-  min-height: 100%;
-  background: #f5f7fa;
-  color: rgba(0, 0, 0, 0.88);
-  overflow-y: auto;
-  padding-bottom: 48px;
-}
-
-.report-section {
-  margin: 0 16px 16px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  padding: 18px 16px;
-}
-
-/* 触控大屏点击反馈 */
-button,
-.word-card {
-  -webkit-tap-highlight-color: transparent;
-}
-
+/* ============================================================
+ * 可访问性：减弱动画
+ * ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -2,48 +2,76 @@
   <ScreenFrame>
     <a-config-provider :theme="careerTheme">
       <div class="screen-page profile-page">
-        <div class="profile-head">
-          <h1 class="screen-title" :style="{ color: careerColor }">我的职业画像</h1>
-          <a-button size="large" @click="restart">重新测试</a-button>
-        </div>
+        <header class="profile-head">
+          <div>
+            <h1 class="screen-title" :style="{ color: careerColor }">我的职业画像</h1>
+            <p class="screen-subtitle">
+              生成于 {{ formattedCreatedAt }} · 报告编号 {{ report?.code }}
+            </p>
+          </div>
+          <a-space :size="8" wrap>
+            <a-button size="large" @click="restart">
+              <template #icon><reload-outlined /></template>
+              重新测试
+            </a-button>
+          </a-space>
+        </header>
 
-        <a-spin v-if="loading" class="profile-loading" size="large" tip="正在生成你的专属画像…" />
+        <a-spin
+          v-if="loading"
+          class="profile-loading"
+          size="large"
+          tip="正在生成你的专属画像…"
+        />
 
         <template v-else-if="report">
-          <div class="profile-body">
-            <div class="profile-left">
-              <div
+          <section class="profile-body">
+            <aside class="profile-left">
+              <article
                 class="hero-card"
                 :style="{
-                  background: `linear-gradient(150deg, ${careerColor}33 0%, rgba(255,255,255,0.05) 60%)`,
+                  '--career-color': careerColor,
+                  background: `linear-gradient(150deg, ${careerColor}1f 0%, rgba(255,255,255,0.03) 70%)`,
                   borderColor: careerColor
                 }"
               >
                 <div v-if="careerIllustration(report.career.id)" class="hero-illust">
                   <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
+                  <div class="hero-illust-mask" />
                 </div>
-                <div class="hero-icon" :style="{ background: careerColor }">
-                  {{ report.career.name.charAt(0) }}
+
+                <div class="hero-body">
+                  <CareerAvatar
+                    :id="report.career.id"
+                    :name="report.career.name"
+                    :color="careerColor"
+                    size="lg"
+                    class="hero-avatar"
+                  />
+                  <h2 class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</h2>
+                  <a-tag :color="careerColor" bordered class="hero-color">
+                    {{ report.career.colorName }} · 专属色 {{ report.career.colorCode }}
+                  </a-tag>
+                  <a-statistic
+                    class="hero-stat"
+                    title="匹配度"
+                    :value="firstSafe.matchRate"
+                    :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
+                    :suffix="`%`"
+                    :title-style="{ color: 'rgba(255, 255, 255, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
+                  />
+                  <blockquote class="hero-slogan">“{{ report.profile.slogan }}”</blockquote>
+                  <div class="hero-second">
+                    <span class="second-label">第二适配</span>
+                    <a-tag :color="secondSafe.colorCode" bordered>{{ secondSafe.name }}</a-tag>
+                    <span class="second-rate">{{ secondSafe.matchRate }}%</span>
+                  </div>
                 </div>
-                <div class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
-                <div class="hero-color">
-                  {{ report.career.colorName }} · 专属色 {{ report.career.colorCode }}
-                </div>
-                <div class="hero-rate">
-                  <span class="hero-rate-num">{{ report.match.first.matchRate }}%</span>
-                  <span class="hero-rate-label">匹配度</span>
-                </div>
-                <div class="hero-slogan">“{{ report.profile.slogan }}”</div>
-                <div class="hero-second">
-                  第二适配：<b :style="{ color: report.match.second.colorCode }">
-                    {{ report.match.second.name }}
-                  </b>
-                  （{{ report.match.second.matchRate }}%）
-                </div>
-              </div>
+              </article>
 
               <div class="profile-actions">
                 <a-button size="large" type="primary" class="btn-primary-glow" @click="router.push('/fitness')">
+                  <template #icon><heart-outlined /></template>
                   查看体能方案
                 </a-button>
                 <a-button size="large" @click="qrOpen = true">
@@ -55,46 +83,64 @@
                   导师对接
                 </a-button>
               </div>
-            </div>
+            </aside>
 
             <div class="profile-right">
-              <div class="panel glass-panel panel-in">
-                <div class="panel-title">能力雷达图</div>
+              <article class="panel glass-panel panel-in">
+                <header class="panel-header">
+                  <radar-chart-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <h3 class="panel-title">能力雷达图</h3>
+                  <a-tag :color="careerColor" bordered class="panel-tag">六维画像</a-tag>
+                </header>
                 <RadarChart
                   :axes="RADAR_AXES"
                   :values="radar"
                   :color="careerColor"
-                  :height="300"
+                  :height="320"
                 />
-              </div>
+              </article>
 
-              <div class="panel glass-panel panel-in">
-                <div class="panel-title">你的能力优势</div>
+              <article class="panel glass-panel panel-in">
+                <header class="panel-header">
+                  <check-circle-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <h3 class="panel-title">你的能力优势</h3>
+                  <a-tag color="success" bordered>{{ report.profile.strengths.length }} 项</a-tag>
+                </header>
                 <a-list :data-source="report.profile.strengths" :split="false">
-                  <template #renderItem="{ item }">
+                  <template #renderItem="{ item, index }">
                     <a-list-item class="strength-item">
-                      <check-circle-outlined :style="{ color: careerColor }" class="item-icon" />
-                      {{ item }}
+                      <span class="bullet-num" :style="{ background: careerColor }">
+                        {{ index + 1 }}
+                      </span>
+                      <span class="item-text">{{ item }}</span>
                     </a-list-item>
                   </template>
                 </a-list>
-              </div>
+              </article>
 
-              <div class="panel glass-panel panel-in">
-                <div class="panel-title">短板与提升建议</div>
+              <article class="panel glass-panel panel-in">
+                <header class="panel-header">
+                  <bulb-outlined class="panel-icon" :style="{ color: '#faad14' }" />
+                  <h3 class="panel-title">短板与提升建议</h3>
+                  <a-tag color="warning" bordered>{{ report.profile.improvements.length }} 项</a-tag>
+                </header>
                 <a-list :data-source="report.profile.improvements" :split="false">
-                  <template #renderItem="{ item }">
+                  <template #renderItem="{ item, index }">
                     <a-list-item class="improve-item">
-                      <bulb-outlined :style="{ color: '#FAAD14' }" class="item-icon" />
-                      {{ item }}
+                      <span class="bullet-num" :style="{ background: '#faad14' }">
+                        {{ index + 1 }}
+                      </span>
+                      <span class="item-text">{{ item }}</span>
                     </a-list-item>
                   </template>
                 </a-list>
-              </div>
+              </article>
             </div>
-          </div>
+          </section>
 
-          <div class="profile-disclaimer">{{ report.match.disclaimer }}</div>
+          <footer class="profile-disclaimer">
+            {{ report.match.disclaimer }}
+          </footer>
         </template>
 
         <a-modal v-model:open="qrOpen" :footer="null" width="480px" centered>
@@ -118,11 +164,15 @@ import { useRouter } from 'vue-router'
 import {
   BulbOutlined,
   CheckCircleOutlined,
+  HeartOutlined,
   QrcodeOutlined,
+  RadarChartOutlined,
+  ReloadOutlined,
   TeamOutlined
 } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import RadarChart from '@/components/RadarChart.vue'
+import CareerAvatar from '@/components/CareerAvatar.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { createReport } from '@/api'
@@ -141,9 +191,16 @@ const second = computed(() => store.matchResult?.second)
 const career = computed(() => store.report?.career || null)
 const careerColor = computed(() => career.value?.colorCode || '#1677FF')
 const report = computed(() => store.report)
+const firstSafe = computed(() => first.value!)
+const secondSafe = computed(() => second.value!)
 const radar = computed(() =>
   career.value && first.value ? radarValues(career.value.id, first.value.matchRate) : []
 )
+const formattedCreatedAt = computed(() => {
+  const t = report.value?.createdAt
+  if (!t) return ''
+  return t.replace('T', ' ').slice(0, 16)
+})
 
 const careerTheme = computed(() => ({
   token: {
@@ -157,9 +214,8 @@ async function ensureReport() {
     router.replace('/select')
     return
   }
-  // 已有报告但职业与当前匹配结果不一致（例如 sessionStorage 残留旧报告）时强制重建
-  const current = store.matchResult.first.careerId
-  if (store.report && store.report.career.id === current) return
+  const target = store.matchResult.first.careerId
+  if (store.report && store.report.career.id === target) return
   loading.value = true
   try {
     const data = await createReport(store.selectedIds)
@@ -181,14 +237,23 @@ onMounted(() => {
 
 <style scoped>
 .profile-page {
-  padding-top: clamp(14px, 3vh, 44px);
+  padding: clamp(14px, 3vh, 44px) clamp(20px, 4.6vw, 80px);
+  gap: clamp(12px, 1.6vh, 22px);
 }
 
 .profile-head {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
+  gap: var(--space-4);
   flex-shrink: 0;
+}
+
+.profile-head :deep(.ant-btn-lg) {
+  height: clamp(38px, 4vh, 52px);
+  padding: 0 clamp(16px, 1.8vw, 26px);
+  font-size: clamp(13px, 1.2vw, 17px);
+  border-radius: var(--radius-pill);
 }
 
 .profile-loading {
@@ -198,33 +263,39 @@ onMounted(() => {
 .profile-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(280px, 32vw) 1fr;
-  gap: clamp(16px, 2vw, 36px);
-  margin-top: clamp(10px, 2vh, 26px);
+  grid-template-columns: minmax(320px, 30vw) 1fr;
+  gap: clamp(14px, 1.8vw, 28px);
   min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .profile-left {
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.8vh, 24px);
+  gap: clamp(12px, 1.6vh, 20px);
+  min-height: 0;
 }
 
+/* hero 卡片 */
 .hero-card {
   flex: 1;
   position: relative;
   overflow: hidden;
   border: 1px solid;
-  border-radius: 12px;
-  padding: clamp(16px, 2.4vw, 40px) clamp(14px, 2vw, 34px);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 2.4vw, 32px) clamp(14px, 2vw, 28px);
   text-align: center;
-  animation: panelReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  display: flex;
+  flex-direction: column;
+  animation: panelReveal 0.55s var(--ease-out) both;
+  min-height: 0;
 }
 
 .hero-illust {
   position: absolute;
   inset: 0 0 auto 0;
-  height: clamp(70px, 11vh, 180px);
+  height: clamp(80px, 12vh, 180px);
   overflow: hidden;
   pointer-events: none;
 }
@@ -237,130 +308,179 @@ onMounted(() => {
   display: block;
 }
 
-.hero-illust::after {
-  content: '';
+.hero-illust-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 65%, rgba(11, 18, 32, 0.55));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 60%, rgba(6, 13, 26, 0.4));
 }
 
-.hero-icon {
+.hero-body {
   position: relative;
-  width: clamp(56px, 5.6vw, 110px);
-  height: clamp(56px, 5.6vw, 110px);
-  border-radius: 50%;
-  margin: clamp(60px, 8.5vh, 130px) auto clamp(8px, 1.4vh, 20px);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: clamp(24px, 2.6vw, 48px);
-  font-weight: 700;
-  color: #fff;
-  box-shadow: 0 0 36px currentColor;
+  gap: clamp(8px, 1vh, 14px);
+  padding-top: clamp(70px, 10vh, 160px);
+  flex: 1;
+}
+
+.hero-avatar {
+  margin-bottom: var(--space-2);
 }
 
 .hero-name {
-  position: relative;
-  font-size: clamp(26px, 2.8vw, 48px);
-  font-weight: 800;
+  font-size: clamp(28px, 3vw, 48px);
+  font-weight: var(--fw-heavy);
   letter-spacing: clamp(2px, 0.4vw, 8px);
+  margin: 0;
+  line-height: 1.1;
 }
 
 .hero-color {
-  position: relative;
-  margin-top: clamp(2px, 0.5vh, 8px);
-  font-size: clamp(11px, 0.95vw, 16px);
-  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+  letter-spacing: 1px;
+  font-size: 12px;
 }
 
-.hero-rate {
-  position: relative;
-  margin-top: clamp(10px, 1.8vh, 26px);
-  display: flex;
-  flex-direction: column;
+.hero-stat {
+  margin-top: var(--space-2);
 }
 
-.hero-rate-num {
-  font-size: clamp(42px, 4.6vw, 76px);
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.hero-rate-label {
-  font-size: clamp(12px, 1.05vw, 17px);
-  color: rgba(255, 255, 255, 0.55);
+.hero-stat :deep(.ant-statistic-content) {
+  font-feature-settings: 'tnum';
 }
 
 .hero-slogan {
-  position: relative;
-  margin-top: clamp(8px, 1.3vh, 18px);
-  font-size: clamp(14px, 1.35vw, 21px);
-  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+  font-size: clamp(14px, 1.4vw, 20px);
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  letter-spacing: 1px;
+  padding: 0 var(--space-3);
 }
 
 .hero-second {
-  position: relative;
-  margin-top: clamp(8px, 1.2vh, 16px);
-  font-size: clamp(12px, 1.15vw, 17px);
-  color: rgba(255, 255, 255, 0.62);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: clamp(4px, 0.6vh, 8px);
+  padding: clamp(5px, 0.7vh, 8px) clamp(10px, 1.2vw, 18px);
+  border-radius: var(--radius-pill);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
+.second-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.second-rate {
+  font-weight: var(--fw-bold);
+  font-feature-settings: 'tnum';
+  color: var(--text-primary);
+}
+
+/* 操作栏 */
 .profile-actions {
   display: flex;
-  gap: clamp(8px, 0.9vw, 16px);
+  gap: clamp(8px, 0.9vw, 14px);
+  flex-wrap: wrap;
   justify-content: center;
 }
 
 .profile-actions :deep(.ant-btn-lg) {
-  height: clamp(38px, 4vh, 56px);
-  padding: 0 clamp(14px, 1.8vw, 32px);
-  font-size: clamp(14px, 1.25vw, 19px);
-  border-radius: 26px;
+  height: clamp(40px, 4.2vh, 56px);
+  padding: 0 clamp(16px, 1.8vw, 28px);
+  font-size: clamp(13px, 1.2vw, 18px);
+  border-radius: var(--radius-pill);
 }
 
 .profile-actions :deep(.ant-btn-primary) {
-  color: #000;
+  color: var(--text-inverse);
+  font-weight: var(--fw-bold);
 }
 
+/* 面板 */
 .profile-right {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
-  gap: clamp(10px, 1.6vh, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.6vh, 20px);
   min-height: 0;
-  overflow-y: auto;
 }
 
 .panel {
-  padding: clamp(12px, 1.6vh, 26px) clamp(14px, 1.8vw, 28px);
-  min-width: 0;
+  padding: clamp(14px, 1.9vh, 26px) clamp(14px, 1.8vw, 28px);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: clamp(8px, 1.2vh, 18px);
+}
+
+.panel-icon {
+  font-size: 18px;
 }
 
 .panel-title {
-  font-size: clamp(15px, 1.5vw, 22px);
-  font-weight: 600;
-  margin-bottom: clamp(6px, 1vh, 16px);
-  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: var(--fw-semibold);
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.panel-tag {
+  margin: 0;
+  font-weight: 400;
 }
 
 .strength-item,
 .improve-item {
-  padding: clamp(4px, 0.6vh, 10px) 0 !important;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(13px, 1.15vw, 17px);
-  line-height: 1.6;
+  padding: clamp(5px, 0.8vh, 12px) 0 !important;
+  border-bottom: 1px dashed var(--border-subtle);
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: clamp(8px, 0.8vw, 12px);
 }
 
-.item-icon {
-  margin-right: clamp(6px, 0.7vw, 12px);
-  font-size: clamp(14px, 1.2vw, 19px);
+.strength-item:last-child,
+.improve-item:last-child {
+  border-bottom: none;
+}
+
+.bullet-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  margin-top: 2px;
+}
+
+.item-text {
+  flex: 1;
+  font-size: clamp(13px, 1.15vw, 17px);
+  line-height: 1.7;
+  color: var(--text-secondary);
 }
 
 .profile-disclaimer {
   text-align: center;
-  font-size: clamp(12px, 0.9vw, 15px);
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
-  margin-top: clamp(6px, 1.2vh, 16px);
+  letter-spacing: 1px;
+  margin-top: clamp(4px, 0.6vh, 10px);
   flex-shrink: 0;
 }
 </style>

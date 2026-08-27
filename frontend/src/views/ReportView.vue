@@ -1,5 +1,5 @@
 <template>
-  <div class="mobile-page" ref="pageRef">
+  <div class="mobile-page report-page">
     <a-spin v-if="loading" class="report-loading" size="large" tip="报告加载中…" />
 
     <a-result
@@ -15,7 +15,7 @@
 
     <div v-else-if="report" id="report-capture" ref="captureRef">
       <!-- 职业主视觉 -->
-      <div
+      <section
         class="report-hero"
         :style="{
           background: `linear-gradient(160deg, ${careerColor} 0%, ${careerColor}cc 45%, ${careerColor}88 100%)`
@@ -25,107 +25,195 @@
           <img :src="careerIllustration(career.id)" :alt="career.name" />
           <div class="hero-illust-mask" />
         </div>
-        <div class="hero-badge">五彩法途 · 职业画像</div>
-        <div class="hero-name">{{ career.name }}</div>
-        <div class="hero-slogan">“{{ report.profile.slogan }}”</div>
-        <div class="hero-rate">
-          <span class="rate-num">{{ first.matchRate }}%</span>
-          <span class="rate-label">匹配度</span>
-        </div>
-        <div class="hero-second">
-          第二适配：{{ second.name }}（{{ second.matchRate }}%）
-        </div>
-        <div class="hero-code">报告编号 {{ report.code }}</div>
-      </div>
-
-      <!-- 匹配词 -->
-      <div class="report-section">
-        <div class="section-title">你选择的特质词</div>
-        <div class="word-chips">
-          <span v-for="id in report.match.keywordIds" :key="id" class="word-chip" :style="{ background: careerColor + '1a', color: careerColor, borderColor: careerColor + '55' }">
-            {{ wordOf(id) }}
-          </span>
-        </div>
-        <div v-if="report.match.tie" class="tie-tip">并列双适配：{{ tieNames }}</div>
-        <div v-if="report.match.tip" class="soft-tip">{{ report.match.tip }}</div>
-      </div>
-
-      <!-- 能力优势 -->
-      <div class="report-section">
-        <div class="section-title">你的能力优势</div>
-        <div v-for="(item, index) in report.profile.strengths" :key="index" class="check-line">
-          <check-circle-filled :style="{ color: careerColor }" class="line-icon" />
-          {{ item }}
-        </div>
-      </div>
-
-      <!-- 短板建议 -->
-      <div class="report-section">
-        <div class="section-title">短板与提升建议</div>
-        <div v-for="(item, index) in report.profile.improvements" :key="index" class="check-line">
-          <bulb-filled style="color: #faad14" class="line-icon" />
-          {{ item }}
-        </div>
-      </div>
-
-      <!-- 能力雷达图 -->
-      <div class="report-section">
-        <div class="section-title">能力雷达图</div>
-        <RadarChart :axes="RADAR_AXES" :values="radar" :color="careerColor" :height="280" />
-      </div>
-
-      <!-- 体能 -->
-      <div class="report-section">
-        <div class="section-title">身体素质达标要求</div>
-        <div v-for="(item, index) in report.fitnessRequirements" :key="item.id" class="req-line">
-          <span class="req-no" :style="{ background: careerColor }">{{ index + 1 }}</span>
-          <span class="req-text">{{ item.content }}</span>
-        </div>
-      </div>
-
-      <div class="report-section">
-        <div class="section-title">大学四年锻炼计划</div>
-        <a-timeline>
-          <a-timeline-item v-for="plan in report.fitnessPlans" :key="plan.id" :color="careerColor">
-            <div class="plan-stage">{{ plan.yearStage }}</div>
-            <div class="plan-content">{{ plan.content }}</div>
-          </a-timeline-item>
-        </a-timeline>
-        <div class="medical-tip">{{ disclaimer }}</div>
-      </div>
-
-      <!-- 导师 -->
-      <div class="report-section">
-        <div class="section-title">实务导师对接</div>
-        <a-empty v-if="!report.mentors.length" description="导师名单待学院确认，敬请期待" />
-        <div v-for="mentor in report.mentors" :key="mentor.id" class="mentor-card">
-          <div class="mentor-head">
-            <a-avatar :size="44" :style="{ background: careerColor }">
-              {{ mentor.name.charAt(0) }}
-            </a-avatar>
-            <div>
-              <div class="mentor-name">{{ mentor.name }}</div>
-              <div class="mentor-title">{{ mentor.title }}</div>
-            </div>
+        <div class="hero-content">
+          <div class="hero-badge">
+            <star-filled style="font-size: 11px" />
+            五彩法途 · 职业画像
           </div>
-          <div v-if="mentor.contact" class="mentor-contact">
-            <phone-outlined /> {{ mentor.contact }}
+          <h1 class="hero-name">{{ career.name }}</h1>
+          <div class="hero-slogan">“{{ report.profile.slogan }}”</div>
+          <a-statistic
+            class="hero-stat"
+            title="匹配度"
+            :value="first.matchRate"
+            :value-style="{ color: '#fff', fontSize: '52px', fontWeight: 800 }"
+            :suffix="`%`"
+            :title-style="{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '13px', letterSpacing: '3px' }"
+          />
+          <a-divider class="hero-divider" />
+          <div class="hero-second">
+            <span class="second-label">第二适配</span>
+            <a-tag :color="second.colorCode" bordered class="second-tag">
+              {{ second.name }}
+            </a-tag>
+            <span class="second-rate">{{ second.matchRate }}%</span>
           </div>
-          <a-button
-            v-if="mentor.bookingUrl"
-            type="primary"
-            block
-            :href="mentor.bookingUrl"
-            target="_blank"
-            class="mentor-btn"
-            :style="{ background: careerColor, borderColor: careerColor }"
-          >
-            预约交流
-          </a-button>
+          <div class="hero-code">报告编号 {{ report.code }}</div>
         </div>
-      </div>
+      </section>
 
-      <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
+      <!-- 章节容器 -->
+      <div class="report-chapters">
+        <!-- 勾选词 -->
+        <section class="report-section">
+          <header class="section-head">
+            <bulb-filled class="section-icon" />
+            <h2 class="section-title">你勾选的特质词</h2>
+            <a-tag color="blue" bordered>{{ report.match.keywordIds.length }} 个</a-tag>
+          </header>
+          <div class="word-chips">
+            <a-tag
+              v-for="id in report.match.keywordIds"
+              :key="id"
+              :color="careerColor"
+              bordered
+              class="word-chip"
+            >
+              {{ wordOfID(id) }}
+            </a-tag>
+          </div>
+          <div v-if="report.match.tie" class="status-tip">
+            <warning-filled />
+            <span>并列双适配：{{ tieNames }}</span>
+          </div>
+          <div v-if="report.match.tip" class="status-tip soft">
+            <info-circle-filled />
+            <span>{{ report.match.tip }}</span>
+          </div>
+        </section>
+
+        <!-- 能力优势 -->
+        <section class="report-section">
+          <header class="section-head">
+            <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">你的能力优势</h2>
+            <a-tag color="success" bordered>{{ report.profile.strengths.length }} 项</a-tag>
+          </header>
+          <a-list :data-source="report.profile.strengths" :split="false">
+            <template #renderItem="{ item, index }">
+              <a-list-item class="check-line">
+                <span class="bullet-num" :style="{ background: careerColor }">{{ index + 1 }}</span>
+                <span class="line-text">{{ item }}</span>
+              </a-list-item>
+            </template>
+          </a-list>
+        </section>
+
+        <!-- 短板 -->
+        <section class="report-section">
+          <header class="section-head">
+            <bulb-filled style="color: #faad14" class="section-icon" />
+            <h2 class="section-title">短板与提升建议</h2>
+            <a-tag color="warning" bordered>{{ report.profile.improvements.length }} 项</a-tag>
+          </header>
+          <a-list :data-source="report.profile.improvements" :split="false">
+            <template #renderItem="{ item, index }">
+              <a-list-item class="check-line">
+                <span class="bullet-num warn">{{ index + 1 }}</span>
+                <span class="line-text">{{ item }}</span>
+              </a-list-item>
+            </template>
+          </a-list>
+        </section>
+
+        <!-- 雷达图 -->
+        <section class="report-section">
+          <header class="section-head">
+            <radar-chart-outlined :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">能力雷达图</h2>
+            <a-tag :color="careerColor" bordered>六维</a-tag>
+          </header>
+          <RadarChart :axes="RADAR_AXES" :values="radar" :color="careerColor" :height="280" />
+        </section>
+
+        <!-- 体能要求 -->
+        <section class="report-section">
+          <header class="section-head">
+            <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">身体素质达标要求</h2>
+            <a-tag :color="careerColor" bordered>{{ report.fitnessRequirements.length }} 项</a-tag>
+          </header>
+          <a-list :data-source="report.fitnessRequirements" :split="false">
+            <template #renderItem="{ item }">
+              <a-list-item class="req-line">
+                <span class="req-no" :style="{ background: careerColor }">{{ item.seq }}</span>
+                <span class="req-text">{{ item.content }}</span>
+              </a-list-item>
+            </template>
+          </a-list>
+        </section>
+
+        <!-- 四年计划 -->
+        <section class="report-section">
+          <header class="section-head">
+            <rise-outlined :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">大学四年锻炼计划</h2>
+            <a-tag :color="careerColor" bordered>{{ report.fitnessPlans.length }} 年</a-tag>
+          </header>
+          <a-timeline>
+            <a-timeline-item
+              v-for="plan in report.fitnessPlans"
+              :key="plan.id"
+              :color="careerColor"
+            >
+              <div class="plan-stage">{{ plan.yearStage }}</div>
+              <div class="plan-content">{{ plan.content }}</div>
+            </a-timeline-item>
+          </a-timeline>
+          <div class="medical-tip">
+            <info-circle-filled />
+            <span>{{ disclaimer }}</span>
+          </div>
+        </section>
+
+        <!-- 导师 -->
+        <section class="report-section">
+          <header class="section-head">
+            <team-outlined :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">实务导师对接</h2>
+            <a-tag :color="careerColor" bordered>{{ report.mentors.length }} 位</a-tag>
+          </header>
+          <a-empty
+            v-if="!report.mentors.length"
+            description="导师名单待学院确认，敬请期待"
+            :image-style="{ height: '60px' }"
+          />
+          <a-list v-else :data-source="report.mentors" :split="false">
+            <template #renderItem="{ item }">
+              <a-list-item class="mentor-item">
+                <a-card size="small" class="mentor-card" :bordered="false">
+                  <div class="mentor-head">
+                    <a-avatar :size="44" :style="{ background: careerColor }">
+                      {{ item.name.charAt(0) }}
+                    </a-avatar>
+                    <div class="mentor-info">
+                      <div class="mentor-name">{{ item.name }}</div>
+                      <div class="mentor-title">{{ item.title }}</div>
+                    </div>
+                  </div>
+                  <div v-if="item.contact" class="mentor-contact">
+                    <phone-outlined /> {{ item.contact }}
+                  </div>
+                  <a-button
+                    v-if="item.bookingUrl"
+                    type="primary"
+                    block
+                    :href="item.bookingUrl"
+                    target="_blank"
+                    class="mentor-btn"
+                    :style="{ background: careerColor, borderColor: careerColor }"
+                  >
+                    预约交流
+                  </a-button>
+                  <div v-else class="mentor-tip">可至「导师面对面」交流区现场咨询</div>
+                </a-card>
+              </a-list-item>
+            </template>
+          </a-list>
+        </section>
+
+        <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
+      </div>
     </div>
 
     <div v-if="report && !error" class="fav-entry" @click="router.push('/favorites')">
@@ -140,7 +228,12 @@
         <template #icon><picture-outlined /></template>
         保存长图
       </a-button>
-      <a-button size="large" class="action-btn" :class="{ favorited: isFavorite }" @click="toggleFavorite">
+      <a-button
+        size="large"
+        class="action-btn"
+        :class="{ favorited: isFavorite }"
+        @click="toggleFavorite"
+      >
         <template #icon><star-filled v-if="isFavorite" /><star-outlined v-else /></template>
         {{ isFavorite ? '已收藏' : '收藏' }}
       </a-button>
@@ -159,12 +252,17 @@ import { message } from 'ant-design-vue'
 import {
   BulbFilled,
   CheckCircleFilled,
+  InfoCircleFilled,
   LinkOutlined,
   PhoneOutlined,
   PictureOutlined,
+  RadarChartOutlined,
   RightOutlined,
+  RiseOutlined,
   StarFilled,
-  StarOutlined
+  StarOutlined,
+  TeamOutlined,
+  WarningFilled
 } from '@ant-design/icons-vue'
 import RadarChart from '@/components/RadarChart.vue'
 import { getReport } from '@/api'
@@ -181,7 +279,6 @@ const error = ref(false)
 const saving = ref(false)
 const report = ref<Report | null>(null)
 const captureRef = ref<HTMLElement | null>(null)
-const pageRef = ref<HTMLElement | null>(null)
 
 const FAV_KEY = 'lawtest_favorites'
 
@@ -203,7 +300,7 @@ const tieNames = computed(() =>
     : ''
 )
 
-function wordOf(id: number): string {
+function wordOfID(id: number): string {
   for (const c of store.careers) {
     const k = c.keywords?.find((kw) => kw.id === id)
     if (k) return k.word
@@ -218,7 +315,7 @@ async function load() {
   try {
     const data = await getReport(code)
     report.value = data
-    store.careers.length || (await store.loadCareers())
+    if (!store.careers.length) await store.loadCareers()
   } catch {
     error.value = true
   } finally {
@@ -282,6 +379,7 @@ onMounted(() => {
   margin: 120px auto;
 }
 
+/* hero */
 .report-hero {
   position: relative;
   color: #fff;
@@ -309,9 +407,14 @@ onMounted(() => {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
 }
 
-.hero-badge {
+.hero-content {
   position: relative;
-  display: inline-block;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 16px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.22);
@@ -321,59 +424,85 @@ onMounted(() => {
 }
 
 .hero-name {
-  position: relative;
   font-size: 34px;
   font-weight: 800;
   letter-spacing: 6px;
+  margin: 0;
 }
 
 .hero-slogan {
-  position: relative;
   margin-top: 10px;
   font-size: 15px;
   opacity: 0.92;
+  letter-spacing: 0.5px;
 }
 
-.hero-rate {
-  position: relative;
-  margin-top: 20px;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
+.hero-stat {
+  margin-top: 18px;
 }
 
-.rate-num {
-  font-size: 52px;
-  font-weight: 800;
+.hero-stat :deep(.ant-statistic-content) {
+  font-feature-settings: 'tnum';
 }
 
-.rate-label {
-  font-size: 15px;
-  opacity: 0.85;
+.hero-divider {
+  margin: 18px 24px;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .hero-second {
-  position: relative;
-  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
-  opacity: 0.9;
+  opacity: 0.92;
+}
+
+.second-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.second-tag {
+  font-weight: 600;
+}
+
+.second-rate {
+  font-weight: 700;
+  font-feature-settings: 'tnum';
 }
 
 .hero-code {
-  position: relative;
-  margin-top: 18px;
+  margin-top: 12px;
   font-size: 12px;
   opacity: 0.75;
   letter-spacing: 1px;
 }
 
+/* 章节 */
+.report-chapters {
+  padding-top: 8px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.section-icon {
+  font-size: 18px;
+  color: #1677ff;
+}
+
 .section-title {
   font-size: 17px;
   font-weight: 700;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
+  margin: 0;
+  flex: 1;
+  letter-spacing: 1px;
 }
 
 .word-chips {
@@ -383,45 +512,77 @@ onMounted(() => {
 }
 
 .word-chip {
-  border: 1px solid;
-  border-radius: 999px;
-  padding: 4px 12px;
+  margin: 0;
   font-size: 13px;
 }
 
-.tie-tip {
-  margin-top: 12px;
+.status-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 8px;
   color: #d48806;
   font-size: 13px;
 }
 
-.soft-tip {
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.55);
-  font-size: 13px;
+.status-tip.soft {
+  background: #f0f5ff;
+  border-color: #adc6ff;
+  color: #1d39c4;
 }
 
 .check-line {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  padding: 8px 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.check-line:last-child {
+  border-bottom: none;
+}
+
+.bullet-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1677ff;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.bullet-num.warn {
+  background: #faad14;
+}
+
+.line-text {
+  flex: 1;
   font-size: 14px;
   line-height: 1.65;
   color: rgba(0, 0, 0, 0.78);
-  margin-bottom: 10px;
-}
-
-.line-icon {
-  margin-top: 3px;
-  font-size: 16px;
-  flex-shrink: 0;
 }
 
 .req-line {
-  display: flex;
-  align-items: flex-start;
+  padding: 8px 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
   gap: 10px;
-  margin-bottom: 10px;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.req-line:last-child {
+  border-bottom: none;
 }
 
 .req-no {
@@ -438,7 +599,7 @@ onMounted(() => {
   margin-top: 2px;
 }
 
-.req-line .req-text {
+.req-text {
   flex: 1;
   min-width: 0;
   font-size: 14px;
@@ -454,21 +615,27 @@ onMounted(() => {
 .plan-content {
   font-size: 14px;
   color: rgba(0, 0, 0, 0.68);
-  margin-top: 2px;
-  line-height: 1.6;
+  margin-top: 4px;
+  line-height: 1.65;
 }
 
 .medical-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 12px;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.45);
 }
 
+.mentor-item {
+  padding: 8px 0 !important;
+}
+
 .mentor-card {
-  border: 1px solid #f0f0f0;
+  background: #fafafa;
   border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 12px;
+  border: 1px solid #f0f0f0;
 }
 
 .mentor-head {
@@ -477,13 +644,18 @@ onMounted(() => {
   gap: 10px;
 }
 
+.mentor-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .mentor-name {
   font-weight: 600;
   font-size: 15px;
 }
 
 .mentor-title {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.55);
   font-size: 12px;
   margin-top: 2px;
 }
@@ -498,11 +670,18 @@ onMounted(() => {
   margin-top: 10px;
 }
 
+.mentor-tip {
+  margin-top: 10px;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+}
+
 .report-disclaimer {
   text-align: center;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.4);
   padding: 20px 16px 90px;
+  letter-spacing: 0.5px;
 }
 
 .fav-entry {
@@ -532,6 +711,7 @@ onMounted(() => {
   display: flex;
   gap: 10px;
   z-index: 20;
+  backdrop-filter: blur(10px);
 }
 
 .action-btn {
