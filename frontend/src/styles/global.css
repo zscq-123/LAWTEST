@@ -306,11 +306,15 @@ button,
 }
 
 .word-card.selected {
-  color: #fff;
+  color: var(--text-on-career, #fff);
   border-color: var(--career-color, var(--brand-primary));
   background: var(--career-color, var(--brand-primary));
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--career-color, var(--brand-primary)) 35%, transparent);
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--career-color, var(--brand-primary)) 35%, transparent),
+    inset 0 0 0 2px color-mix(in srgb, var(--career-color, var(--brand-primary)) 55%, transparent);
   animation: cardLight 0.5s var(--ease-in-out);
+  position: relative;
+  font-weight: var(--fw-bold);
 }
 
 .word-card.core-tag {

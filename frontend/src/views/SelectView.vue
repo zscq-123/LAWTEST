@@ -57,12 +57,15 @@
                 'core-tag': keyword.core && !isSelected(keyword.id)
               }"
               :style="{
-                animationDelay: `${0.04 + (kwIndex) * 0.025}s`
+                animationDelay: `${0.04 + (kwIndex) * 0.025}s`,
+                '--career-color': career.colorCode,
+                '--text-on-career': textOnColor(career.colorCode)
               }"
               :aria-pressed="isSelected(keyword.id)"
               :ref="(el) => setWordRef(keyword.id, el as HTMLElement | null)"
               @click="handleToggle(career, keyword.id, $event)"
             >
+              <span v-if="isSelected(keyword.id)" class="word-check" aria-hidden="true">✓</span>
               {{ keyword.word }}
             </button>
           </div>
@@ -212,6 +215,18 @@ function isSelected(id: number) {
 
 function pct(score?: number) {
   return Math.round(((score || 0) / 20) * 100) + '%'
+}
+
+/** 根据背景色亮度选择可读文字色：深色背景用白字，浅色背景用黑字（WCAG 对比度） */
+function textOnColor(hex: string): string {
+  const h = hex.replace('#', '')
+  const v = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16)
+  const r = (v >> 16) & 255
+  const g = (v >> 8) & 255
+  const b = v & 255
+  // 相对亮度（sRGB 加权）
+  const lum = 0.2126 * (r / 255) + 0.7152 * (g / 255) + 0.0722 * (b / 255)
+  return lum > 0.55 ? 'rgba(0, 0, 0, 0.88)' : '#ffffff'
 }
 
 /** 点击词卡：选中后从词卡位置放出一个光点飞向该职业能量柱 */
@@ -408,6 +423,24 @@ onBeforeUnmount(() => {
 
 .card-light {
   animation: cardLight 0.45s var(--ease-in-out) !important;
+}
+
+/* 选中词卡的 ✓ 角标 */
+.word-card.selected .word-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--career-color, var(--brand-primary));
+  color: var(--text-on-career, #fff);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--career-color, var(--brand-primary)) 50%, transparent);
+  border: 2px solid #fff;
 }
 
 /* 能量池 */
