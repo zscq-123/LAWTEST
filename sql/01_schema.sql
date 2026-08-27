@@ -9,6 +9,7 @@ CREATE DATABASE IF NOT EXISTS lawtest
   COLLATE utf8mb4_unicode_ci;
 
 USE lawtest;
+SET NAMES utf8mb4;
 
 -- ---------------------------------------------------------------------
 -- 1. career 职业配置

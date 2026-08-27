@@ -5,7 +5,7 @@
         <div class="fitness-head">
           <div>
             <h1 class="screen-title" style="font-size: 34px">
-              {{ career.name }} · 体能赋能方案
+              {{ report?.career?.name || '' }} · 体能赋能方案
             </h1>
             <p class="screen-subtitle" style="font-size: 16px">
               身体是职业长跑的本钱，大学四年一步一步来

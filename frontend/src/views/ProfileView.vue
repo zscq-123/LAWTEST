@@ -20,18 +20,22 @@
                 }"
               >
                 <div class="hero-icon" :style="{ background: careerColor }">
-                  {{ career.name.charAt(0) }}
+                  {{ report.career.name.charAt(0) }}
                 </div>
-                <div class="hero-name" :style="{ color: careerColor }">{{ career.name }}</div>
-                <div class="hero-color">{{ career.colorName }} · 专属色 {{ career.colorCode }}</div>
+                <div class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
+                <div class="hero-color">
+                  {{ report.career.colorName }} · 专属色 {{ report.career.colorCode }}
+                </div>
                 <div class="hero-rate">
-                  <span class="hero-rate-num">{{ first.matchRate }}%</span>
+                  <span class="hero-rate-num">{{ report.match.first.matchRate }}%</span>
                   <span class="hero-rate-label">匹配度</span>
                 </div>
                 <div class="hero-slogan">“{{ report.profile.slogan }}”</div>
                 <div class="hero-second">
-                  第二适配：<b :style="{ color: second?.colorCode }">{{ second?.name }}</b>
-                  （{{ second?.matchRate }}%）
+                  第二适配：<b :style="{ color: report.match.second.colorCode }">
+                    {{ report.match.second.name }}
+                  </b>
+                  （{{ report.match.second.matchRate }}%）
                 </div>
               </div>
 

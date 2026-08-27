@@ -30,7 +30,7 @@ LAWTEST/
 | 2 | 后端工程搭建与 API 开发 | ✅ |
 | 3 | 前端工程搭建与大屏测试端 | ✅ |
 | 4 | 匹配画像联调、手机报告端、扫码、导师模块 | ✅ |
-| 5 | Docker 部署与离线方案 | ⏳ |
+| 5 | Docker 部署与离线方案 | ✅ |
 | 6 | 职业形象插画与收尾 | ⏳ |
 
 ## 快速开始（开发）
@@ -39,7 +39,7 @@ LAWTEST/
 2. 启动后端：`cd backend && mvn spring-boot:run`（默认端口 8080）。
 3. 启动前端：`cd frontend && npm install && npm run dev`（默认端口 5173）。
 
-详见 `deploy/部署手册.md`。
+数据库脚本位于 `sql/`（`01_schema.sql` 建表、`02_data.sql` 初始化数据）；Docker 一键部署详见 `deploy/部署手册.md`。
 
 ## 免责声明
 
