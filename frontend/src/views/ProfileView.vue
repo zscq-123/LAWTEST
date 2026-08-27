@@ -342,11 +342,20 @@ async function ensureReport() {
     return
   }
   const target = store.matchResult.first.careerId
-  if (store.report && store.report.career.id === target) return
+  if (store.report && store.report.career.id === target) {
+    // 已有报告：若缓存了 AI 分析则直接展示
+    if (store.report.aiAnalysis) {
+      aiAnalysis.value = store.report.aiAnalysis
+    }
+    return
+  }
   loading.value = true
   try {
     const data = await createReport(store.selectedIds)
     store.setReport(data)
+    if (data.aiAnalysis) {
+      aiAnalysis.value = data.aiAnalysis
+    }
   } finally {
     loading.value = false
   }
@@ -357,14 +366,18 @@ function restart() {
   router.replace('/')
 }
 
-/** 调用 AI 大模型生成深度分析 */
+/** 调用 AI 大模型生成深度分析（按报告编号，已缓存直接返回） */
 async function runAiAnalyze() {
-  if (!report.value || !store.matchResult) return
+  if (!report.value) return
   aiLoading.value = true
   aiError.value = ''
   try {
-    const data = await aiAnalyze(store.selectedIds, store.matchResult.first.careerId)
+    const data = await aiAnalyze(report.value.code)
     aiAnalysis.value = data
+    // 同步更新 store.report，让体能页/重新进入也可见
+    if (store.report) {
+      store.report.aiAnalysis = data
+    }
   } catch (e) {
     aiError.value = e instanceof Error ? e.message : 'AI 分析失败，请稍后重试'
   } finally {

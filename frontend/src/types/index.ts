@@ -81,6 +81,7 @@ export interface Report {
   match: MatchResult
   career: Career
   profile: Profile
+  aiAnalysis?: AiAnalysisVO | null
   fitnessRequirements: FitnessRequirement[]
   fitnessPlans: FitnessPlan[]
   mentors: Mentor[]

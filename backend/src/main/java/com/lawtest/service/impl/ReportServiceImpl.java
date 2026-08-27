@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawtest.common.BusinessException;
+import com.lawtest.dto.AiAnalysisVO;
 import com.lawtest.dto.CareerVO;
 import com.lawtest.dto.MatchResultDTO;
 import com.lawtest.dto.ProfileVO;
@@ -12,6 +13,7 @@ import com.lawtest.dto.ReportVO;
 import com.lawtest.entity.Career;
 import com.lawtest.entity.FitnessPlan;
 import com.lawtest.entity.FitnessRequirement;
+import com.lawtest.entity.Keyword;
 import com.lawtest.entity.Mentor;
 import com.lawtest.entity.Profile;
 import com.lawtest.entity.Report;
@@ -19,14 +21,17 @@ import com.lawtest.entity.TestRecord;
 import com.lawtest.mapper.CareerMapper;
 import com.lawtest.mapper.FitnessPlanMapper;
 import com.lawtest.mapper.FitnessRequirementMapper;
+import com.lawtest.mapper.KeywordMapper;
 import com.lawtest.mapper.MentorMapper;
 import com.lawtest.mapper.ProfileMapper;
 import com.lawtest.mapper.ReportMapper;
 import com.lawtest.mapper.TestRecordMapper;
+import com.lawtest.service.AiAnalysisService;
 import com.lawtest.service.MatchingService;
 import com.lawtest.service.ReportService;
 import com.lawtest.util.QrCodeUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +40,9 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
@@ -50,7 +57,9 @@ public class ReportServiceImpl implements ReportService {
     private final FitnessRequirementMapper fitnessRequirementMapper;
     private final FitnessPlanMapper fitnessPlanMapper;
     private final MentorMapper mentorMapper;
+    private final KeywordMapper keywordMapper;
     private final MatchingService matchingService;
+    private final AiAnalysisService aiAnalysisService;
     private final ObjectMapper objectMapper;
 
     @Value("${app.frontend-base-url}")
@@ -105,6 +114,61 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
+    @Override
+    public AiAnalysisVO generateAiAnalysis(String code) {
+        Report report = reportMapper.selectOne(
+                Wrappers.<Report>lambdaQuery().eq(Report::getCode, code));
+        if (report == null) {
+            throw new BusinessException(404, "报告不存在或已过期");
+        }
+
+        // 已生成过：直接返回缓存
+        if (report.getAiAnalysis() != null && !report.getAiAnalysis().isBlank()) {
+            try {
+                return objectMapper.readValue(report.getAiAnalysis(), AiAnalysisVO.class);
+            } catch (JsonProcessingException e) {
+                log.warn("报告 AI 缓存解析失败，重新生成 code={}", code);
+            }
+        }
+
+        // 未生成：解析测试记录 → 调用 AI → 序列化缓存
+        TestRecord record = testRecordMapper.selectById(report.getRecordId());
+        if (record == null) {
+            throw new BusinessException(404, "报告数据缺失");
+        }
+        List<Long> keywordIds;
+        try {
+            keywordIds = objectMapper.readValue(
+                    record.getSelectedKeywords(), new TypeReference<>() {
+                    });
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("报告数据解析失败", e);
+        }
+        Long careerId = record.getResultCareerId();
+        Career career = careerMapper.selectById(careerId);
+
+        String keywordWords = keywordMapper.selectList(
+                        Wrappers.<Keyword>lambdaQuery().in(Keyword::getId, keywordIds))
+                .stream().map(Keyword::getWord).distinct()
+                .collect(Collectors.joining("、"));
+        String careerName = career != null ? career.getName() : "未知职业";
+        String careerColorName = career != null ? career.getColorName() : "";
+
+        AiAnalysisVO vo = aiAnalysisService.analyze(
+                keywordIds, careerId, keywordWords, careerName, careerColorName);
+
+        // 缓存到报告（生成一次，扫码打开可复用）
+        try {
+            Report update = new Report();
+            update.setId(report.getId());
+            update.setAiAnalysis(objectMapper.writeValueAsString(vo));
+            reportMapper.updateById(update);
+        } catch (JsonProcessingException e) {
+            log.error("AI 分析缓存序列化失败 code={}", code, e);
+        }
+        return vo;
+    }
+
     private ReportVO buildReportVO(Report report, MatchResultDTO match) {
         Long careerId = match.getFirst().getCareerId();
         Career career = careerMapper.selectById(careerId);
@@ -150,6 +214,16 @@ public class ReportServiceImpl implements ReportService {
         vo.setFitnessRequirements(requirements);
         vo.setFitnessPlans(plans);
         vo.setMentors(mentors);
+
+        // 解析缓存的 AI 深度分析（未生成或解析失败时为 null）
+        if (report.getAiAnalysis() != null && !report.getAiAnalysis().isBlank()) {
+            try {
+                vo.setAiAnalysis(objectMapper.readValue(report.getAiAnalysis(), AiAnalysisVO.class));
+            } catch (JsonProcessingException e) {
+                log.warn("报告 AI 分析缓存解析失败 code={}", report.getCode());
+                vo.setAiAnalysis(null);
+            }
+        }
         return vo;
     }
 

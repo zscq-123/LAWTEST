@@ -135,11 +135,12 @@ CREATE TABLE test_record (
 -- 9. report 报告（编号+二维码）
 -- ---------------------------------------------------------------------
 CREATE TABLE report (
-    id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-    record_id  BIGINT UNSIGNED NOT NULL COMMENT '测试记录ID',
-    code       VARCHAR(32)     NOT NULL COMMENT '报告编号',
-    qr_url     VARCHAR(512)    NOT NULL DEFAULT '' COMMENT '二维码内容（报告页URL）',
-    created_at DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
+    id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+    record_id   BIGINT UNSIGNED NOT NULL COMMENT '测试记录ID',
+    code        VARCHAR(32)     NOT NULL COMMENT '报告编号',
+    qr_url      VARCHAR(512)    NOT NULL DEFAULT '' COMMENT '二维码内容（报告页URL）',
+    ai_analysis TEXT            NULL COMMENT 'AI 深度分析结果（JSON，生成一次后缓存）',
+    created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
     PRIMARY KEY (id),
     UNIQUE KEY uk_report_code (code),
     KEY idx_report_record (record_id),

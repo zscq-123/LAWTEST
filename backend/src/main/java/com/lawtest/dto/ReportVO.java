@@ -26,6 +26,8 @@ public class ReportVO {
     private CareerVO career;
     /** 职业画像 */
     private ProfileVO profile;
+    /** AI 深度分析（已生成时返回，未生成为 null） */
+    private AiAnalysisVO aiAnalysis;
     private List<FitnessRequirement> fitnessRequirements;
     private List<FitnessPlan> fitnessPlans;
     private List<Mentor> mentors;

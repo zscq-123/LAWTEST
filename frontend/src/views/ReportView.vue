@@ -234,6 +234,87 @@
           </a-list>
         </section>
 
+        <!-- AI 深度分析 -->
+        <section class="report-section ai-section">
+          <header class="section-head">
+            <robot-outlined :style="{ color: careerColor }" class="section-icon" />
+            <h2 class="section-title">AI 深度分析</h2>
+            <a-tag
+              :color="careerColor"
+              bordered
+              :style="{ color: textOnColor(careerColor) }"
+            >MiMo</a-tag>
+          </header>
+
+          <div v-if="aiLoading" class="ai-loading">
+            <a-spin size="small" />
+            <span class="ai-loading-text">AI 正在解读你的特质组合…</span>
+          </div>
+
+          <a-alert
+            v-else-if="aiError"
+            type="warning"
+            show-icon
+            class="ai-error"
+            :message="aiError"
+          />
+
+          <template v-else-if="aiAnalysis">
+            <div class="ai-summary">
+              <robot-outlined :style="{ color: careerColor }" class="ai-summary-icon" />
+              <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
+            </div>
+
+            <div v-if="aiAnalysis.strengths.length" class="ai-block">
+              <div class="ai-block-title">
+                <check-circle-filled :style="{ color: careerColor }" />
+                核心优势解读
+              </div>
+              <div v-for="(s, i) in aiAnalysis.strengths" :key="i" class="ai-line">
+                <span class="ai-badge" :style="{ background: careerColor }">{{ i + 1 }}</span>
+                <span class="ai-text">{{ s }}</span>
+              </div>
+            </div>
+
+            <div v-if="aiAnalysis.improvements.length" class="ai-block">
+              <div class="ai-block-title">
+                <bulb-filled style="color: #faad14" />
+                成长建议
+              </div>
+              <div v-for="(s, i) in aiAnalysis.improvements" :key="i" class="ai-line">
+                <span class="ai-badge" style="background: #faad14">{{ i + 1 }}</span>
+                <span class="ai-text">{{ s }}</span>
+              </div>
+            </div>
+
+            <div v-if="aiAnalysis.plans.length" class="ai-block">
+              <div class="ai-block-title">
+                <rise-outlined :style="{ color: careerColor }" />
+                四年发展建议
+              </div>
+              <div v-for="(s, i) in aiAnalysis.plans" :key="i" class="ai-line">
+                <span class="ai-badge" :style="{ background: careerColor }">{{ i + 1 }}</span>
+                <span class="ai-text">{{ s }}</span>
+              </div>
+            </div>
+
+            <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerColor }">
+              {{ aiAnalysis.motto }}
+            </blockquote>
+
+            <div class="ai-disclaimer">
+              <info-circle-filled />
+              {{ aiAnalysis.disclaimer }}
+            </div>
+          </template>
+
+          <a-empty
+            v-else
+            description="在大屏端生成一次后，此处即可随时查看"
+            :image-style="{ height: '50px' }"
+          />
+        </section>
+
         <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
       </div>
     </div>
@@ -281,6 +362,7 @@ import {
   RadarChartOutlined,
   RightOutlined,
   RiseOutlined,
+  RobotOutlined,
   StarFilled,
   StarOutlined,
   TeamOutlined,
@@ -292,7 +374,7 @@ import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
-import type { Report } from '@/types'
+import type { AiAnalysisVO, Report } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -302,6 +384,9 @@ const error = ref(false)
 const saving = ref(false)
 const report = ref<Report | null>(null)
 const captureRef = ref<HTMLElement | null>(null)
+const aiAnalysis = ref<AiAnalysisVO | null>(null)
+const aiLoading = ref(false)
+const aiError = ref('')
 
 const FAV_KEY = 'lawtest_favorites'
 
@@ -338,6 +423,10 @@ async function load() {
   try {
     const data = await getReport(code)
     report.value = data
+    // 报告缓存了 AI 分析则直接展示（生成一次，扫码打开可复用）
+    if (data.aiAnalysis) {
+      aiAnalysis.value = data.aiAnalysis
+    }
     if (!store.careers.length) await store.loadCareers()
   } catch {
     error.value = true
@@ -745,5 +834,120 @@ onMounted(() => {
 .action-btn.favorited {
   color: #faad14;
   border-color: #faad14;
+}
+
+/* AI 深度分析（手机端） */
+.ai-section {
+  border: 1px dashed #d9d9d9;
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 0;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.ai-loading-text {
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.ai-error {
+  margin: 0;
+}
+
+.ai-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #f5f7fa;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.ai-summary-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-summary-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.ai-block {
+  margin-bottom: 16px;
+}
+
+.ai-block-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.88);
+  margin-bottom: 8px;
+}
+
+.ai-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.ai-line:last-child {
+  border-bottom: none;
+}
+
+.ai-badge {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.ai-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.ai-motto {
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid;
+  border-radius: 6px;
+  background: #f5f7fa;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.82);
+  line-height: 1.7;
+}
+
+.ai-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 1.6;
 }
 </style>

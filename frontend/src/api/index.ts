@@ -36,7 +36,7 @@ export function getStatsSummary() {
   return http.get<StatsSummary>('/stats/summary')
 }
 
-/** AI 深度分析：基于勾选特质词生成个性化职业解读 */
-export function aiAnalyze(keywordIds: number[], careerId: number) {
-  return http.post<AiAnalysisVO>('/ai/analyze', { keywordIds, careerId })
+/** AI 深度分析：按报告编号生成（已缓存则直接返回） */
+export function aiAnalyze(code: string) {
+  return http.post<AiAnalysisVO>('/ai/analyze', { code })
 }
