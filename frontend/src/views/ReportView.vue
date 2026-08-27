@@ -38,7 +38,7 @@
             :value="first.matchRate"
             :value-style="{ color: '#fff', fontSize: '52px', fontWeight: 800 }"
             :suffix="`%`"
-            :title-style="{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '13px', letterSpacing: '3px' }"
+            :title-style="{ color: 'rgba(255, 255, 255, 0.92)', fontSize: '13px', letterSpacing: '3px' }"
           />
           <a-divider class="hero-divider" />
           <div class="hero-second">

@@ -28,13 +28,16 @@ const themeConfig = computed(() => ({
     colorSuccess: '#52c41a',
     colorWarning: '#faad14',
     colorError: '#c8102e',
-    colorTextBase: '#ffffff',
-    colorBgBase: '#0b1220',
-    colorBgContainer: 'rgba(255, 255, 255, 0.04)',
-    colorBgElevated: '#131e33',
+    colorTextBase: 'rgba(0, 0, 0, 0.88)',
+    colorBgBase: '#ffffff',
+    colorBgContainer: '#ffffff',
+    colorBgElevated: '#ffffff',
     colorBgLayout: 'transparent',
-    colorBorder: 'rgba(255, 255, 255, 0.14)',
-    colorBorderSecondary: 'rgba(255, 255, 255, 0.08)',
+    colorBorder: 'rgba(0, 0, 0, 0.1)',
+    colorBorderSecondary: 'rgba(0, 0, 0, 0.06)',
+    colorText: 'rgba(0, 0, 0, 0.88)',
+    colorTextSecondary: 'rgba(0, 0, 0, 0.66)',
+    colorTextTertiary: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 8,
     borderRadiusLG: 14,
     fontSize: 16,
@@ -50,17 +53,17 @@ const themeConfig = computed(() => ({
   components: {
     Button: {
       fontWeight: 600,
-      primaryShadow: '0 0 20px rgba(22, 119, 255, 0.35)',
-      defaultBorderColor: 'rgba(255, 255, 255, 0.18)'
+      primaryShadow: '0 6px 20px rgba(22, 119, 255, 0.22)',
+      defaultBorderColor: 'rgba(0, 0, 0, 0.1)'
     },
     Card: {
-      colorBgContainer: 'rgba(255, 255, 255, 0.04)',
-      colorBorderSecondary: 'rgba(255, 255, 255, 0.08)',
+      colorBgContainer: '#ffffff',
+      colorBorderSecondary: 'rgba(0, 0, 0, 0.06)',
       borderRadiusLG: 14
     },
     Modal: {
       borderRadiusLG: 16,
-      colorBgElevated: '#131e33'
+      colorBgElevated: '#ffffff'
     },
     Tag: {
       borderRadiusSM: 6
@@ -84,7 +87,7 @@ const themeConfig = computed(() => ({
   gap: var(--space-2);
   font-size: 11px;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(0, 0, 0, 0.4);
   pointer-events: none;
   z-index: 1;
   white-space: nowrap;
@@ -94,6 +97,6 @@ const themeConfig = computed(() => ({
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(122, 184, 255, 0.6);
+  background: rgba(22, 119, 255, 0.5);
 }
 </style>

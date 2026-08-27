@@ -76,7 +76,7 @@ function isTop(id: number): boolean {
   gap: clamp(6px, 0.6vw, 12px);
   margin-bottom: clamp(8px, 1.4vh, 16px);
   font-size: clamp(14px, 1.35vw, 22px);
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
   font-weight: var(--fw-semibold);
   letter-spacing: 1px;
 }
@@ -92,12 +92,13 @@ function isTop(id: number): boolean {
   flex: 1;
   width: clamp(56px, 5vw, 96px);
   border-radius: 32px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
   border: 1px solid var(--border-default);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   position: relative;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04);
 }
 
 .race-fill {
@@ -108,13 +109,14 @@ function isTop(id: number): boolean {
   align-items: flex-start;
   justify-content: center;
   padding-top: 8px;
+  position: relative;
 }
 
 /* 领跑赛道：强光 + 顶部光晕 */
 .race-fill.race-win {
   animation: energyPulse 1.2s ease-in-out infinite;
   box-shadow:
-    0 0 24px currentColor,
+    0 6px 20px rgba(15, 23, 42, 0.18),
     inset 0 0 16px rgba(255, 255, 255, 0.25) !important;
   position: relative;
 }
@@ -140,13 +142,13 @@ function isTop(id: number): boolean {
   font-size: clamp(16px, 1.6vw, 24px);
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .race-pct {
   margin-top: clamp(6px, 1.2vh, 14px);
   font-size: clamp(14px, 1.3vw, 20px);
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
   font-weight: 700;
   font-feature-settings: 'tnum';
 }

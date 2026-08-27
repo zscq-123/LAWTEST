@@ -67,7 +67,7 @@ async function copyLink() {
 
 .qr-subtitle {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-secondary);
   margin-top: 6px;
   letter-spacing: 0.5px;
 }
@@ -120,10 +120,10 @@ async function copyLink() {
   gap: 10px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-panel-strong);
+  border: 1px solid var(--border-default);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
   margin-bottom: 14px;
 }
 
@@ -133,7 +133,7 @@ async function copyLink() {
 }
 
 .qr-code-label {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-tertiary);
   letter-spacing: 2px;
   font-size: 11px;
 }
@@ -159,7 +159,7 @@ async function copyLink() {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-tertiary);
   letter-spacing: 0.5px;
 }
 </style>

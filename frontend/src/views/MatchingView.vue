@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
 
 .matching-steps :deep(.ant-steps-item-title) {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-secondary);
 }
 
 .matching-head {
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
 .matching-foot {
   text-align: center;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   letter-spacing: 1px;
   flex-shrink: 0;
 }

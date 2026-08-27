@@ -1,31 +1,31 @@
 /* ============================================================
  * 五彩法途 · 企业级设计系统
- * 设计原则：克制、专业、信息层次清晰、深色科技风
+ * 设计原则：克制、专业、信息层次清晰、浅色商务风
  * ============================================================ */
 
-/* ---------- 色彩 token ---------- */
+/* ---------- 颜色 token ---------- */
 :root {
-  /* 中性色（深色科技风） */
-  --bg-deep: #060d1a;
-  --bg-base: #0b1220;
-  --bg-elevated: #131e33;
-  --bg-panel: rgba(255, 255, 255, 0.04);
-  --bg-panel-strong: rgba(255, 255, 255, 0.06);
-  --bg-overlay: rgba(11, 18, 32, 0.78);
+  /* 中性色（浅色商务风） */
+  --bg-deep: #f5f7fa;        /* 页面背景：极浅冷灰 */
+  --bg-base: #ffffff;        /* 卡片背景：纯白 */
+  --bg-elevated: #fafbfc;    /* 浮层背景 */
+  --bg-panel: #ffffff;       /* 玻璃面板：白底 */
+  --bg-panel-strong: #f5f7fa;
+  --bg-overlay: rgba(255, 255, 255, 0.85);
 
   /* 边框 */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-default: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.16);
 
-  /* 文字层级（WCAG 对比度合规） */
-  --text-primary: rgba(255, 255, 255, 0.96);
-  --text-secondary: rgba(255, 255, 255, 0.72);
-  --text-tertiary: rgba(255, 255, 255, 0.5);
-  --text-disabled: rgba(255, 255, 255, 0.3);
-  --text-inverse: rgba(0, 0, 0, 0.88);
+  /* 文字层级（WCAG 对比度合规：深色文字 + 白底） */
+  --text-primary: rgba(0, 0, 0, 0.88);
+  --text-secondary: rgba(0, 0, 0, 0.66);
+  --text-tertiary: rgba(0, 0, 0, 0.5);
+  --text-disabled: rgba(0, 0, 0, 0.3);
+  --text-inverse: rgba(255, 255, 255, 0.96);
 
-  /* 品牌主色（Ant Design 默认 + 五色职业色） */
+  /* 品牌主色 */
   --brand-primary: #1677ff;
   --brand-primary-hover: #4096ff;
   --brand-success: #52c41a;
@@ -40,13 +40,13 @@
   --career-ai: #12b5a5; /* 科创青 */
 
   /* ---------- 字号阶梯 ---------- */
-  --fs-display: clamp(36px, 4.4vw, 72px); /* 揭晓大标题 */
-  --fs-title: clamp(28px, 3vw, 48px); /* 页面主标题 */
-  --fs-h2: clamp(20px, 2vw, 32px); /* 区块标题 */
-  --fs-h3: clamp(16px, 1.6vw, 24px); /* 卡片标题 */
-  --fs-body: clamp(14px, 1.3vw, 18px); /* 正文 */
-  --fs-caption: clamp(12px, 1vw, 14px); /* 辅助 */
-  --fs-stat: clamp(40px, 4vw, 64px); /* 匹配度数字 */
+  --fs-display: clamp(36px, 4.4vw, 72px);
+  --fs-title: clamp(28px, 3vw, 48px);
+  --fs-h2: clamp(20px, 2vw, 32px);
+  --fs-h3: clamp(16px, 1.6vw, 24px);
+  --fs-body: clamp(14px, 1.3vw, 18px);
+  --fs-caption: clamp(12px, 1vw, 14px);
+  --fs-stat: clamp(40px, 4vw, 64px);
 
   /* ---------- 字重 ---------- */
   --fw-regular: 400;
@@ -55,7 +55,7 @@
   --fw-bold: 700;
   --fw-heavy: 800;
 
-  /* ---------- 间距阶梯（4 倍数） ---------- */
+  /* ---------- 间距 ---------- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -75,13 +75,13 @@
   --radius-xl: 20px;
   --radius-pill: 999px;
 
-  /* ---------- 阴影（深色场景调亮） ---------- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
-  --shadow-glow-brand: 0 0 24px rgba(22, 119, 255, 0.45);
+  /* ---------- 阴影（浅色场景） ---------- */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --shadow-glow-brand: 0 6px 20px rgba(22, 119, 255, 0.22);
 
-  /* ---------- 缓动（Ant Design 风格） */
+  /* ---------- 缓动 ---------- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -125,17 +125,17 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.16);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.26);
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* 焦点环（可访问性） */
+/* 焦点环 */
 :focus-visible {
   outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
@@ -143,18 +143,18 @@ body {
 }
 
 /* ============================================================
- * 大屏背景层（深色科技感 + 五色光晕 + 网格底纹）
+ * 大屏背景层（浅色商务风 + 五色淡光晕 + 浅色网格底纹）
  * ============================================================ */
 .screen-bg {
   position: relative;
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(1200px 600px at 18% -8%, rgba(46, 107, 230, 0.22), transparent 60%),
-    radial-gradient(1000px 500px at 86% 0%, rgba(18, 181, 165, 0.18), transparent 55%),
-    radial-gradient(900px 600px at 50% 110%, rgba(123, 94, 167, 0.22), transparent 60%),
-    radial-gradient(700px 400px at 92% 88%, rgba(200, 16, 46, 0.14), transparent 55%),
-    linear-gradient(160deg, #060d1a 0%, #0b1220 55%, #060d1a 100%);
+    radial-gradient(1200px 600px at 18% -8%, rgba(46, 107, 230, 0.12), transparent 60%),
+    radial-gradient(1000px 500px at 86% 0%, rgba(18, 181, 165, 0.1), transparent 55%),
+    radial-gradient(900px 600px at 50% 110%, rgba(123, 94, 167, 0.12), transparent 60%),
+    radial-gradient(700px 400px at 92% 88%, rgba(200, 16, 46, 0.08), transparent 55%),
+    linear-gradient(160deg, #ffffff 0%, #f5f7fa 55%, #ffffff 100%);
   overflow: hidden;
 }
 
@@ -163,14 +163,14 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85), transparent 78%);
   pointer-events: none;
 }
 
-/* 大屏画布（保留兼容性，但实际流式布局） */
+/* 大屏画布 */
 .screen-canvas {
   position: relative;
   width: 1920px;
@@ -179,7 +179,7 @@ body {
 }
 
 /* ============================================================
- * 玻璃面板（统一规格）
+ * 玻璃面板（白底玻璃）
  * ============================================================ */
 .glass-panel {
   background: var(--bg-panel);
@@ -187,6 +187,7 @@ body {
   border-radius: var(--radius-lg);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ============================================================
@@ -210,11 +211,11 @@ body {
 .glow-text {
   background: linear-gradient(
     100deg,
-    #7ab8ff 0%,
+    #2e6be6 0%,
     #12b5a5 25%,
     #c8102e 50%,
     #7b5ea7 75%,
-    #2e6be6 100%
+    #faad14 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -225,7 +226,7 @@ body {
   background: linear-gradient(
     100deg,
     currentColor 0%,
-    #fff 30%,
+    #1677ff 30%,
     currentColor 55%,
     currentColor 100%
   );
@@ -245,21 +246,20 @@ body {
 }
 
 /* ============================================================
- * 按钮（统一主按钮光晕增强）
+ * 按钮（主按钮浅色阴影）
  * ============================================================ */
 .btn-primary-glow {
-  box-shadow: 0 0 24px rgba(22, 119, 255, 0.45);
+  box-shadow: var(--shadow-glow-brand);
   transition:
     box-shadow 0.3s var(--ease-in-out),
     transform 0.3s var(--ease-in-out);
 }
 
 .btn-primary-glow:hover {
-  box-shadow: 0 0 40px rgba(22, 119, 255, 0.65);
+  box-shadow: 0 8px 28px rgba(22, 119, 255, 0.32);
   transform: translateY(-2px);
 }
 
-/* 触控大屏：禁用 webkit tap highlight，统一交互反馈 */
 button,
 .word-card,
 .career-card,
@@ -268,7 +268,7 @@ button,
 }
 
 /* ============================================================
- * 词卡（统一规格）
+ * 词卡（浅色风格）
  * ============================================================ */
 .word-card {
   cursor: pointer;
@@ -282,6 +282,7 @@ button,
   font-size: var(--fs-caption);
   color: var(--text-secondary);
   font-weight: var(--fw-medium);
+  box-shadow: var(--shadow-sm);
 }
 
 .word-card:hover {
@@ -289,14 +290,14 @@ button,
   border-color: var(--border-strong);
   background: var(--bg-panel-strong);
   color: var(--text-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .word-card.selected {
   color: #fff;
   border-color: var(--career-color, var(--brand-primary));
   background: var(--career-color, var(--brand-primary));
-  background: color-mix(in srgb, var(--career-color, var(--brand-primary)) 22%, transparent);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--career-color, var(--brand-primary)) 35%, transparent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--career-color, var(--brand-primary)) 35%, transparent);
   animation: cardLight 0.5s var(--ease-in-out);
 }
 
@@ -311,7 +312,7 @@ button,
 .mobile-page {
   min-height: 100%;
   background: #f5f7fa;
-  color: var(--text-inverse);
+  color: var(--text-primary);
   overflow-y: auto;
   padding-bottom: 48px;
 }
@@ -320,8 +321,9 @@ button,
   margin: 0 16px 16px;
   border-radius: var(--radius-lg);
   background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
   padding: 18px 16px;
+  border: 1px solid var(--border-subtle);
 }
 
 /* ============================================================
@@ -330,7 +332,7 @@ button,
 @keyframes cardLight {
   0% {
     transform: scale(0.92);
-    filter: brightness(2);
+    filter: brightness(1.18);
   }
   60% {
     transform: scale(1.06);
@@ -355,10 +357,10 @@ button,
 @keyframes pulseGlow {
   0%,
   100% {
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px color-mix(in srgb, currentColor 20%, transparent);
   }
   50% {
-    box-shadow: 0 0 42px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 24px color-mix(in srgb, currentColor 35%, transparent);
   }
 }
 
@@ -383,7 +385,7 @@ button,
     filter: brightness(1);
   }
   50% {
-    filter: brightness(1.35);
+    filter: brightness(1.12);
   }
 }
 
@@ -402,7 +404,7 @@ button,
     transform: scale(0.4);
   }
   40% {
-    opacity: 1;
+    opacity: 0.4;
   }
   100% {
     opacity: 0;
@@ -424,11 +426,11 @@ button,
 @keyframes qrRing {
   0% {
     transform: rotate(0deg) scale(0.96);
-    opacity: 0.5;
+    opacity: 0.4;
   }
   100% {
     transform: rotate(360deg) scale(1.06);
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 

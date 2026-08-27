@@ -62,7 +62,7 @@
                   :value="firstSafe.matchRate"
                   :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
                   :suffix="`%`"
-                  :title-style="{ color: 'rgba(255, 255, 255, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
+                  :title-style="{ color: 'rgba(0, 0, 0, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
                 />
 
                 <blockquote class="hero-slogan">“{{ report.profile.slogan }}”</blockquote>
@@ -319,7 +319,7 @@ onMounted(() => {
 .hero-illust-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 13, 26, 0.18), rgba(6, 13, 26, 0.55));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.55) 100%);
 }
 
 .hero-header {
@@ -373,11 +373,10 @@ onMounted(() => {
   z-index: 1;
   margin: 0;
   font-size: clamp(14px, 1.4vw, 20px);
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
   font-style: italic;
   letter-spacing: 1px;
   padding: 0 var(--space-3);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hero-second {
@@ -397,7 +396,7 @@ onMounted(() => {
 .second-label {
   font-size: 11px;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
 }
 
 .second-rate {
@@ -500,7 +499,7 @@ onMounted(() => {
 .profile-disclaimer {
   text-align: center;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   letter-spacing: 1px;
   margin-top: clamp(4px, 0.6vh, 10px);
   flex-shrink: 0;

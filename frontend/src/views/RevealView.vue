@@ -47,7 +47,7 @@
               :value="first.matchRate"
               :value-style="{ color: careerColor, fontSize: 'clamp(64px, 7vw, 112px)', fontWeight: 800 }"
               :suffix="`%`"
-              :title-style="{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '14px', letterSpacing: '4px' }"
+              :title-style="{ color: 'rgba(0, 0, 0, 0.55)', fontSize: '14px', letterSpacing: '4px' }"
             />
           </section>
 
@@ -156,11 +156,12 @@ function restart() {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .reveal-steps :deep(.ant-steps-item-title) {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-secondary);
 }
 
 /* 揭晓插画背景 */
@@ -176,8 +177,8 @@ function restart() {
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
-  opacity: 0.32;
-  filter: blur(2px);
+  opacity: 0.18;
+  filter: blur(3px) saturate(1.1);
   animation: bgZoom 1.2s var(--ease-out) both;
 }
 
@@ -188,7 +189,7 @@ function restart() {
   }
   to {
     transform: scale(1);
-    opacity: 0.32;
+    opacity: 0.18;
   }
 }
 
@@ -196,11 +197,11 @@ function restart() {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, rgba(6, 13, 26, 0.55) 0%, rgba(6, 13, 26, 0.92) 75%),
-    linear-gradient(180deg, rgba(6, 13, 26, 0.55), rgba(6, 13, 26, 0.95));
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.85) 75%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92));
 }
 
-/* 中心光爆 */
+/* 中心彩色光爆 */
 .burst-glow {
   position: absolute;
   left: 50%;
@@ -211,7 +212,7 @@ function restart() {
   transform: translate(-50%, -50%);
   animation: burstGlow 1.1s var(--ease-out) both;
   pointer-events: none;
-  opacity: 0.28;
+  opacity: 0.22;
   filter: blur(20px);
 }
 
@@ -235,8 +236,9 @@ function restart() {
   border-radius: var(--radius-pill);
   font-size: 13px;
   letter-spacing: 4px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
 }
 
 .tag-dot {
@@ -266,7 +268,6 @@ function restart() {
   margin: 0;
   line-height: 1.1;
   animation: cardLight 0.8s var(--ease-in-out) both;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
 }
 
 .reveal-meta {
@@ -274,7 +275,7 @@ function restart() {
   align-items: center;
   gap: var(--space-3);
   font-size: clamp(13px, 1.2vw, 17px);
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
   letter-spacing: 1px;
 }
 
@@ -312,7 +313,7 @@ function restart() {
 .second-label {
   letter-spacing: 2px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
 }
 
 .second-tag {
@@ -347,7 +348,7 @@ function restart() {
   align-items: center;
   gap: var(--space-2);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   letter-spacing: 1px;
   margin-top: clamp(4px, 0.6vh, 10px);
 }

@@ -334,14 +334,14 @@ onBeforeUnmount(() => {
 
 .progress-suffix {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
   font-weight: 400;
   margin-left: 4px;
 }
 
 .progress-hint {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   letter-spacing: 0.5px;
 }
 
@@ -439,7 +439,7 @@ onBeforeUnmount(() => {
   height: 6px;
   border-radius: 50%;
   background: var(--brand-primary);
-  box-shadow: 0 0 8px var(--brand-primary);
+  box-shadow: 0 0 8px rgba(22, 119, 255, 0.4);
 }
 
 .energy-tracks {
@@ -457,7 +457,7 @@ onBeforeUnmount(() => {
 .energy-fill-wrap {
   width: clamp(10px, 0.8vw, 14px);
   height: clamp(32px, 4.6vh, 56px);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.04);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -509,7 +509,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: flyTo 0.65s cubic-bezier(0.3, 0.6, 0.4, 1) forwards;
-  box-shadow: 0 0 12px 2px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 12px 2px rgba(255, 255, 255, 0.6);
 }
 
 @keyframes flyTo {

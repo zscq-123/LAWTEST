@@ -33,3 +33,5 @@ _tmp/
 
 # Logs
 *.log
+
+# DSH 设计/截图工具产物（中间脚本、pixso 文件）

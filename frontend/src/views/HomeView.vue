@@ -146,11 +146,11 @@ function goFavorites() {
   gap: var(--space-2);
   padding: 6px 16px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(122, 184, 255, 0.4);
-  background: rgba(22, 119, 255, 0.08);
+  border: 1px solid rgba(22, 119, 255, 0.3);
+  background: rgba(22, 119, 255, 0.06);
   font-size: var(--fs-caption);
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
 }
 
 .tag-dot {
@@ -158,7 +158,7 @@ function goFavorites() {
   height: 6px;
   border-radius: 50%;
   background: #1677ff;
-  box-shadow: 0 0 8px #1677ff;
+  box-shadow: 0 0 8px rgba(22, 119, 255, 0.35);
 }
 
 .home-title {
@@ -172,7 +172,7 @@ function goFavorites() {
 .home-subtitle {
   margin-top: var(--space-3);
   font-size: var(--fs-body);
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   letter-spacing: 1px;
 }
 
@@ -185,11 +185,12 @@ function goFavorites() {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .home-steps :deep(.ant-steps-item-title) {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
 }
 
 /* 职业卡片网格 */
@@ -230,9 +231,9 @@ function goFavorites() {
 .career-card:focus-visible {
   transform: translateY(-6px);
   box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.45),
+    0 12px 32px rgba(15, 23, 42, 0.12),
     0 0 0 1px var(--career-color);
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--bg-panel-strong);
   border-color: var(--career-color);
 }
 
@@ -313,7 +314,7 @@ function goFavorites() {
 .home-tip {
   margin-top: var(--space-3);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   letter-spacing: 1px;
 }
 </style>

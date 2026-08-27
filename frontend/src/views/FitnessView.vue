@@ -215,7 +215,7 @@ const careerTheme = computed(() => ({
 .side-illust-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 13, 26, 0.1) 0%, rgba(6, 13, 26, 0.7) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 100%);
 }
 
 .side-meta {
@@ -351,7 +351,7 @@ const careerTheme = computed(() => ({
   align-items: center;
   gap: var(--space-2);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   letter-spacing: 1px;
   margin: 0 auto;
   text-align: center;
