@@ -162,7 +162,7 @@ const mentorOpen = ref(false)
 
 const report = computed(() => store.report)
 const career = computed(() => store.report?.career || null)
-const careerColor = computed(() => career.value?.colorCode || '#1677FF')
+const careerColor = computed(() => career.value?.colorCode || '#7C9AB8')
 const disclaimer = '本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。'
 
 /** AI 深度分析（由画像页生成后同步到 store.report） */

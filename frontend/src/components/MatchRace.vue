@@ -92,13 +92,13 @@ function isTop(id: number): boolean {
   flex: 1;
   width: clamp(56px, 5vw, 96px);
   border-radius: 32px;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(124, 154, 184, 0.08);
   border: 1px solid var(--border-default);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04);
+  box-shadow: inset 0 2px 4px rgba(124, 154, 184, 0.10);
 }
 
 .race-fill {
@@ -116,7 +116,7 @@ function isTop(id: number): boolean {
 .race-fill.race-win {
   animation: energyPulse 1.2s ease-in-out infinite;
   box-shadow:
-    0 6px 20px rgba(15, 23, 42, 0.18),
+    0 6px 20px rgba(124, 154, 184, 0.20),
     inset 0 0 16px rgba(255, 255, 255, 0.25) !important;
   position: relative;
 }
@@ -127,14 +127,14 @@ function isTop(id: number): boolean {
   top: -28px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #faad14, #ff7a45);
-  color: #1a1a1a;
+  background: linear-gradient(135deg, #f4c8a3, #e0a464);
+  color: rgba(52, 64, 84, 0.92);
   font-size: 11px;
   font-weight: 800;
   padding: 3px 10px;
   border-radius: 999px;
   letter-spacing: 2px;
-  box-shadow: 0 4px 16px rgba(250, 173, 20, 0.5);
+  box-shadow: 0 4px 16px rgba(244, 200, 163, 0.55);
   z-index: 2;
 }
 
@@ -142,7 +142,7 @@ function isTop(id: number): boolean {
   font-size: clamp(16px, 1.6vw, 24px);
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 4px rgba(52, 64, 84, 0.35);
 }
 
 .race-pct {

@@ -119,6 +119,7 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-lg);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .matching-steps :deep(.ant-steps-item-title) {

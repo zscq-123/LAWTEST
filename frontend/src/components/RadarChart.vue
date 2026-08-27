@@ -8,7 +8,13 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import * as echarts from 'echarts'
+// 按需引入 echarts（仅雷达图 + tooltip + canvas 渲染），包体积从 ~1.1MB 降到 ~200KB
+import * as echarts from 'echarts/core'
+import { RadarChart } from 'echarts/charts'
+import { RadarComponent, TooltipComponent } from 'echarts/components'
+import { CanvasRenderer } from 'echarts/renderers'
+
+echarts.use([RadarChart, RadarComponent, TooltipComponent, CanvasRenderer])
 
 const props = defineProps<{
   axes: string[]
@@ -29,19 +35,19 @@ function render() {
       radius: '68%',
       splitNumber: 4,
       axisName: {
-        color: 'rgba(255,255,255,0.85)',
+        color: 'rgba(52, 64, 84, 0.78)',
         fontSize: 15
       },
       splitArea: {
         areaStyle: {
-          color: ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.05)']
+          color: ['rgba(228, 238, 247, 0.35)', 'rgba(228, 238, 247, 0.55)']
         }
       },
       splitLine: {
-        lineStyle: { color: 'rgba(255,255,255,0.18)' }
+        lineStyle: { color: 'rgba(124, 154, 184, 0.30)' }
       },
       axisLine: {
-        lineStyle: { color: 'rgba(255,255,255,0.25)' }
+        lineStyle: { color: 'rgba(124, 154, 184, 0.30)' }
       }
     },
     series: [

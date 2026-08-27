@@ -53,7 +53,7 @@
               :value="first.matchRate"
               :value-style="{ color: careerColor, fontSize: 'clamp(64px, 7vw, 112px)', fontWeight: 800 }"
               :suffix="`%`"
-              :title-style="{ color: 'rgba(0, 0, 0, 0.55)', fontSize: '14px', letterSpacing: '4px' }"
+              :title-style="{ color: 'rgba(52, 64, 84, 0.55)', fontSize: '14px', letterSpacing: '4px' }"
             />
           </section>
 
@@ -79,9 +79,27 @@
           </div>
 
           <div class="reveal-actions">
-            <a-button size="large" class="btn-primary-glow" type="primary" @click="goProfile">
+            <!-- 大屏：进入画像页；手机端：直接生成报告并跳转手机报告页（复用 ReportView） -->
+            <a-button
+              v-if="!mobile"
+              size="large"
+              class="btn-primary-glow"
+              type="primary"
+              @click="goProfile"
+            >
               <template #icon><user-outlined /></template>
               查看职业画像
+            </a-button>
+            <a-button
+              v-else
+              size="large"
+              class="btn-primary-glow"
+              type="primary"
+              :loading="creatingReport"
+              @click="goReport"
+            >
+              <template #icon><file-text-outlined /></template>
+              查看我的报告
             </a-button>
             <a-button size="large" ghost @click="restart">
               <template #icon><reload-outlined /></template>
@@ -100,9 +118,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import {
+  FileTextOutlined,
   InfoCircleOutlined,
   ReloadOutlined,
   UserOutlined
@@ -112,10 +131,16 @@ import ParticleCanvas from '@/components/ParticleCanvas.vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
 import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
+import { createReport } from '@/api'
 import { useTestStore } from '@/stores/test'
+import { useIdentityStore } from '@/stores/identity'
+import { isMobile } from '@/utils/device'
 
 const store = useTestStore()
+const identity = useIdentityStore()
 const router = useRouter()
+const mobile = isMobile()
+const creatingReport = ref(false)
 
 const first = computed(() => store.matchResult!.first)
 const second = computed(() => store.matchResult!.second)
@@ -143,6 +168,20 @@ onMounted(() => {
 
 function goProfile() {
   router.push('/profile')
+}
+
+/** 手机端：生成报告并跳转手机报告页（同一人重复测试不重复计数，由后端按学号去重） */
+async function goReport() {
+  creatingReport.value = true
+  try {
+    const data = await createReport(store.selectedIds, identity.identity?.studentNo)
+    store.setReport(data)
+    router.replace('/report/' + data.code)
+  } catch {
+    // 错误提示已由 axios 拦截器统一弹出
+  } finally {
+    creatingReport.value = false
+  }
 }
 
 function restart() {
@@ -209,8 +248,8 @@ function restart() {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.85) 75%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92));
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(250, 247, 241, 0.88) 75%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(250, 247, 241, 0.94));
 }
 
 /* 中心彩色光爆 */

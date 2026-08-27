@@ -175,6 +175,7 @@ const router = useRouter()
 const liveScores = reactive<Record<string, number>>({})
 const matching = ref(false)
 let debounceTimer: number | undefined
+let lastMatchedKey = ''
 
 /** 词卡 DOM 引用：keywordId → 元素 */
 const wordRefs = new Map<number, HTMLElement>()
@@ -204,9 +205,9 @@ let dotId = 0
 
 const progressPercent = computed(() => (store.selectedCount / 10) * 100)
 const progressColor = computed(() => {
-  if (store.selectedCount < 3) return '#faad14'
-  if (store.selectedCount >= 8) return '#52c41a'
-  return '#1677ff'
+  if (store.selectedCount < 3) return '#e0a464'
+  if (store.selectedCount >= 8) return '#7ab87a'
+  return '#7c9ab8'
 })
 
 function isSelected(id: number) {
@@ -217,7 +218,7 @@ function pct(score?: number) {
   return Math.round(((score || 0) / 20) * 100) + '%'
 }
 
-/** 根据背景色亮度选择可读文字色：深色背景用白字，浅色背景用黑字（WCAG 对比度） */
+/** 根据背景色亮度选择可读文字色：深色背景用白字，浅色背景用蓝灰深字（WCAG 对比度） */
 function textOnColor(hex: string): string {
   const h = hex.replace('#', '')
   const v = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16)
@@ -226,7 +227,7 @@ function textOnColor(hex: string): string {
   const b = v & 255
   // 相对亮度（sRGB 加权）
   const lum = 0.2126 * (r / 255) + 0.7152 * (g / 255) + 0.0722 * (b / 255)
-  return lum > 0.55 ? 'rgba(0, 0, 0, 0.88)' : '#ffffff'
+  return lum > 0.55 ? 'rgba(52, 64, 84, 0.92)' : '#ffffff'
 }
 
 /** 点击词卡：选中后从词卡位置放出一个光点飞向该职业能量柱 */
@@ -277,11 +278,16 @@ function scheduleLiveMatch() {
   debounceTimer = window.setTimeout(async () => {
     if (!store.selectedIds.length) {
       Object.keys(liveScores).forEach((k) => (liveScores[k] = 0))
+      lastMatchedKey = ''
       return
     }
+    // 词未变化则跳过重复请求（连续勾选/取消时省掉大量冗余匹配）
+    const matchKey = store.selectedIds.join(',')
+    if (matchKey === lastMatchedKey) return
+    lastMatchedKey = matchKey
     try {
       const result = await postMatching(store.selectedIds)
-      Object.entries(result.scores).forEach(([key, value]) => (liveScores[key] = value))
+      Object.entries(result.scores).forEach(([k, v]) => (liveScores[k] = v))
     } catch {
       // 网络异常时能量池保持上次状态
     }
@@ -468,7 +474,7 @@ onBeforeUnmount(() => {
   height: 6px;
   border-radius: 50%;
   background: var(--brand-primary);
-  box-shadow: 0 0 8px rgba(22, 119, 255, 0.4);
+  box-shadow: 0 0 8px rgba(124, 154, 184, 0.45);
 }
 
 .energy-tracks {
@@ -486,7 +492,7 @@ onBeforeUnmount(() => {
 .energy-fill-wrap {
   width: clamp(10px, 0.8vw, 14px);
   height: clamp(32px, 4.6vh, 56px);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(124, 154, 184, 0.08);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -582,5 +588,50 @@ onBeforeUnmount(() => {
   font-size: clamp(14px, 1.25vw, 18px);
   border-radius: var(--radius-pill);
   letter-spacing: 1px;
+}
+
+/* 手机端（扫码答题）：词卡改两列，隐藏能量池，底部操作竖排 */
+@media (max-width: 768px) {
+  .select-page {
+    padding: 16px;
+    gap: 14px;
+  }
+  .select-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .select-progress {
+    width: 100%;
+  }
+  .select-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .group-words {
+    grid-template-columns: 1fr;
+  }
+  .energy-bar {
+    display: none;
+  }
+  .select-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .select-hint {
+    max-width: none;
+  }
+  .select-actions :deep(.ant-space) {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .select-actions :deep(.ant-space-item) {
+    width: 100%;
+  }
+  .select-actions :deep(.ant-btn-lg) {
+    width: 100%;
+  }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="mobile-page fav-page">
     <header class="fav-head">
       <div class="fav-title">
-        <star-filled style="color: #faad14" />
+        <star-filled style="color: #e0a464" />
         我的收藏
         <a-tag color="warning" bordered class="fav-count">{{ favorites.length }}</a-tag>
       </div>
@@ -200,7 +200,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(124, 154, 184, 0.16);
 }
 
 .fav-title {
@@ -237,14 +237,14 @@ onMounted(() => {
 .fav-card {
   background: #fff;
   border-radius: 10px;
-  border-left: 4px solid #1677ff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--brand-primary);
+  box-shadow: 0 2px 10px rgba(124, 154, 184, 0.14);
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .fav-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(124, 154, 184, 0.20);
   transform: translateY(-2px);
 }
 
@@ -258,7 +258,7 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #d9d9d9;
+  background: rgba(124, 154, 184, 0.20);
   color: #fff;
   display: flex;
   align-items: center;
@@ -289,7 +289,7 @@ onMounted(() => {
 
 .fav-code {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(52, 64, 84, 0.48);
   margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -298,7 +298,7 @@ onMounted(() => {
 
 .fav-time {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(52, 64, 84, 0.42);
   margin-top: 2px;
   display: inline-flex;
   align-items: center;
@@ -306,7 +306,7 @@ onMounted(() => {
 }
 
 .fav-arrow {
-  color: rgba(0, 0, 0, 0.25);
+  color: rgba(52, 64, 84, 0.30);
   font-size: 14px;
 }
 
@@ -316,6 +316,6 @@ onMounted(() => {
   justify-content: flex-end;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #f0f0f0;
+  border-top: 1px dashed rgba(124, 154, 184, 0.16);
 }
 </style>

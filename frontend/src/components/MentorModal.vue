@@ -10,7 +10,7 @@
       <div class="modal-title">
         <team-outlined />
         <span>实务导师对接</span>
-        <a-tag color="blue" bordered>{{ mentors.length }} 位</a-tag>
+        <a-tag :color="careerColor" bordered>{{ mentors.length }} 位</a-tag>
       </div>
     </template>
 
@@ -79,15 +79,15 @@ const emit = defineEmits<{
 }
 
 .mentor-card {
-  background: #fafafa;
-  border: 1px solid #f0f0f0;
+  background: rgba(228, 238, 247, 0.40);
+  border: 1px solid rgba(124, 154, 184, 0.16);
   border-radius: 10px;
   transition: all 0.25s ease;
 }
 
 .mentor-card:hover {
-  border-color: var(--ant-color-primary, #1677ff);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  border-color: var(--ant-color-primary, #7c9ab8);
+  box-shadow: 0 6px 20px rgba(124, 154, 184, 0.16);
   transform: translateY(-2px);
 }
 
@@ -109,14 +109,14 @@ const emit = defineEmits<{
 }
 
 .mentor-title {
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(52, 64, 84, 0.55);
   font-size: 13px;
   margin-top: 2px;
 }
 
 .mentor-contact {
   margin-top: 12px;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(52, 64, 84, 0.68);
   font-size: 13px;
 }
 
@@ -126,7 +126,7 @@ const emit = defineEmits<{
 
 .mentor-tip {
   margin-top: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(52, 64, 84, 0.48);
   font-size: 13px;
 }
 </style>

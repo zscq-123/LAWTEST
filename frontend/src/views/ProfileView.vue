@@ -67,7 +67,7 @@
                   :value="firstSafe.matchRate"
                   :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
                   :suffix="`%`"
-                  :title-style="{ color: 'rgba(0, 0, 0, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
+                  :title-style="{ color: 'rgba(52, 64, 84, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
                 />
 
                 <blockquote class="hero-slogan">“{{ report.profile.slogan }}”</blockquote>
@@ -152,7 +152,7 @@
 
               <article class="panel glass-panel panel-in">
                 <header class="panel-header">
-                  <bulb-outlined class="panel-icon" :style="{ color: '#faad14' }" />
+                  <bulb-outlined class="panel-icon" :style="{ color: '#e0a464' }" />
                   <h3 class="panel-title">短板与提升建议</h3>
                   <a-tag
                     v-if="hasAi"
@@ -168,7 +168,7 @@
                 <a-list v-else :data-source="displayImprovements" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="improve-item">
-                      <span class="bullet-num" :style="{ background: '#faad14' }">
+                      <span class="bullet-num" :style="{ background: '#e0a464' }">
                         {{ index + 1 }}
                       </span>
                       <span class="item-text">{{ item }}</span>
@@ -276,10 +276,12 @@ import { aiAnalyze, createReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
+import { useIdentityStore } from '@/stores/identity'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 import type { AiAnalysisVO } from '@/types'
 
 const store = useTestStore()
+const identity = useIdentityStore()
 const router = useRouter()
 const loading = ref(false)
 const qrOpen = ref(false)
@@ -291,7 +293,7 @@ const aiAnalysis = ref<AiAnalysisVO | null>(null)
 const first = computed(() => store.matchResult?.first)
 const second = computed(() => store.matchResult?.second)
 const career = computed(() => store.report?.career || null)
-const careerColor = computed(() => career.value?.colorCode || '#1677FF')
+const careerColor = computed(() => career.value?.colorCode || '#7C9AB8')
 const report = computed(() => store.report)
 const firstSafe = computed(() => first.value!)
 const secondSafe = computed(() => second.value!)
@@ -333,7 +335,7 @@ async function ensureReport() {
   }
   loading.value = true
   try {
-    const data = await createReport(store.selectedIds)
+    const data = await createReport(store.selectedIds, identity.identity?.studentNo)
     store.setReport(data)
     if (data.aiAnalysis) {
       aiAnalysis.value = data.aiAnalysis
@@ -481,7 +483,7 @@ onMounted(() => {
   letter-spacing: clamp(2px, 0.4vw, 8px);
   margin: 0;
   line-height: 1.1;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 2px 20px rgba(52, 64, 84, 0.35);
 }
 
 .hero-color {
@@ -497,7 +499,7 @@ onMounted(() => {
 
 .hero-stat :deep(.ant-statistic-content) {
   font-feature-settings: 'tnum';
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 20px rgba(52, 64, 84, 0.32);
 }
 
 .hero-slogan {

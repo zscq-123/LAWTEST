@@ -111,7 +111,7 @@ async function copyLink() {
   border-radius: 12px;
   padding: 12px;
   display: inline-block;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(124, 154, 184, 0.22);
 }
 
 .qr-img {

@@ -64,7 +64,7 @@
           <header class="section-head">
             <bulb-filled class="section-icon" />
             <h2 class="section-title">你勾选的特质词</h2>
-            <a-tag color="blue" bordered>{{ report.match.keywordIds.length }} 个</a-tag>
+            <a-tag :color="careerColor" bordered>{{ report.match.keywordIds.length }} 个</a-tag>
           </header>
           <div class="word-chips">
             <a-tag
@@ -88,14 +88,19 @@
           </div>
         </section>
 
-        <!-- 能力优势 -->
+        <!-- 能力优势（AI 生成，不再使用预设模板字段） -->
         <section class="report-section">
           <header class="section-head">
             <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
             <h2 class="section-title">你的能力优势</h2>
-            <a-tag color="success" bordered>{{ report.profile.strengths.length }} 项</a-tag>
+            <a-tag v-if="hasAi" :color="careerColor" bordered>{{ displayStrengths.length }} 项</a-tag>
+            <a-tag v-else-if="aiLoading" color="processing" bordered>AI 生成中</a-tag>
           </header>
-          <a-list :data-source="report.profile.strengths" :split="false">
+          <div v-if="aiLoading" class="ai-loading">
+            <a-spin size="small" />
+            <span class="ai-loading-text">AI 正在分析你的优势…</span>
+          </div>
+          <a-list v-else :data-source="displayStrengths" :split="false">
             <template #renderItem="{ item, index }">
               <a-list-item class="check-line">
                 <span class="bullet-num" :style="{ background: careerColor }">{{ index + 1 }}</span>
@@ -105,14 +110,19 @@
           </a-list>
         </section>
 
-        <!-- 短板 -->
+        <!-- 短板（AI 生成，不再使用预设模板字段） -->
         <section class="report-section">
           <header class="section-head">
-            <bulb-filled style="color: #faad14" class="section-icon" />
+            <bulb-filled style="color: #e0a464" class="section-icon" />
             <h2 class="section-title">短板与提升建议</h2>
-            <a-tag color="warning" bordered>{{ report.profile.improvements.length }} 项</a-tag>
+            <a-tag v-if="hasAi" color="warning" bordered>{{ displayImprovements.length }} 项</a-tag>
+            <a-tag v-else-if="aiLoading" color="processing" bordered>AI 生成中</a-tag>
           </header>
-          <a-list :data-source="report.profile.improvements" :split="false">
+          <div v-if="aiLoading" class="ai-loading">
+            <a-spin size="small" />
+            <span class="ai-loading-text">AI 正在分析你的短板…</span>
+          </div>
+          <a-list v-else :data-source="displayImprovements" :split="false">
             <template #renderItem="{ item, index }">
               <a-list-item class="check-line">
                 <span class="bullet-num warn">{{ index + 1 }}</span>
@@ -257,7 +267,14 @@
             show-icon
             class="ai-error"
             :message="aiError"
-          />
+          >
+            <template #action>
+              <a-button size="small" type="primary" @click="runAiAnalyze">
+                <template #icon><reload-outlined /></template>
+                重试
+              </a-button>
+            </template>
+          </a-alert>
 
           <template v-else-if="aiAnalysis">
             <div class="ai-summary">
@@ -265,28 +282,7 @@
               <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
             </div>
 
-            <div v-if="aiAnalysis.strengths.length" class="ai-block">
-              <div class="ai-block-title">
-                <check-circle-filled :style="{ color: careerColor }" />
-                核心优势解读
-              </div>
-              <div v-for="(s, i) in aiAnalysis.strengths" :key="i" class="ai-line">
-                <span class="ai-badge" :style="{ background: careerColor }">{{ i + 1 }}</span>
-                <span class="ai-text">{{ s }}</span>
-              </div>
-            </div>
-
-            <div v-if="aiAnalysis.improvements.length" class="ai-block">
-              <div class="ai-block-title">
-                <bulb-filled style="color: #faad14" />
-                成长建议
-              </div>
-              <div v-for="(s, i) in aiAnalysis.improvements" :key="i" class="ai-line">
-                <span class="ai-badge" style="background: #faad14">{{ i + 1 }}</span>
-                <span class="ai-text">{{ s }}</span>
-              </div>
-            </div>
-
+            <!-- 优势/短板已在上方章节展示（AI 生成），此处仅保留四年发展建议 -->
             <div v-if="aiAnalysis.plans.length" class="ai-block">
               <div class="ai-block-title">
                 <rise-outlined :style="{ color: careerColor }" />
@@ -307,19 +303,6 @@
               {{ aiAnalysis.disclaimer }}
             </div>
           </template>
-
-          <a-button
-            v-else-if="!aiLoading"
-            type="primary"
-            block
-            size="large"
-            class="ai-run-btn"
-            :style="{ background: careerColor, borderColor: careerColor }"
-            @click="runAiAnalyze"
-          >
-            <template #icon><robot-outlined /></template>
-            {{ aiError ? '重试生成 AI 分析' : '生成 AI 深度分析' }}
-          </a-button>
         </section>
 
         <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
@@ -352,6 +335,31 @@
         复制链接
       </a-button>
     </div>
+
+    <!-- 长图保存预览（兜底：长按图片保存到相册） -->
+    <a-modal
+      v-model:open="previewOpen"
+      :footer="null"
+      title="长图已生成"
+      :width="'min(92vw, 420px)'"
+      centered
+    >
+      <div class="preview-tip">
+        <info-circle-filled />
+        长按下方图片，选择「保存到相册」
+      </div>
+      <img :src="previewUrl" alt="报告长图预览" class="preview-img" />
+      <a-button
+        type="primary"
+        block
+        size="large"
+        class="preview-download"
+        @click="downloadFromPreview"
+      >
+        <template #icon><download-outlined /></template>
+        直接下载到设备
+      </a-button>
+    </a-modal>
   </div>
 </template>
 
@@ -362,11 +370,13 @@ import { message } from 'ant-design-vue'
 import {
   BulbFilled,
   CheckCircleFilled,
+  DownloadOutlined,
   InfoCircleFilled,
   LinkOutlined,
   PhoneOutlined,
   PictureOutlined,
   RadarChartOutlined,
+  ReloadOutlined,
   RightOutlined,
   RiseOutlined,
   RobotOutlined,
@@ -379,6 +389,7 @@ import RadarChart from '@/components/RadarChart.vue'
 import { aiAnalyze, getReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
+import { isMobile } from '@/utils/device'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 import type { AiAnalysisVO, Report } from '@/types'
@@ -403,6 +414,15 @@ const career = computed(() => report.value!.career)
 const careerColor = computed(() => career.value.colorCode)
 const radar = computed(() => radarValues(career.value.id, first.value.matchRate))
 const disclaimer = '本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。'
+
+/** AI 生成内容：能力优势/短板一律来自 AI 分析，不再使用预设模板字段 */
+const hasAi = computed(() => !!aiAnalysis.value)
+const displayStrengths = computed(() => aiAnalysis.value?.strengths || [])
+const displayImprovements = computed(() => aiAnalysis.value?.improvements || [])
+
+/** 长图保存：预览弹窗兜底（手机浏览器/微信不支持 download 直接入相册） */
+const previewOpen = ref(false)
+const previewUrl = ref('')
 
 const favorites = ref<string[]>(JSON.parse(localStorage.getItem(FAV_KEY) || '[]'))
 const isFavorite = computed(() => favorites.value.includes(report.value?.code || ''))
@@ -433,6 +453,9 @@ async function load() {
     // 报告缓存了 AI 分析则直接展示（生成一次，扫码打开可复用）
     if (data.aiAnalysis) {
       aiAnalysis.value = data.aiAnalysis
+    } else {
+      // 无缓存：自动调用 AI 生成（大屏画像页同款逻辑），优势/短板等章节均以 AI 内容为准
+      runAiAnalyze()
     }
     if (!store.careers.length) await store.loadCareers()
   } catch {
@@ -442,27 +465,66 @@ async function load() {
   }
 }
 
+/** 保存长图：优先系统分享入相册，兜底预览图长按保存（兼容 iOS Safari / 微信内置浏览器） */
 async function saveImage() {
   saving.value = true
   try {
-    const html2canvas = (await import('html2canvas')).default
+    // html2canvas-pro：维护版分支，支持 color-mix 等现代 CSS（1.4.1 会解析失败）
+    const html2canvas = (await import('html2canvas-pro')).default
     const node = captureRef.value
     if (!node) return
+    // 手机端画布有尺寸/内存上限：按总像素封顶缩放（约 450 万像素），避免超限生成失败
+    const width = node.offsetWidth || 375
+    const height = node.offsetHeight || 4000
+    const scale = isMobile()
+      ? Math.max(0.5, Math.min(2, Math.sqrt(4_500_000 / (width * height))))
+      : 2
     const canvas = await html2canvas(node, {
-      backgroundColor: '#f5f7fa',
-      scale: 2,
+      backgroundColor: '#faf7f1',
+      scale,
       useCORS: true
     })
-    const link = document.createElement('a')
-    link.download = `五彩法途-${career.value.name}-${report.value!.code}.png`
-    link.href = canvas.toDataURL('image/png')
-    link.click()
-    message.success('长图已保存，请在相册/下载中查看')
+    const blob = await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('图片导出失败'))), 'image/png')
+    )
+    const fileName = `五彩法途-${career.value.name}-${report.value!.code}.png`
+
+    // 方案一：系统分享（iOS 分享面板选「存储图像」即入相册；Android 可保存/下载）
+    const file = new File([blob], fileName, { type: 'image/png' })
+    const shareData: ShareData = { files: [file] }
+    const canShareFiles =
+      typeof navigator.share === 'function' &&
+      (typeof navigator.canShare !== 'function' || navigator.canShare(shareData))
+    if (canShareFiles) {
+      try {
+        await navigator.share(shareData)
+        message.success('已调起系统分享，请选择「存储图像/保存到相册」')
+        return
+      } catch (e) {
+        // 用户主动取消分享不算失败；其余异常落入预览兜底
+        if ((e as DOMException)?.name === 'AbortError') return
+      }
+    }
+
+    // 方案二：预览弹窗，长按图片保存到相册
+    // 用 data URL（微信内置浏览器对 blob URL 长按保存兼容性差，data URL 最稳）
+    previewUrl.value = canvas.toDataURL('image/png')
+    previewOpen.value = true
   } catch {
-    message.error('保存失败，请重试')
+    message.error('长图生成失败，请重试')
   } finally {
     saving.value = false
   }
+}
+
+/** 预览弹窗内“直接下载”（Android Chrome 会存入下载目录） */
+function downloadFromPreview() {
+  if (!previewUrl.value) return
+  const link = document.createElement('a')
+  link.href = previewUrl.value
+  link.download = `五彩法途-${career.value.name}-${report.value!.code}.png`
+  link.click()
+  message.success('已尝试下载，如未成功请长按预览图保存到相册')
 }
 
 function toggleFavorite() {
@@ -539,7 +601,7 @@ onMounted(() => {
 .hero-illust-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
+  background: linear-gradient(180deg, rgba(52, 64, 84, 0.08), rgba(52, 64, 84, 0.40));
 }
 
 .hero-content {
@@ -629,7 +691,7 @@ onMounted(() => {
 
 .section-icon {
   font-size: 18px;
-  color: #1677ff;
+  color: var(--brand-primary);
 }
 
 .section-title {
@@ -657,17 +719,17 @@ onMounted(() => {
   gap: 6px;
   margin-top: 14px;
   padding: 10px 14px;
-  background: #fffbe6;
-  border: 1px solid #ffe58f;
+  background: rgba(244, 200, 163, 0.18);
+  border: 1px solid rgba(244, 200, 163, 0.55);
   border-radius: 8px;
-  color: #d48806;
+  color: #b8754a;
   font-size: 13px;
 }
 
 .status-tip.soft {
-  background: #f0f5ff;
-  border-color: #adc6ff;
-  color: #1d39c4;
+  background: rgba(228, 238, 247, 0.55);
+  border-color: rgba(124, 154, 184, 0.30);
+  color: rgba(52, 64, 84, 0.75);
 }
 
 .check-line {
@@ -675,7 +737,7 @@ onMounted(() => {
   display: flex !important;
   align-items: flex-start !important;
   gap: 10px;
-  border-bottom: 1px dashed #f0f0f0;
+  border-bottom: 1px dashed rgba(124, 154, 184, 0.16);
 }
 
 .check-line:last-child {
@@ -687,7 +749,7 @@ onMounted(() => {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #1677ff;
+  background: var(--brand-primary);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -698,14 +760,14 @@ onMounted(() => {
 }
 
 .bullet-num.warn {
-  background: #faad14;
+  background: #e0a464;
 }
 
 .line-text {
   flex: 1;
   font-size: 14px;
   line-height: 1.65;
-  color: rgba(0, 0, 0, 0.78);
+  color: rgba(52, 64, 84, 0.85);
 }
 
 .req-line {
@@ -713,7 +775,7 @@ onMounted(() => {
   display: flex !important;
   align-items: flex-start !important;
   gap: 10px;
-  border-bottom: 1px dashed #f0f0f0;
+  border-bottom: 1px dashed rgba(124, 154, 184, 0.16);
 }
 
 .req-line:last-child {
@@ -739,7 +801,7 @@ onMounted(() => {
   min-width: 0;
   font-size: 14px;
   line-height: 1.65;
-  color: rgba(0, 0, 0, 0.78);
+  color: rgba(52, 64, 84, 0.85);
 }
 
 .plan-stage {
@@ -749,7 +811,7 @@ onMounted(() => {
 
 .plan-content {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.68);
+  color: rgba(52, 64, 84, 0.68);
   margin-top: 4px;
   line-height: 1.65;
 }
@@ -760,7 +822,7 @@ onMounted(() => {
   gap: 6px;
   margin-top: 12px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(52, 64, 84, 0.48);
 }
 
 .mentor-item {
@@ -768,9 +830,9 @@ onMounted(() => {
 }
 
 .mentor-card {
-  background: #fafafa;
+  background: rgba(228, 238, 247, 0.40);
   border-radius: 8px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid rgba(124, 154, 184, 0.16);
 }
 
 .mentor-head {
@@ -790,7 +852,7 @@ onMounted(() => {
 }
 
 .mentor-title {
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(52, 64, 84, 0.55);
   font-size: 12px;
   margin-top: 2px;
 }
@@ -798,7 +860,7 @@ onMounted(() => {
 .mentor-contact {
   margin-top: 10px;
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(52, 64, 84, 0.68);
 }
 
 .mentor-btn {
@@ -807,14 +869,14 @@ onMounted(() => {
 
 .mentor-tip {
   margin-top: 10px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(52, 64, 84, 0.48);
   font-size: 13px;
 }
 
 .report-disclaimer {
   text-align: center;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(52, 64, 84, 0.42);
   padding: 20px 16px 90px;
   letter-spacing: 0.5px;
 }
@@ -822,7 +884,7 @@ onMounted(() => {
 .fav-entry {
   text-align: center;
   font-size: 14px;
-  color: #1677ff;
+  color: var(--brand-primary);
   padding: 4px 0 12px;
   cursor: pointer;
   display: flex;
@@ -841,7 +903,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.96);
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(124, 154, 184, 0.16);
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   display: flex;
   gap: 10px;
@@ -855,13 +917,39 @@ onMounted(() => {
 }
 
 .action-btn.favorited {
-  color: #faad14;
-  border-color: #faad14;
+  color: #e0a464;
+  border-color: #e0a464;
+}
+
+/* 长图保存预览弹窗 */
+.preview-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(52, 64, 84, 0.68);
+  margin-bottom: 12px;
+}
+
+.preview-img {
+  width: 100%;
+  max-height: 62vh;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 154, 184, 0.16);
+  background: #fff;
+  display: block;
+}
+
+.preview-download {
+  margin-top: 14px;
+  border-radius: 24px;
+  font-weight: 600;
 }
 
 /* AI 深度分析（手机端） */
 .ai-section {
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed rgba(124, 154, 184, 0.30);
 }
 
 .ai-loading {
@@ -870,7 +958,7 @@ onMounted(() => {
   justify-content: center;
   gap: 10px;
   padding: 24px 0;
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(52, 64, 84, 0.50);
 }
 
 .ai-loading-text {
@@ -887,7 +975,7 @@ onMounted(() => {
   align-items: flex-start;
   gap: 10px;
   padding: 12px 14px;
-  background: #f5f7fa;
+  background: rgba(228, 238, 247, 0.50);
   border-radius: 8px;
   margin-bottom: 16px;
 }
@@ -902,7 +990,7 @@ onMounted(() => {
   margin: 0;
   font-size: 14px;
   line-height: 1.8;
-  color: rgba(0, 0, 0, 0.82);
+  color: rgba(52, 64, 84, 0.85);
 }
 
 .ai-block {
@@ -915,7 +1003,7 @@ onMounted(() => {
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.88);
+  color: rgba(52, 64, 84, 0.92);
   margin-bottom: 8px;
 }
 
@@ -924,7 +1012,7 @@ onMounted(() => {
   align-items: flex-start;
   gap: 8px;
   padding: 6px 0;
-  border-bottom: 1px dashed #f0f0f0;
+  border-bottom: 1px dashed rgba(124, 154, 184, 0.16);
 }
 
 .ai-line:last-child {
@@ -949,7 +1037,7 @@ onMounted(() => {
   flex: 1;
   font-size: 14px;
   line-height: 1.7;
-  color: rgba(0, 0, 0, 0.78);
+  color: rgba(52, 64, 84, 0.85);
 }
 
 .ai-motto {
@@ -957,10 +1045,10 @@ onMounted(() => {
   padding: 10px 14px;
   border-left: 3px solid;
   border-radius: 6px;
-  background: #f5f7fa;
+  background: rgba(228, 238, 247, 0.50);
   font-size: 14px;
   font-style: italic;
-  color: rgba(0, 0, 0, 0.82);
+  color: rgba(52, 64, 84, 0.85);
   line-height: 1.7;
 }
 
@@ -970,7 +1058,7 @@ onMounted(() => {
   gap: 6px;
   margin-top: 12px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(52, 64, 84, 0.48);
   line-height: 1.6;
 }
 
