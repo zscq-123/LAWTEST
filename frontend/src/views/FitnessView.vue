@@ -18,7 +18,13 @@
 
         <template v-else>
           <div class="fitness-body">
-            <div class="panel glass-panel">
+            <div class="fitness-side panel-in" v-if="careerIllustration(report.career.id)">
+              <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
+              <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
+              <div class="side-slogan">“{{ report.profile.slogan }}”</div>
+            </div>
+
+            <div class="panel glass-panel panel-in">
               <div class="panel-title">
                 <check-circle-outlined :style="{ color: careerColor }" />
                 身体素质达标要求
@@ -35,7 +41,7 @@
               </a-list>
             </div>
 
-            <div class="panel glass-panel">
+            <div class="panel glass-panel panel-in">
               <div class="panel-title">
                 <rise-outlined :style="{ color: careerColor }" />
                 大学四年阶梯式锻炼计划
@@ -96,6 +102,7 @@ import {
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
+import { careerIllustration } from '@/utils/illustration'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()
@@ -135,11 +142,44 @@ const careerTheme = computed(() => ({
 .fitness-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: minmax(180px, 0.8fr) 1fr 1.2fr;
   gap: clamp(14px, 2vw, 32px);
   margin-top: clamp(10px, 2vh, 28px);
   min-height: 0;
   overflow-y: auto;
+}
+
+/* 体能页侧边插画卡 */
+.fitness-side {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.fitness-side img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}
+
+.side-name {
+  font-size: clamp(16px, 1.6vw, 24px);
+  font-weight: 800;
+  letter-spacing: clamp(2px, 0.3vw, 6px);
+  padding-top: clamp(8px, 1.2vh, 16px);
+}
+
+.side-slogan {
+  font-size: clamp(12px, 1.05vw, 16px);
+  color: rgba(255, 255, 255, 0.6);
+  padding: clamp(4px, 0.6vh, 10px) clamp(10px, 1vw, 18px) clamp(10px, 1.6vh, 20px);
 }
 
 .panel {

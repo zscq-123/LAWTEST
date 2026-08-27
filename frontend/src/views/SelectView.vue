@@ -17,7 +17,7 @@
 
       <div class="select-groups">
         <div
-          v-for="career in store.careers"
+          v-for="(career, index) in store.careers"
           :key="career.id"
           class="word-group"
           :style="{ '--career-color': career.colorCode }"
@@ -28,20 +28,40 @@
           </div>
           <div class="group-words">
             <div
-              v-for="keyword in career.keywords"
+              v-for="(keyword, kwIndex) in career.keywords"
               :key="keyword.id"
               class="word-card"
               :class="{
                 selected: isSelected(keyword.id),
                 'core-tag': keyword.core && !isSelected(keyword.id)
               }"
-              :style="selectedStyle(career, keyword.id)"
-              @click="handleToggle(keyword.id)"
+              :style="{
+                ...selectedStyle(career, keyword.id),
+                animationDelay: `${0.05 + (index * 15 + kwIndex) * 0.035}s`
+              }"
+              :ref="(el) => setWordRef(keyword.id, el as HTMLElement | null)"
+              @click="handleToggle(career, keyword.id, $event)"
             >
               {{ keyword.word }}
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- 光点飞入能量池的飞行轨迹层 -->
+      <div ref="flyLayerRef" class="fly-layer">
+        <span
+          v-for="f in flyingDots"
+          :key="f.id"
+          class="fly-dot"
+          :style="{
+            background: f.color,
+            left: f.from.x + 'px',
+            top: f.from.y + 'px',
+            '--tx': f.dx + 'px',
+            '--ty': f.dy + 'px'
+          }"
+        />
       </div>
 
       <div class="energy-bar">
@@ -53,9 +73,10 @@
             class="energy-track"
             :title="`${career.name}：${liveScores[career.id] || 0} 分`"
           >
-            <div class="energy-fill-wrap">
+            <div class="energy-fill-wrap" :ref="(el) => setEnergyRef(career.id, el as HTMLElement | null)">
               <div
                 class="energy-fill"
+                :class="{ pulse: liveScores[career.id] > 0 }"
                 :style="{
                   height: pct(liveScores[career.id]),
                   background: career.colorCode,
@@ -90,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
@@ -102,6 +123,32 @@ const store = useTestStore()
 const router = useRouter()
 const liveScores = reactive<Record<string, number>>({})
 let debounceTimer: number | undefined
+
+/** 词卡 DOM 引用：keywordId → 元素 */
+const wordRefs = new Map<number, HTMLElement>()
+function setWordRef(id: number, el: HTMLElement | null) {
+  if (el) wordRefs.set(id, el)
+  else wordRefs.delete(id)
+}
+
+/** 能量柱 DOM 引用：careerId → 元素 */
+const energyRefs = new Map<number, HTMLElement>()
+function setEnergyRef(id: number, el: HTMLElement | null) {
+  if (el) energyRefs.set(id, el)
+  else energyRefs.delete(id)
+}
+
+/** 飞行光点层 */
+const flyLayerRef = ref<HTMLElement | null>(null)
+interface FlyDot {
+  id: number
+  from: { x: number; y: number }
+  dx: number
+  dy: number
+  color: string
+}
+const flyingDots = ref<FlyDot[]>([])
+let dotId = 0
 
 function isSelected(id: number) {
   return store.selectedIds.includes(id)
@@ -120,11 +167,47 @@ function pct(score?: number) {
   return Math.round(((score || 0) / 20) * 100) + '%'
 }
 
-function handleToggle(id: number) {
+/** 点击词卡：选中后从词卡位置放出一个光点飞向该职业能量柱 */
+function flyDot(career: Career, keywordId: number) {
+  const fromEl = wordRefs.get(keywordId)
+  const toEl = energyRefs.get(career.id)
+  const layer = flyLayerRef.value
+  if (!fromEl || !toEl || !layer) return
+  const from = fromEl.getBoundingClientRect()
+  const to = toEl.getBoundingClientRect()
+  const layerRect = layer.getBoundingClientRect()
+  const fx = from.left + from.width / 2 - layerRect.left
+  const fy = from.top + from.height / 2 - layerRect.top
+  const tx = to.left + to.width / 2 - layerRect.left
+  const ty = to.top + to.height / 2 - layerRect.top
+  const id = ++dotId
+  flyingDots.value.push({
+    id,
+    from: { x: fx, y: fy },
+    dx: tx - fx,
+    dy: ty - fy,
+    color: career.colorCode
+  })
+  window.setTimeout(() => {
+    flyingDots.value = flyingDots.value.filter((d) => d.id !== id)
+  }, 700)
+}
+
+function handleToggle(career: Career, id: number, e: MouseEvent) {
+  const wasSelected = isSelected(id)
   const ok = store.toggleKeyword(id)
   if (!ok) {
     message.warning('最多只能选择10个特质词')
     return
+  }
+  // 选中时触发光点飞入能量池
+  if (!wasSelected) {
+    flyDot(career, id)
+    // 词卡上触发一次光效
+    const el = e.currentTarget as HTMLElement
+    el.classList.remove('card-light')
+    void el.offsetWidth
+    el.classList.add('card-light')
   }
   scheduleLiveMatch()
 }
@@ -155,6 +238,7 @@ onMounted(async () => {
   } catch {
     // 词库加载失败时页面给出空态，不影响后续重试
   }
+  await nextTick()
   if (store.selectedIds.length) scheduleLiveMatch()
 })
 
@@ -226,6 +310,16 @@ onBeforeUnmount(() => {
   padding: clamp(2px, 0.4vh, 6px) clamp(2px, 0.3vw, 6px) clamp(4px, 0.8vh, 10px) 0;
 }
 
+/* 词卡悬浮入场：按行交错延迟 */
+.group-words .word-card {
+  animation: cardFloatIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 点击光效（与全局 .card-light 不同名，避免与选中动画冲突） */
+.card-light {
+  animation: cardLight 0.45s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+}
+
 .energy-bar {
   margin-top: clamp(8px, 1.5vh, 20px);
   flex-shrink: 0;
@@ -266,6 +360,10 @@ onBeforeUnmount(() => {
   transition: height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
+.energy-fill.pulse {
+  animation: energyPulse 1.2s ease-in-out infinite;
+}
+
 .energy-name {
   font-size: clamp(11px, 0.95vw, 15px);
   color: rgba(255, 255, 255, 0.7);
@@ -276,6 +374,38 @@ onBeforeUnmount(() => {
   font-size: clamp(12px, 1.05vw, 16px);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* 飞行光点层 */
+.fly-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.fly-dot {
+  position: absolute;
+  width: clamp(8px, 0.9vw, 14px);
+  height: clamp(8px, 0.9vw, 14px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: flyTo 0.65s cubic-bezier(0.3, 0.6, 0.4, 1) forwards;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.35);
+}
+
+@keyframes flyTo {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.35);
+    opacity: 0;
+  }
 }
 
 .select-actions {

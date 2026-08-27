@@ -21,6 +21,10 @@
           background: `linear-gradient(160deg, ${careerColor} 0%, ${careerColor}cc 45%, ${careerColor}88 100%)`
         }"
       >
+        <div v-if="careerIllustration(career.id)" class="hero-illust">
+          <img :src="careerIllustration(career.id)" :alt="career.name" />
+          <div class="hero-illust-mask" />
+        </div>
         <div class="hero-badge">五彩法途 · 职业画像</div>
         <div class="hero-name">{{ career.name }}</div>
         <div class="hero-slogan">“{{ report.profile.slogan }}”</div>
@@ -164,6 +168,7 @@ import {
 } from '@ant-design/icons-vue'
 import RadarChart from '@/components/RadarChart.vue'
 import { getReport } from '@/api'
+import { careerIllustration } from '@/utils/illustration'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 import type { Report } from '@/types'
@@ -278,12 +283,34 @@ onMounted(() => {
 }
 
 .report-hero {
+  position: relative;
   color: #fff;
   text-align: center;
   padding: 40px 20px 36px;
+  overflow: hidden;
+}
+
+.hero-illust {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-illust img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}
+
+.hero-illust-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45));
 }
 
 .hero-badge {
+  position: relative;
   display: inline-block;
   padding: 4px 16px;
   border-radius: 999px;
@@ -294,18 +321,21 @@ onMounted(() => {
 }
 
 .hero-name {
+  position: relative;
   font-size: 34px;
   font-weight: 800;
   letter-spacing: 6px;
 }
 
 .hero-slogan {
+  position: relative;
   margin-top: 10px;
   font-size: 15px;
   opacity: 0.92;
 }
 
 .hero-rate {
+  position: relative;
   margin-top: 20px;
   display: flex;
   align-items: baseline;
@@ -324,12 +354,14 @@ onMounted(() => {
 }
 
 .hero-second {
+  position: relative;
   margin-top: 10px;
   font-size: 14px;
   opacity: 0.9;
 }
 
 .hero-code {
+  position: relative;
   margin-top: 18px;
   font-size: 12px;
   opacity: 0.75;

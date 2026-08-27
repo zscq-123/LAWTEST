@@ -164,6 +164,84 @@ body {
   }
 }
 
+/* 计划书「选词阶段」：词卡悬浮入场（stagger 由 animationDelay 控制） */
+@keyframes cardFloatIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 计划书「匹配阶段」：五色星球/能量脉冲 */
+@keyframes energyPulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scaleY(1);
+  }
+  50% {
+    filter: brightness(1.35);
+    transform: scaleY(1.015);
+  }
+}
+
+/* 计划书「揭晓阶段」：大字标题光效字幕 */
+@keyframes textShine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* 计划书「揭晓阶段」：全屏粒子绽放时的中心光爆 */
+@keyframes burstGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+/* 计划书「画像阶段」：雷达图/面板动态展开 */
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 计划书「扫码页」：二维码光效旋转光环 */
+@keyframes qrRing {
+  0% {
+    transform: rotate(0deg) scale(0.96);
+    opacity: 0.55;
+  }
+  100% {
+    transform: rotate(360deg) scale(1.06);
+    opacity: 1;
+  }
+}
+
 @keyframes pulseGlow {
   0%,
   100% {
@@ -176,6 +254,27 @@ body {
 
 .fade-in {
   animation: floatUp 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+}
+
+/* 面板展开动画（画像/体能页使用，可与 fade-in 叠加） */
+.panel-in {
+  animation: panelReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 流光文字（揭晓标题/首页标题） */
+.shine-text {
+  background: linear-gradient(
+    100deg,
+    currentColor 0%,
+    #fff 30%,
+    currentColor 55%,
+    currentColor 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShine 2.8s linear infinite;
 }
 
 /* 滚动条 */

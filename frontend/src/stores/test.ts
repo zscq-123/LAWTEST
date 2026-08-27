@@ -58,6 +58,9 @@ function clearSelection() {
 
 function setMatch(result: MatchResult) {
   matchResult.value = result
+  // 匹配结果已变化：作废旧报告，防止画像页/体能页复用与当前匹配不一致的旧报告
+  report.value = null
+  sessionStorage.removeItem(REPORT_KEY)
 }
 
 function setReport(value: Report) {

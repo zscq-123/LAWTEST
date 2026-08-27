@@ -1,8 +1,11 @@
 <template>
   <div class="qr-panel glass-panel">
     <div class="qr-title">扫码带走你的职业画像</div>
-    <div class="qr-box">
-      <img :src="report.qrImage" alt="报告二维码" class="qr-img" />
+    <div class="qr-glow">
+      <span class="qr-ring" :style="{ borderColor: careerColor }" />
+      <div class="qr-box">
+        <img :src="report.qrImage" alt="报告二维码" class="qr-img" />
+      </div>
     </div>
     <div class="qr-code">报告编号：{{ report.code }}</div>
     <div class="qr-actions">
@@ -13,12 +16,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { message } from 'ant-design-vue'
 import type { Report } from '@/types'
 
 const props = defineProps<{
   report: Report
 }>()
+
+const careerColor = computed(() => props.report.career.colorCode)
 
 async function copyLink() {
   try {
@@ -44,11 +50,28 @@ async function copyLink() {
   margin-bottom: 20px;
 }
 
+.qr-glow {
+  position: relative;
+  display: inline-block;
+  border-radius: 12px;
+}
+
+.qr-ring {
+  position: absolute;
+  inset: -14px;
+  border: 2px dashed;
+  border-radius: 22px;
+  animation: qrRing 9s linear infinite;
+  pointer-events: none;
+}
+
 .qr-box {
+  position: relative;
   background: #fff;
   border-radius: 12px;
   padding: 12px;
   display: inline-block;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.18);
 }
 
 .qr-img {

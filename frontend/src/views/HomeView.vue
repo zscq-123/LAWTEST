@@ -17,7 +17,12 @@
             animationDelay: `${0.1 + index * 0.08}s`,
             '--career-color': career.colorCode
           }"
+          @click="start"
         >
+          <div class="career-illust" v-if="careerIllustration(career.id)">
+            <img :src="careerIllustration(career.id)" :alt="career.name" loading="lazy" />
+            <div class="illust-mask" :style="{ background: career.colorCode }" />
+          </div>
           <div class="career-icon" :style="{ background: career.colorCode }">
             {{ career.name.charAt(0) }}
           </div>
@@ -49,6 +54,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { RocketOutlined } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
+import { careerIllustration } from '@/utils/illustration'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()
@@ -99,10 +105,12 @@ async function start() {
 }
 
 .career-card {
+  position: relative;
   padding: clamp(14px, 2.2vw, 34px) clamp(12px, 1.6vw, 26px);
   text-align: center;
   border-top: 3px solid var(--career-color);
   cursor: pointer;
+  overflow: hidden;
   transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -112,11 +120,51 @@ async function start() {
   border-color: var(--career-color);
 }
 
+/* 插画：卡片顶部渐显，hover 放大提亮 */
+.career-illust {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: clamp(72px, 10.5vh, 160px);
+  overflow: hidden;
+  transition: height 0.35s cubic-bezier(0.645, 0.045, 0.355, 1);
+  pointer-events: none;
+}
+
+.career-card:hover .career-illust {
+  height: clamp(96px, 14.5vh, 220px);
+}
+
+.career-illust img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.career-card:hover .career-illust img {
+  transform: scale(1.06);
+}
+
+.career-illust .illust-mask {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: color;
+  transition: opacity 0.3s;
+}
+
+.career-card:hover .career-illust .illust-mask {
+  opacity: 0.2;
+}
+
 .career-icon {
+  position: relative;
   width: clamp(52px, 5.4vw, 96px);
   height: clamp(52px, 5.4vw, 96px);
   border-radius: 50%;
-  margin: 0 auto clamp(10px, 1.6vh, 22px);
+  margin: clamp(78px, 11.5vh, 170px) auto clamp(10px, 1.6vh, 22px);
   display: flex;
   align-items: center;
   justify-content: center;

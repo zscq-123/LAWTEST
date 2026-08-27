@@ -1,19 +1,28 @@
 <template>
   <ScreenFrame>
-    <ParticleCanvas :color="careerColor" :active="true" />
-    <div class="screen-page reveal-page">
-      <div class="reveal-inner fade-in">
-        <div class="reveal-tag" :style="{ color: careerColor, borderColor: careerColor }">
-          你的职业画像已生成
-        </div>
+    <template v-if="store.matchResult">
+      <ParticleCanvas :color="careerColor" :active="true" />
+      <!-- 揭晓插画背景 -->
+      <div v-if="careerIllustration(first.careerId)" class="reveal-bg" :style="{ '--career-color': careerColor }">
+        <img :src="careerIllustration(first.careerId)" :alt="careerName" />
+        <div class="reveal-bg-mask" />
+      </div>
+      <!-- 中心光爆 -->
+      <div class="burst-glow" :style="{ background: careerColor }" />
 
-        <template v-if="store.matchResult">
+      <div class="screen-page reveal-page">
+        <div class="reveal-inner fade-in">
+          <div class="reveal-tag" :style="{ color: careerColor, borderColor: careerColor }">
+            你的职业画像已生成
+          </div>
+
           <div class="reveal-career">
             <div
               class="reveal-icon"
               :style="{ background: careerColor, boxShadow: `0 0 60px ${careerColor}88` }"
             >
-              {{ careerName.charAt(0) }}
+              <img v-if="careerIllustration(first.careerId)" :src="careerIllustration(first.careerId)" :alt="careerName" />
+              <template v-else>{{ careerName.charAt(0) }}</template>
             </div>
             <h1 class="reveal-name" :style="{ color: careerColor }">{{ careerName }}</h1>
             <div class="reveal-rate">
@@ -41,17 +50,18 @@
             <a-button size="large" @click="restart">重新测试</a-button>
           </div>
           <div class="reveal-tip">{{ store.matchResult.disclaimer }}</div>
-        </template>
+        </div>
       </div>
-    </div>
+    </template>
   </ScreenFrame>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import ParticleCanvas from '@/components/ParticleCanvas.vue'
+import { careerIllustration } from '@/utils/illustration'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()
@@ -66,6 +76,11 @@ const tieNames = computed(() => {
   return store.matchResult.tieCareerIds
     .map((id) => store.careerById(id)?.name || '')
     .join('、')
+})
+
+onMounted(() => {
+  // 直接刷新/直达揭晓页时无匹配结果，回到选词页
+  if (!store.matchResult) router.replace('/select')
 })
 
 function goProfile() {
@@ -85,7 +100,58 @@ function restart() {
   text-align: center;
 }
 
+/* 揭晓插画背景：职业色渐变遮罩 + 暗化，突出前景 */
+.reveal-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.reveal-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.5;
+  animation: bgZoom 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bgZoom {
+  from {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+.reveal-bg-mask {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(11, 18, 32, 0.25) 0%, rgba(11, 18, 32, 0.78) 70%),
+    linear-gradient(180deg, rgba(11, 18, 32, 0.5), rgba(11, 18, 32, 0.82));
+}
+
+/* 中心光爆（配合 ParticleCanvas 的光爆） */
+.burst-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(160px, 24vw, 420px);
+  height: clamp(160px, 24vw, 420px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: burstGlow 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  pointer-events: none;
+  opacity: 0.32;
+}
+
 .reveal-inner {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,6 +166,7 @@ function restart() {
   font-size: clamp(14px, 1.4vw, 20px);
   letter-spacing: 4px;
   background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
 }
 
 .reveal-career {
@@ -107,9 +174,9 @@ function restart() {
 }
 
 .reveal-icon {
-  width: clamp(76px, 7vw, 140px);
-  height: clamp(76px, 7vw, 140px);
-  border-radius: 50%;
+  width: clamp(120px, 13vw, 240px);
+  height: clamp(68px, 7.4vw, 136px);
+  border-radius: clamp(18px, 2vw, 28px);
   margin: 0 auto clamp(14px, 2.2vh, 30px);
   display: flex;
   align-items: center;
@@ -117,7 +184,15 @@ function restart() {
   font-size: clamp(32px, 3.2vw, 60px);
   font-weight: 700;
   color: #fff;
+  overflow: hidden;
   animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.reveal-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
 }
 
 .reveal-name {

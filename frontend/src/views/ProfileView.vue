@@ -19,6 +19,9 @@
                   borderColor: careerColor
                 }"
               >
+                <div v-if="careerIllustration(report.career.id)" class="hero-illust">
+                  <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
+                </div>
                 <div class="hero-icon" :style="{ background: careerColor }">
                   {{ report.career.name.charAt(0) }}
                 </div>
@@ -55,7 +58,7 @@
             </div>
 
             <div class="profile-right">
-              <div class="panel glass-panel">
+              <div class="panel glass-panel panel-in">
                 <div class="panel-title">能力雷达图</div>
                 <RadarChart
                   :axes="RADAR_AXES"
@@ -65,7 +68,7 @@
                 />
               </div>
 
-              <div class="panel glass-panel">
+              <div class="panel glass-panel panel-in">
                 <div class="panel-title">你的能力优势</div>
                 <a-list :data-source="report.profile.strengths" :split="false">
                   <template #renderItem="{ item }">
@@ -77,7 +80,7 @@
                 </a-list>
               </div>
 
-              <div class="panel glass-panel">
+              <div class="panel glass-panel panel-in">
                 <div class="panel-title">短板与提升建议</div>
                 <a-list :data-source="report.profile.improvements" :split="false">
                   <template #renderItem="{ item }">
@@ -123,6 +126,7 @@ import RadarChart from '@/components/RadarChart.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { createReport } from '@/api'
+import { careerIllustration } from '@/utils/illustration'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 
@@ -153,7 +157,9 @@ async function ensureReport() {
     router.replace('/select')
     return
   }
-  if (store.report) return
+  // 已有报告但职业与当前匹配结果不一致（例如 sessionStorage 残留旧报告）时强制重建
+  const current = store.matchResult.first.careerId
+  if (store.report && store.report.career.id === current) return
   loading.value = true
   try {
     const data = await createReport(store.selectedIds)
@@ -206,17 +212,44 @@ onMounted(() => {
 
 .hero-card {
   flex: 1;
+  position: relative;
+  overflow: hidden;
   border: 1px solid;
   border-radius: 12px;
   padding: clamp(16px, 2.4vw, 40px) clamp(14px, 2vw, 34px);
   text-align: center;
+  animation: panelReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-illust {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: clamp(70px, 11vh, 180px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-illust img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+}
+
+.hero-illust::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 65%, rgba(11, 18, 32, 0.55));
 }
 
 .hero-icon {
+  position: relative;
   width: clamp(56px, 5.6vw, 110px);
   height: clamp(56px, 5.6vw, 110px);
   border-radius: 50%;
-  margin: 0 auto clamp(8px, 1.4vh, 20px);
+  margin: clamp(60px, 8.5vh, 130px) auto clamp(8px, 1.4vh, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,18 +260,21 @@ onMounted(() => {
 }
 
 .hero-name {
+  position: relative;
   font-size: clamp(26px, 2.8vw, 48px);
   font-weight: 800;
   letter-spacing: clamp(2px, 0.4vw, 8px);
 }
 
 .hero-color {
+  position: relative;
   margin-top: clamp(2px, 0.5vh, 8px);
   font-size: clamp(11px, 0.95vw, 16px);
   color: rgba(255, 255, 255, 0.55);
 }
 
 .hero-rate {
+  position: relative;
   margin-top: clamp(10px, 1.8vh, 26px);
   display: flex;
   flex-direction: column;
@@ -256,12 +292,14 @@ onMounted(() => {
 }
 
 .hero-slogan {
+  position: relative;
   margin-top: clamp(8px, 1.3vh, 18px);
   font-size: clamp(14px, 1.35vw, 21px);
   color: rgba(255, 255, 255, 0.78);
 }
 
 .hero-second {
+  position: relative;
   margin-top: clamp(8px, 1.2vh, 16px);
   font-size: clamp(12px, 1.15vw, 17px);
   color: rgba(255, 255, 255, 0.62);

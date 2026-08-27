@@ -13,6 +13,7 @@
       <div class="race-meter">
         <div
           class="race-fill"
+          :class="{ 'race-win': isTop(career.id) }"
           :style="{
             height: pct(career.id),
             background: `linear-gradient(180deg, ${career.colorCode}, ${career.colorCode}55)`,
@@ -41,6 +42,12 @@ function scoreOf(id: number): number {
 
 function pct(id: number): string {
   return Math.round((scoreOf(id) / 20) * 100) + '%'
+}
+
+/** 是否为当前最高分赛道（点亮领跑光效） */
+function isTop(id: number): boolean {
+  const max = Math.max(...props.careers.map((c) => scoreOf(c.id)))
+  return max > 0 && scoreOf(id) === max
 }
 </script>
 
@@ -76,6 +83,7 @@ function pct(id: number): string {
   width: clamp(10px, 0.8vw, 15px);
   height: clamp(10px, 0.8vw, 15px);
   border-radius: 50%;
+  animation: energyPulse 1.6s ease-in-out infinite;
 }
 
 .race-meter {
@@ -97,6 +105,11 @@ function pct(id: number): string {
   align-items: flex-start;
   justify-content: center;
   padding-top: 6px;
+}
+
+/* 领跑赛道：顶部高亮光点 */
+.race-fill.race-win {
+  animation: energyPulse 1.2s ease-in-out infinite;
 }
 
 .race-value {
