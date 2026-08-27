@@ -36,7 +36,7 @@ export function getStatsSummary() {
   return http.get<StatsSummary>('/stats/summary')
 }
 
-/** AI 深度分析：按报告编号生成（已缓存则直接返回） */
+/** AI 深度分析：按报告编号生成（已缓存则直接返回）；大模型响应较慢，超时放宽到 120s */
 export function aiAnalyze(code: string) {
-  return http.post<AiAnalysisVO>('/ai/analyze', { code })
+  return http.post<AiAnalysisVO>('/ai/analyze', { code }, { timeout: 120000 })
 }
