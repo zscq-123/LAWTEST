@@ -315,9 +315,14 @@ function goFavorites() {
 }
 
 .home-tip {
-  margin-top: var(--space-4);
+  margin-top: clamp(20px, 3vh, 36px);
   font-size: 12px;
   color: var(--text-tertiary);
   letter-spacing: 1px;
+  padding-top: clamp(12px, 1.8vh, 20px);
+  border-top: 1px solid var(--border-subtle);
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
