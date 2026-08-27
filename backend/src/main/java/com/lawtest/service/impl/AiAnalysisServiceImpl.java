@@ -68,19 +68,27 @@ public class AiAnalysisServiceImpl implements AiAnalysisService {
     /** 构建系统提示词：要求模型按固定 JSON 结构返回 */
     private String buildPrompt(String keywordWords, String careerName, String careerColorName) {
         return """
-                你是一名专业的法学院职业规划顾问。以下是某位法学院新生在职业特质测评中：
+                你是一名专业的法学院职业规划与体育健康顾问。以下是某位法学院新生在职业特质测评中：
                 - 勾选的特质词：%s
                 - 系统匹配出的第一适配职业：%s（%s）
 
-                请基于这些信息，为这位新生生成一份个性化的职业画像深度解读。
+                请为这位新生生成一份个性化的职业画像深度解读与大学四年体育锻炼计划。
                 要求：语言温暖、专业、真诚，符合大学新生视角；不要堆砌套话；结合具体特质词分析。
+                特别注意：plans 字段必须是「大学四年体育锻炼计划」，聚焦体育与身体锻炼，给出具体、可执行的
+                运动指导（含运动项目、每周频次、每次时长与强度），并紧扣该职业的身体素质要求
+                （例如：律师需长期伏案与出差→加强肩颈腰背与心肺耐力；法官需久坐久站开庭→改善体态与下肢耐力；
+                检察官需外勤取证→提升心肺、力量与灵敏度；企业法务需商务久坐→注重肩颈保护与精力管理；
+                AI伦理顾问需长期电脑办公→护眼与颈椎防护）。
+                按四个阶段分别给出，每阶段一条、简洁有力（40-60字左右）：
+                大一·体能筑基 → 大二·专项强化 → 大三·职业场景模拟 → 大四·达标冲刺。
                 严格按照以下 JSON 结构返回（strengths/improvements/plans 必须是字符串数组，不要用字符串或逗号串；
-                只输出 JSON 对象本身，不要输出 JSON 以外的任何内容，不要用 markdown 代码块）：
+                plans 必须恰好 4 条，分别对应上述四个阶段；只输出 JSON 对象本身，不要输出 JSON 以外的任何内容，
+                不要用 markdown 代码块）：
                 {
                   "summary": "2-3句话的职业契合度解读",
                   "strengths": ["3-5条核心优势"],
                   "improvements": ["3-5条潜在短板与提升建议"],
-                  "plans": ["2-4条大学四年发展建议"],
+                  "plans": ["大一·体能筑基：……", "大二·专项强化：……", "大三·职业场景模拟：……", "大四·达标冲刺：……"],
                   "motto": "一句话职业格言或寄语"
                 }
                 """.formatted(keywordWords, careerName, careerColorName);
@@ -92,7 +100,7 @@ public class AiAnalysisServiceImpl implements AiAnalysisService {
             ObjectNode payload = objectMapper.createObjectNode();
             payload.put("model", aiModel);
             payload.put("temperature", 0.7);
-            payload.put("max_tokens", 2000);
+            payload.put("max_tokens", 4000);
             // 关闭思维链，确保 content 直接返回最终答案（JSON）
             payload.put("enable_thinking", false);
             ArrayNode messages = payload.putArray("messages");
@@ -153,14 +161,8 @@ public class AiAnalysisServiceImpl implements AiAnalysisService {
 
         AiAnalysisVO vo = new AiAnalysisVO();
         vo.setDisclaimer(DISCLAIMER);
-        try {
-            JsonNode node = objectMapper.readTree(json);
-            vo.setSummary(text(node, "summary"));
-            vo.setStrengths(list(node, "strengths"));
-            vo.setImprovements(list(node, "improvements"));
-            vo.setPlans(list(node, "plans"));
-            vo.setMotto(text(node, "motto"));
-        } catch (JsonProcessingException e) {
+        JsonNode node = tryParse(json);
+        if (node == null) {
             log.warn("AI 返回解析失败，原文: {}", reply);
             // 解析失败时降级为纯文本 summary，避免前端空态
             vo.setSummary(reply.length() > 300 ? reply.substring(0, 300) + "…" : reply);
@@ -168,8 +170,70 @@ public class AiAnalysisServiceImpl implements AiAnalysisService {
             vo.setImprovements(List.of());
             vo.setPlans(List.of());
             vo.setMotto("");
+            return vo;
         }
+        vo.setSummary(text(node, "summary"));
+        vo.setStrengths(list(node, "strengths"));
+        vo.setImprovements(list(node, "improvements"));
+        vo.setPlans(list(node, "plans"));
+        vo.setMotto(text(node, "motto"));
         return vo;
+    }
+
+    /** 尝试解析 JSON；失败时尝试修复截断（补全未闭合的数组/对象引号） */
+    private JsonNode tryParse(String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (JsonProcessingException ignored) {
+            // 截断修复：从后向前找最后一个未闭合的引号，补全为合法 JSON
+            String fixed = repairTruncatedJson(json);
+            if (fixed == null) return null;
+            try {
+                return objectMapper.readTree(fixed);
+            } catch (JsonProcessingException e) {
+                return null;
+            }
+        }
+    }
+
+    /** 简单修复被截断的 JSON：补齐缺失的 ] } 与末尾引号 */
+    private String repairTruncatedJson(String json) {
+        StringBuilder sb = new StringBuilder(json.trim());
+        int quotes = 0;
+        // 去掉末尾可能存在的半个引号/逗号
+        while (sb.length() > 0 && ",:".indexOf(sb.charAt(sb.length() - 1)) >= 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        // 从后往前统计未闭合的引号
+        for (int i = sb.length() - 1; i >= 0; i--) {
+            char c = sb.charAt(i);
+            if (c == '"' && (i == 0 || sb.charAt(i - 1) != '\\')) {
+                quotes++;
+            } else if (quotes % 2 == 1) {
+                break;
+            }
+        }
+        if (quotes % 2 == 1) {
+            sb.append('"');
+        }
+        // 补全未闭合的数组/对象括号
+        java.util.ArrayDeque<Character> stack = new java.util.ArrayDeque<>();
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+            if (c == '"') {
+                // 跳过字符串内容
+                i++;
+                while (i < sb.length() && (sb.charAt(i) != '"' || sb.charAt(i - 1) == '\\')) i++;
+                continue;
+            }
+            if (c == '[' || c == '{') stack.push(c);
+            else if (c == ']' || c == '}') stack.pop();
+        }
+        while (!stack.isEmpty()) {
+            char open = stack.pop();
+            sb.append(open == '[' ? ']' : '}');
+        }
+        return sb.toString();
     }
 
     private String text(JsonNode node, String field) {

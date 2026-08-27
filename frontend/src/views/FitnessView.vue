@@ -169,13 +169,17 @@ const disclaimer = '本内容为通识性建议，非医疗意见；如有健康
 const aiAnalysis = computed(() => report.value?.aiAnalysis || null)
 const hasAi = computed(() => !!aiAnalysis.value)
 
-/** 四年锻炼计划：全部来自 AI 生成的个性化计划（不再使用预设模板） */
+/** 四年锻炼计划：全部来自 AI 生成的个性化体育锻炼计划（不再使用预设模板） */
 const displayPlans = computed(() => {
   if (aiAnalysis.value?.plans?.length) {
-    return aiAnalysis.value.plans.map((content, i) => ({
-      stage: `AI 建议 ${i + 1}`,
-      content
-    }))
+    return aiAnalysis.value.plans.map((content, i) => {
+      // 解析 "大一·体能筑基：……" 形式的阶段名；无冒号则用「建议 N」
+      const m = content.match(/^(大一|大二|大三|大四)[·\s]*(.*?)[：:]\s*(.*)$/s)
+      if (m) {
+        return { stage: `${m[1]}·${m[2]}`, content: m[3] }
+      }
+      return { stage: `锻炼建议 ${i + 1}`, content }
+    })
   }
   return []
 })
