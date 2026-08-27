@@ -92,3 +92,13 @@ export interface StatsSummary {
   careerDistribution: Array<{ careerId: number; name: string; count: number }>
   topKeywords: Array<{ keywordId: number; word: string; count: number }>
 }
+
+/** AI 深度分析结果 */
+export interface AiAnalysisVO {
+  summary: string
+  strengths: string[]
+  improvements: string[]
+  plans: string[]
+  motto: string
+  disclaimer: string
+}

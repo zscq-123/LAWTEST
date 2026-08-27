@@ -156,6 +156,104 @@
                   </template>
                 </a-list>
               </article>
+
+              <!-- AI 深度分析 -->
+              <article class="panel glass-panel panel-in ai-panel">
+                <header class="panel-header">
+                  <robot-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <h3 class="panel-title">AI 深度分析</h3>
+                  <a-tag :color="careerColor" bordered class="panel-tag" :style="{ color: textOnColor(careerColor) }">
+                    MiMo
+                  </a-tag>
+                </header>
+
+                <div v-if="aiLoading" class="ai-loading">
+                  <a-spin size="small" />
+                  <span class="ai-loading-text">AI 正在解读你的特质组合…</span>
+                </div>
+
+                <a-alert
+                  v-else-if="aiError"
+                  type="warning"
+                  show-icon
+                  class="ai-error"
+                  :message="aiError"
+                />
+
+                <template v-else-if="aiAnalysis">
+                  <div class="ai-summary">
+                    <robot-outlined :style="{ color: careerColor }" class="ai-summary-icon" />
+                    <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
+                  </div>
+
+                  <div v-if="aiAnalysis.strengths.length" class="ai-section">
+                    <div class="ai-section-title">
+                      <check-circle-outlined :style="{ color: careerColor }" />
+                      核心优势解读
+                    </div>
+                    <a-list :data-source="aiAnalysis.strengths" :split="false">
+                      <template #renderItem="{ item, index }">
+                        <a-list-item class="ai-item">
+                          <span class="ai-badge" :style="{ background: careerColor }">{{ index + 1 }}</span>
+                          <span class="item-text">{{ item }}</span>
+                        </a-list-item>
+                      </template>
+                    </a-list>
+                  </div>
+
+                  <div v-if="aiAnalysis.improvements.length" class="ai-section">
+                    <div class="ai-section-title">
+                      <bulb-outlined style="color: #faad14" />
+                      成长建议
+                    </div>
+                    <a-list :data-source="aiAnalysis.improvements" :split="false">
+                      <template #renderItem="{ item, index }">
+                        <a-list-item class="ai-item">
+                          <span class="ai-badge" style="background: #faad14">{{ index + 1 }}</span>
+                          <span class="item-text">{{ item }}</span>
+                        </a-list-item>
+                      </template>
+                    </a-list>
+                  </div>
+
+                  <div v-if="aiAnalysis.plans.length" class="ai-section">
+                    <div class="ai-section-title">
+                      <rise-outlined :style="{ color: careerColor }" />
+                      四年发展建议
+                    </div>
+                    <a-list :data-source="aiAnalysis.plans" :split="false">
+                      <template #renderItem="{ item, index }">
+                        <a-list-item class="ai-item">
+                          <span class="ai-badge" :style="{ background: careerColor }">{{ index + 1 }}</span>
+                          <span class="item-text">{{ item }}</span>
+                        </a-list-item>
+                      </template>
+                    </a-list>
+                  </div>
+
+                  <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerColor }">
+                    {{ aiAnalysis.motto }}
+                  </blockquote>
+
+                  <div class="ai-disclaimer">
+                    <info-circle-outlined />
+                    {{ aiAnalysis.disclaimer }}
+                  </div>
+                </template>
+
+                <a-button
+                  v-else
+                  type="primary"
+                  block
+                  size="large"
+                  class="ai-run-btn"
+                  :style="{ background: careerColor, borderColor: careerColor }"
+                  @click="runAiAnalyze"
+                >
+                  <template #icon><robot-outlined /></template>
+                  生成 AI 深度分析
+                </a-button>
+              </article>
             </div>
           </section>
 
@@ -186,9 +284,12 @@ import {
   BulbOutlined,
   CheckCircleOutlined,
   HeartOutlined,
+  InfoCircleOutlined,
   QrcodeOutlined,
   RadarChartOutlined,
   ReloadOutlined,
+  RiseOutlined,
+  RobotOutlined,
   TeamOutlined
 } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
@@ -196,17 +297,21 @@ import RadarChart from '@/components/RadarChart.vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
-import { createReport } from '@/api'
+import { aiAnalyze, createReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
+import type { AiAnalysisVO } from '@/types'
 
 const store = useTestStore()
 const router = useRouter()
 const loading = ref(false)
 const qrOpen = ref(false)
 const mentorOpen = ref(false)
+const aiLoading = ref(false)
+const aiError = ref('')
+const aiAnalysis = ref<AiAnalysisVO | null>(null)
 
 const first = computed(() => store.matchResult?.first)
 const second = computed(() => store.matchResult?.second)
@@ -250,6 +355,21 @@ async function ensureReport() {
 function restart() {
   store.clearSelection()
   router.replace('/')
+}
+
+/** 调用 AI 大模型生成深度分析 */
+async function runAiAnalyze() {
+  if (!report.value || !store.matchResult) return
+  aiLoading.value = true
+  aiError.value = ''
+  try {
+    const data = await aiAnalyze(store.selectedIds, store.matchResult.first.careerId)
+    aiAnalysis.value = data
+  } catch (e) {
+    aiError.value = e instanceof Error ? e.message : 'AI 分析失败，请稍后重试'
+  } finally {
+    aiLoading.value = false
+  }
 }
 
 onMounted(() => {
@@ -511,6 +631,121 @@ onMounted(() => {
   font-size: clamp(13px, 1.15vw, 17px);
   line-height: 1.7;
   color: var(--text-secondary);
+}
+
+/* AI 深度分析面板 */
+.ai-panel {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--border-strong);
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: clamp(24px, 4vh, 48px) 0;
+  color: var(--text-tertiary);
+}
+
+.ai-loading-text {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.ai-error {
+  margin: 0;
+}
+
+.ai-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: clamp(12px, 1.6vh, 20px);
+  background: var(--bg-panel-strong);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.ai-summary-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-summary-text {
+  margin: 0;
+  font-size: clamp(14px, 1.3vw, 17px);
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.ai-section {
+  margin-bottom: var(--space-4);
+}
+
+.ai-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  letter-spacing: 1px;
+}
+
+.ai-item {
+  padding: clamp(5px, 0.8vh, 12px) 0 !important;
+  border-bottom: 1px dashed var(--border-subtle);
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: clamp(8px, 0.8vw, 12px);
+}
+
+.ai-item:last-child {
+  border-bottom: none;
+}
+
+.ai-badge {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  margin-top: 2px;
+}
+
+.ai-motto {
+  margin: var(--space-4) 0 0;
+  padding: clamp(10px, 1.4vh, 16px) clamp(14px, 1.6vw, 20px);
+  border-left: 3px solid;
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel-strong);
+  font-size: clamp(14px, 1.3vw, 17px);
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.ai-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+}
+
+.ai-run-btn {
+  margin-top: var(--space-2);
 }
 
 .profile-disclaimer {

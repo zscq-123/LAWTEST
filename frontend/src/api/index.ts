@@ -1,5 +1,5 @@
 import http from './http'
-import type { Career, MatchResult, Mentor, Report, StatsSummary } from '@/types'
+import type { AiAnalysisVO, Career, MatchResult, Mentor, Report, StatsSummary } from '@/types'
 
 /** 获取职业与词库 */
 export function getCareers() {
@@ -34,4 +34,9 @@ export function saveTestRecord(keywordIds: number[]) {
 /** 统计汇总 */
 export function getStatsSummary() {
   return http.get<StatsSummary>('/stats/summary')
+}
+
+/** AI 深度分析：基于勾选特质词生成个性化职业解读 */
+export function aiAnalyze(keywordIds: number[], careerId: number) {
+  return http.post<AiAnalysisVO>('/ai/analyze', { keywordIds, careerId })
 }
