@@ -12,7 +12,12 @@
     </div>
 
     <div class="qr-meta">
-      <a-tag :color="careerColor" bordered class="qr-tag">{{ report.career.name }}</a-tag>
+      <a-tag
+        :color="careerColor"
+        bordered
+        class="qr-tag"
+        :style="{ color: textOnColor(careerColor) }"
+      >{{ report.career.name }}</a-tag>
       <span class="qr-code-label">编号</span>
       <span class="qr-code">{{ report.code }}</span>
     </div>
@@ -34,6 +39,7 @@
 import { computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { CopyOutlined, InfoCircleOutlined } from '@ant-design/icons-vue'
+import { textOnColor } from '@/utils/color'
 import type { Report } from '@/types'
 
 const props = defineProps<{

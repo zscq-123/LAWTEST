@@ -50,7 +50,12 @@
                   />
                   <div class="hero-titles">
                     <h2 class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</h2>
-                    <a-tag :color="careerColor" bordered class="hero-color">
+                    <a-tag
+                      :color="careerColor"
+                      bordered
+                      class="hero-color"
+                      :style="{ color: textOnColor(careerColor) }"
+                    >
                       {{ report.career.colorName }} · {{ report.career.colorCode }}
                     </a-tag>
                   </div>
@@ -69,7 +74,13 @@
 
                 <div class="hero-second">
                   <span class="second-label">第二适配</span>
-                  <a-tag :color="secondSafe.colorCode" bordered>{{ secondSafe.name }}</a-tag>
+                  <a-tag
+                    :color="secondSafe.colorCode"
+                    bordered
+                    :style="{ color: textOnColor(secondSafe.colorCode) }"
+                  >
+                    {{ secondSafe.name }}
+                  </a-tag>
                   <span class="second-rate">{{ secondSafe.matchRate }}%</span>
                 </div>
               </article>
@@ -95,7 +106,12 @@
                 <header class="panel-header">
                   <radar-chart-outlined class="panel-icon" :style="{ color: careerColor }" />
                   <h3 class="panel-title">能力雷达图</h3>
-                  <a-tag :color="careerColor" bordered class="panel-tag">六维画像</a-tag>
+                  <a-tag
+                    :color="careerColor"
+                    bordered
+                    class="panel-tag"
+                    :style="{ color: textOnColor(careerColor) }"
+                  >六维画像</a-tag>
                 </header>
                 <RadarChart
                   :axes="RADAR_AXES"
@@ -182,6 +198,7 @@ import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { createReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
+import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 

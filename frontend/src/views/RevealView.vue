@@ -37,7 +37,13 @@
               {{ careerName }}
             </h1>
             <div class="reveal-meta">
-              <a-tag :color="careerColor" bordered>{{ matchMeta.colorName }}</a-tag>
+              <a-tag
+                :color="careerColor"
+                bordered
+                :style="{ color: textOnColor(careerColor) }"
+              >
+                {{ matchMeta.colorName }}
+              </a-tag>
               <span class="reveal-slogan">“{{ first.slogan }}”</span>
             </div>
 
@@ -61,7 +67,12 @@
 
           <div class="reveal-second">
             <span class="second-label">第二适配</span>
-            <a-tag :color="second.colorCode" bordered class="second-tag">
+            <a-tag
+              :color="second.colorCode"
+              bordered
+              class="second-tag"
+              :style="{ color: textOnColor(second.colorCode) }"
+            >
               {{ second.name }}
             </a-tag>
             <span class="second-rate">{{ second.matchRate }}%</span>
@@ -100,6 +111,7 @@ import ScreenFrame from '@/components/ScreenFrame.vue'
 import ParticleCanvas from '@/components/ParticleCanvas.vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
 import { careerIllustration } from '@/utils/illustration'
+import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()

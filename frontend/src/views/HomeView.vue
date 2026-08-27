@@ -53,7 +53,12 @@
                 size="md"
               />
               <div class="career-name">{{ career.name }}</div>
-              <a-tag :color="career.colorCode" class="career-color-tag" bordered>
+              <a-tag
+                :color="career.colorCode"
+                class="career-color-tag"
+                bordered
+                :style="{ color: textOnColor(career.colorCode) }"
+              >
                 {{ career.colorName }}
               </a-tag>
               <div class="career-slogan">“{{ career.slogan }}”</div>
@@ -95,6 +100,7 @@ import { RocketOutlined, StarOutlined } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
 import { careerIllustration } from '@/utils/illustration'
+import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()

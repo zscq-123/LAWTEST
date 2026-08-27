@@ -36,7 +36,12 @@
                   class="side-avatar"
                 />
                 <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
-                <a-tag :color="careerColor" bordered class="side-color">
+                <a-tag
+                  :color="careerColor"
+                  bordered
+                  class="side-color"
+                  :style="{ color: textOnColor(careerColor) }"
+                >
                   {{ report.career.colorName }}
                 </a-tag>
                 <div class="side-slogan">“{{ report.profile.slogan }}”</div>
@@ -47,7 +52,13 @@
               <header class="panel-header">
                 <check-circle-outlined :style="{ color: careerColor }" class="panel-icon" />
                 <h3 class="panel-title">身体素质达标要求</h3>
-                <a-tag :color="careerColor" bordered>{{ report.fitnessRequirements.length }} 项</a-tag>
+                <a-tag
+                  :color="careerColor"
+                  bordered
+                  :style="{ color: textOnColor(careerColor) }"
+                >
+                  {{ report.fitnessRequirements.length }} 项
+                </a-tag>
               </header>
               <a-list :data-source="report.fitnessRequirements" :split="false">
                 <template #renderItem="{ item }">
@@ -65,7 +76,13 @@
               <header class="panel-header">
                 <rise-outlined :style="{ color: careerColor }" class="panel-icon" />
                 <h3 class="panel-title">大学四年阶梯式锻炼计划</h3>
-                <a-tag :color="careerColor" bordered>{{ report.fitnessPlans.length }} 年</a-tag>
+                <a-tag
+                  :color="careerColor"
+                  bordered
+                  :style="{ color: textOnColor(careerColor) }"
+                >
+                  {{ report.fitnessPlans.length }} 年
+                </a-tag>
               </header>
               <a-timeline class="plan-timeline">
                 <a-timeline-item
@@ -129,6 +146,7 @@ import ScreenFrame from '@/components/ScreenFrame.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { careerIllustration } from '@/utils/illustration'
+import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()

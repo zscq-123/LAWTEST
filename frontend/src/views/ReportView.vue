@@ -43,7 +43,12 @@
           <a-divider class="hero-divider" />
           <div class="hero-second">
             <span class="second-label">第二适配</span>
-            <a-tag :color="second.colorCode" bordered class="second-tag">
+            <a-tag
+              :color="second.colorCode"
+              bordered
+              class="second-tag"
+              :style="{ color: textOnColor(second.colorCode) }"
+            >
               {{ second.name }}
             </a-tag>
             <span class="second-rate">{{ second.matchRate }}%</span>
@@ -68,6 +73,7 @@
               :color="careerColor"
               bordered
               class="word-chip"
+              :style="{ color: textOnColor(careerColor) }"
             >
               {{ wordOfID(id) }}
             </a-tag>
@@ -121,7 +127,11 @@
           <header class="section-head">
             <radar-chart-outlined :style="{ color: careerColor }" class="section-icon" />
             <h2 class="section-title">能力雷达图</h2>
-            <a-tag :color="careerColor" bordered>六维</a-tag>
+            <a-tag
+              :color="careerColor"
+              bordered
+              :style="{ color: textOnColor(careerColor) }"
+            >六维</a-tag>
           </header>
           <RadarChart :axes="RADAR_AXES" :values="radar" :color="careerColor" :height="280" />
         </section>
@@ -131,7 +141,11 @@
           <header class="section-head">
             <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
             <h2 class="section-title">身体素质达标要求</h2>
-            <a-tag :color="careerColor" bordered>{{ report.fitnessRequirements.length }} 项</a-tag>
+            <a-tag
+              :color="careerColor"
+              bordered
+              :style="{ color: textOnColor(careerColor) }"
+            >{{ report.fitnessRequirements.length }} 项</a-tag>
           </header>
           <a-list :data-source="report.fitnessRequirements" :split="false">
             <template #renderItem="{ item }">
@@ -148,7 +162,11 @@
           <header class="section-head">
             <rise-outlined :style="{ color: careerColor }" class="section-icon" />
             <h2 class="section-title">大学四年锻炼计划</h2>
-            <a-tag :color="careerColor" bordered>{{ report.fitnessPlans.length }} 年</a-tag>
+            <a-tag
+              :color="careerColor"
+              bordered
+              :style="{ color: textOnColor(careerColor) }"
+            >{{ report.fitnessPlans.length }} 年</a-tag>
           </header>
           <a-timeline>
             <a-timeline-item
@@ -171,7 +189,11 @@
           <header class="section-head">
             <team-outlined :style="{ color: careerColor }" class="section-icon" />
             <h2 class="section-title">实务导师对接</h2>
-            <a-tag :color="careerColor" bordered>{{ report.mentors.length }} 位</a-tag>
+            <a-tag
+              :color="careerColor"
+              bordered
+              :style="{ color: textOnColor(careerColor) }"
+            >{{ report.mentors.length }} 位</a-tag>
           </header>
           <a-empty
             v-if="!report.mentors.length"
@@ -267,6 +289,7 @@ import {
 import RadarChart from '@/components/RadarChart.vue'
 import { getReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
+import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
 import type { Report } from '@/types'

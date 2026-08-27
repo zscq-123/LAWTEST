@@ -56,7 +56,12 @@
                   <div class="fav-info">
                     <div class="fav-name">
                       {{ item.report.career.name }}
-                      <a-tag :color="item.report.career.colorCode" bordered class="fav-tag">
+                      <a-tag
+                        :color="item.report.career.colorCode"
+                        bordered
+                        class="fav-tag"
+                        :style="{ color: textOnColor(item.report.career.colorCode) }"
+                      >
                         {{ item.report.career.matchRate || item.report.match.first.matchRate }}%
                       </a-tag>
                     </div>
@@ -113,6 +118,7 @@ import {
   StarFilled
 } from '@ant-design/icons-vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
+import { textOnColor } from '@/utils/color'
 import { getReport } from '@/api'
 import type { Report } from '@/types'
 
