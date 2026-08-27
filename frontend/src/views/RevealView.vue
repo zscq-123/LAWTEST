@@ -27,14 +27,13 @@
           <section class="reveal-career">
             <CareerAvatar
               :id="first.careerId"
-              :src="careerIllustration(first.careerId)"
               :name="careerName"
               :color="careerColor"
               size="xl"
               shape="rounded"
               class="reveal-avatar"
             />
-            <h1 class="reveal-name shine-title" :style="{ color: careerColor }">
+            <h1 class="reveal-name" :style="{ color: careerColor }">
               {{ careerName }}
             </h1>
             <div class="reveal-meta">
@@ -177,7 +176,8 @@ function restart() {
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
-  opacity: 0.5;
+  opacity: 0.32;
+  filter: blur(2px);
   animation: bgZoom 1.2s var(--ease-out) both;
 }
 
@@ -188,7 +188,7 @@ function restart() {
   }
   to {
     transform: scale(1);
-    opacity: 0.5;
+    opacity: 0.32;
   }
 }
 
@@ -196,8 +196,8 @@ function restart() {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at center, rgba(6, 13, 26, 0.2) 0%, rgba(6, 13, 26, 0.78) 70%),
-    linear-gradient(180deg, rgba(6, 13, 26, 0.5), rgba(6, 13, 26, 0.82));
+    radial-gradient(ellipse at center, rgba(6, 13, 26, 0.55) 0%, rgba(6, 13, 26, 0.92) 75%),
+    linear-gradient(180deg, rgba(6, 13, 26, 0.55), rgba(6, 13, 26, 0.95));
 }
 
 /* 中心光爆 */
@@ -211,7 +211,8 @@ function restart() {
   transform: translate(-50%, -50%);
   animation: burstGlow 1.1s var(--ease-out) both;
   pointer-events: none;
-  opacity: 0.32;
+  opacity: 0.28;
+  filter: blur(20px);
 }
 
 /* 内容层 */
@@ -265,6 +266,7 @@ function restart() {
   margin: 0;
   line-height: 1.1;
   animation: cardLight 0.8s var(--ease-in-out) both;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
 }
 
 .reveal-meta {

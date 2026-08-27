@@ -10,6 +10,14 @@
           </p>
         </div>
         <div class="select-progress">
+          <div class="progress-label">
+            <a-statistic :value="store.selectedCount" :value-style="{ color: '#fff', fontSize: '30px', fontWeight: 700 }">
+              <template #suffix>
+                <span class="progress-suffix">/ 10</span>
+              </template>
+            </a-statistic>
+            <span class="progress-hint">已选 {{ store.selectedCount }} 个词 · 选满 10 个即可开始匹配</span>
+          </div>
           <a-progress
             :percent="progressPercent"
             :show-info="false"
@@ -18,14 +26,6 @@
             stroke-linecap="round"
             class="progress-bar"
           />
-          <div class="progress-label">
-            <a-statistic :value="store.selectedCount" :value-style="{ color: '#fff', fontSize: '28px', fontWeight: 700 }">
-              <template #suffix>
-                <span class="progress-suffix">/ 10</span>
-              </template>
-            </a-statistic>
-            <span class="progress-hint">已选 {{ store.selectedCount }} 个词</span>
-          </div>
         </div>
       </header>
 
@@ -312,14 +312,16 @@ onBeforeUnmount(() => {
 }
 
 .select-progress {
-  width: clamp(220px, 22vw, 360px);
+  width: clamp(300px, 30vw, 460px);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .progress-bar {
   margin: 0;
+  width: 100%;
 }
 
 .progress-label {
@@ -327,6 +329,7 @@ onBeforeUnmount(() => {
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-2);
+  width: 100%;
 }
 
 .progress-suffix {
@@ -338,7 +341,8 @@ onBeforeUnmount(() => {
 
 .progress-hint {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
 }
 
 /* 词卡分组 */

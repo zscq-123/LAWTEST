@@ -1,0 +1,28 @@
+const tagIds = ["2:948","2:950","2:952","2:954","2:956","2:958","2:960","2:962","2:964","2:966"];
+let ops = tagIds.map((id) => `U("${id}",{autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center",padding:[0,6]}});`).join("\n");
+ops += `
+U("2:926",{height:368});
+U("2:1016",{height:236});
+U("2:1020",{height:176});
+U("2:1021",{height:38});
+U("2:1025",{height:38});
+U("2:1029",{height:38});
+U("2:1033",{height:38});
+U("2:1037",{height:340});
+U("2:1041",{height:280});
+U("2:1042",{height:64});
+U("2:1047",{height:64});
+U("2:1052",{height:64});
+U("2:1057",{height:64});
+U("2:1044",{height:64});
+U("2:1049",{height:64});
+U("2:1054",{height:64});
+U("2:1059",{height:64});
+U("2:1062",{height:216});
+U("2:1066",{height:156});
+U("2:1067",{height:74});
+U("2:1076",{height:74});
+U("2:1070",{height:60});
+U("2:1079",{height:60});
+`;
+export default { tool: "apply_design", args: { operations: ops } };

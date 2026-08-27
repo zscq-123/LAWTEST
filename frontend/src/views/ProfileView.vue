@@ -40,7 +40,7 @@
                   <div class="hero-illust-mask" />
                 </div>
 
-                <div class="hero-body">
+                <header class="hero-header">
                   <CareerAvatar
                     :id="report.career.id"
                     :name="report.career.name"
@@ -48,24 +48,29 @@
                     size="lg"
                     class="hero-avatar"
                   />
-                  <h2 class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</h2>
-                  <a-tag :color="careerColor" bordered class="hero-color">
-                    {{ report.career.colorName }} · 专属色 {{ report.career.colorCode }}
-                  </a-tag>
-                  <a-statistic
-                    class="hero-stat"
-                    title="匹配度"
-                    :value="firstSafe.matchRate"
-                    :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
-                    :suffix="`%`"
-                    :title-style="{ color: 'rgba(255, 255, 255, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
-                  />
-                  <blockquote class="hero-slogan">“{{ report.profile.slogan }}”</blockquote>
-                  <div class="hero-second">
-                    <span class="second-label">第二适配</span>
-                    <a-tag :color="secondSafe.colorCode" bordered>{{ secondSafe.name }}</a-tag>
-                    <span class="second-rate">{{ secondSafe.matchRate }}%</span>
+                  <div class="hero-titles">
+                    <h2 class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</h2>
+                    <a-tag :color="careerColor" bordered class="hero-color">
+                      {{ report.career.colorName }} · {{ report.career.colorCode }}
+                    </a-tag>
                   </div>
+                </header>
+
+                <a-statistic
+                  class="hero-stat"
+                  title="匹配度"
+                  :value="firstSafe.matchRate"
+                  :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
+                  :suffix="`%`"
+                  :title-style="{ color: 'rgba(255, 255, 255, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
+                />
+
+                <blockquote class="hero-slogan">“{{ report.profile.slogan }}”</blockquote>
+
+                <div class="hero-second">
+                  <span class="second-label">第二适配</span>
+                  <a-tag :color="secondSafe.colorCode" bordered>{{ secondSafe.name }}</a-tag>
+                  <span class="second-rate">{{ secondSafe.matchRate }}%</span>
                 </div>
               </article>
 
@@ -284,56 +289,67 @@ onMounted(() => {
   overflow: hidden;
   border: 1px solid;
   border-radius: var(--radius-lg);
-  padding: clamp(16px, 2.4vw, 32px) clamp(14px, 2vw, 28px);
+  padding: clamp(20px, 2.4vw, 36px) clamp(16px, 2vw, 32px);
   text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.4vh, 18px);
   animation: panelReveal 0.55s var(--ease-out) both;
   min-height: 0;
 }
 
 .hero-illust {
   position: absolute;
-  inset: 0 0 auto 0;
-  height: clamp(80px, 12vh, 180px);
+  inset: 0;
   overflow: hidden;
   pointer-events: none;
+  z-index: 0;
 }
 
 .hero-illust img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  object-position: center 28%;
   display: block;
+  opacity: 0.42;
 }
 
 .hero-illust-mask {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 60%, rgba(6, 13, 26, 0.4));
+  background: linear-gradient(180deg, rgba(6, 13, 26, 0.18), rgba(6, 13, 26, 0.55));
 }
 
-.hero-body {
+.hero-header {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(8px, 1vh, 14px);
-  padding-top: clamp(70px, 10vh, 160px);
-  flex: 1;
+  gap: clamp(6px, 0.8vh, 10px);
+  width: 100%;
 }
 
 .hero-avatar {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.hero-titles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .hero-name {
-  font-size: clamp(28px, 3vw, 48px);
+  font-size: clamp(28px, 3vw, 44px);
   font-weight: var(--fw-heavy);
   letter-spacing: clamp(2px, 0.4vw, 8px);
   margin: 0;
   line-height: 1.1;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
 }
 
 .hero-color {
@@ -343,27 +359,33 @@ onMounted(() => {
 }
 
 .hero-stat {
-  margin-top: var(--space-2);
+  position: relative;
+  z-index: 1;
 }
 
 .hero-stat :deep(.ant-statistic-content) {
   font-feature-settings: 'tnum';
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 }
 
 .hero-slogan {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-size: clamp(14px, 1.4vw, 20px);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.92);
   font-style: italic;
   letter-spacing: 1px;
   padding: 0 var(--space-3);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hero-second {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: clamp(4px, 0.6vh, 8px);
   padding: clamp(5px, 0.7vh, 8px) clamp(10px, 1.2vw, 18px);
   border-radius: var(--radius-pill);
   background: var(--bg-panel);

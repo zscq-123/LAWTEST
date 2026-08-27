@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>揭晓 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 42px 84px 30px;
+      gap: 8px;
+    }
+
+    /* 背景插画 + 暗化 + 光爆 */
+    .reveal-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .reveal-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.5;
+      display: block;
+    }
+
+    .reveal-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(820px 620px at 50% 44%, rgba(46, 107, 230, 0.34), transparent 62%),
+        radial-gradient(120% 120% at 50% 50%, transparent 30%, rgba(4, 9, 18, 0.86) 82%, #060d1a 100%);
+    }
+
+    .reveal-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(560px 420px at 50% 45%, rgba(46, 107, 230, 0.2), transparent 70%);
+      animation: burst 3.4s ease-in-out infinite;
+    }
+
+    @keyframes burst {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+
+    .reveal-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-top: 6px;
+    }
+
+    .reveal-tag {
+      height: 38px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(46, 107, 230, 0.6);
+      background: rgba(46, 107, 230, 0.12);
+      color: #9fc3ff;
+      font-size: 16px;
+      letter-spacing: 3px;
+      box-shadow: 0 0 22px rgba(46, 107, 230, 0.25);
+    }
+
+    .reveal-avatar {
+      margin-top: 6px;
+    }
+
+    .reveal-career {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      color: #2e6be6;
+      text-shadow: 0 0 34px rgba(46, 107, 230, 0.55), 0 2px 8px rgba(0, 0, 0, 0.6);
+      line-height: 1.15;
+    }
+
+    .reveal-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .reveal-slogan {
+      font-size: 18px;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .reveal-match {
+      font-size: 96px;
+      font-weight: 800;
+      line-height: 1;
+      color: #2e6be6;
+      text-shadow: 0 0 40px rgba(46, 107, 230, 0.6), 0 3px 10px rgba(0, 0, 0, 0.6);
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+
+    .reveal-match .pct {
+      font-size: 40px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .reveal-second {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: var(--radius-pill);
+      background: rgba(200, 16, 46, 0.12);
+      border: 1px solid rgba(200, 16, 46, 0.5);
+      color: #ff9aa8;
+      font-size: 15px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 18px rgba(200, 16, 46, 0.22);
+    }
+
+    .reveal-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .reveal-disclaimer {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+    <div class="reveal-bg">
+      <img src="../assets/illustrations/judge.png" alt="">
+    </div>
+
+    <!-- 流程步骤条：第 3 步高亮 -->
+    <nav class="steps glass" style="position: relative; z-index: 2;" aria-label="测试流程">
+      <div class="step done">
+        <span class="step-dot">✓</span><span class="step-label">勾选特质</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step done">
+        <span class="step-dot">✓</span><span class="step-label">匹配职业</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step active">
+        <span class="step-dot">3</span><span class="step-label">揭晓画像</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">4</span><span class="step-label">扫码保存</span>
+      </div>
+    </nav>
+
+    <main class="reveal-inner">
+      <div class="reveal-tag">你的职业画像已生成</div>
+
+      <div class="career-avatar avatar-xl breathe reveal-avatar" style="--ac: #2E6BE6;">
+        <img src="../assets/icons/judge.png" alt="法官">
+      </div>
+
+      <h1 class="reveal-career">法官</h1>
+
+      <div class="reveal-meta">
+        <span class="tag career-tag tag-lg" style="--tc: #2E6BE6;">苍穹蓝 #2E6BE6</span>
+        <span class="reveal-slogan">「法平如水，公正如一」</span>
+      </div>
+
+      <div class="reveal-match">86<span class="pct">%</span></div>
+
+      <span class="reveal-second">第二适配 · 检察官 · 72%</span>
+
+      <div class="reveal-actions">
+        <button class="btn btn-primary btn-lg">查看职业画像</button>
+        <button class="btn btn-ghost btn-lg">重新测试</button>
+      </div>
+
+      <div class="disclaimer reveal-disclaimer">本结果为兴趣初步画像，仅供参考 · 测试时长约 2 分钟</div>
+    </main>
+  </div>
+</body>
+</html>

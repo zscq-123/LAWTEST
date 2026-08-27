@@ -62,8 +62,8 @@ function isTop(id: number): boolean {
 }
 
 .race-track {
-  flex: 1;
-  max-width: clamp(120px, 12vw, 240px);
+  flex: 0 1 auto;
+  width: clamp(140px, 12vw, 220px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -77,6 +77,8 @@ function isTop(id: number): boolean {
   margin-bottom: clamp(8px, 1.4vh, 16px);
   font-size: clamp(14px, 1.35vw, 22px);
   color: rgba(255, 255, 255, 0.92);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 1px;
 }
 
 .race-dot {
@@ -88,13 +90,14 @@ function isTop(id: number): boolean {
 
 .race-meter {
   flex: 1;
-  width: clamp(36px, 3.4vw, 72px);
+  width: clamp(56px, 5vw, 96px);
   border-radius: 32px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-default);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
+  position: relative;
 }
 
 .race-fill {
@@ -104,23 +107,47 @@ function isTop(id: number): boolean {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 6px;
+  padding-top: 8px;
 }
 
-/* 领跑赛道：顶部高亮光点 */
+/* 领跑赛道：强光 + 顶部光晕 */
 .race-fill.race-win {
   animation: energyPulse 1.2s ease-in-out infinite;
+  box-shadow:
+    0 0 24px currentColor,
+    inset 0 0 16px rgba(255, 255, 255, 0.25) !important;
+  position: relative;
+}
+
+.race-fill.race-win::before {
+  content: '领跑';
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #faad14, #ff7a45);
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 16px rgba(250, 173, 20, 0.5);
+  z-index: 2;
 }
 
 .race-value {
   font-size: clamp(16px, 1.6vw, 24px);
   font-weight: 700;
   color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 .race-pct {
   margin-top: clamp(6px, 1.2vh, 14px);
   font-size: clamp(14px, 1.3vw, 20px);
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+  font-feature-settings: 'tnum';
 }
 </style>

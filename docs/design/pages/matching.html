@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>匹配动画 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 84px 26px;
+      gap: 12px;
+    }
+
+    .match-title {
+      margin-top: 26px;
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-align: center;
+    }
+
+    .match-subtitle {
+      margin-top: 14px;
+      font-size: 18px;
+      color: var(--text-sub);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .race-area {
+      flex: 1;
+      width: 1180px;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 18px 10px 6px;
+    }
+
+    .race-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .race-name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .race-name .nm {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+
+    .race-name .sc {
+      font-size: 15px;
+      color: var(--ac, #fff);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .race-tube {
+      flex: 1;
+      width: 152px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .race-fill {
+      width: 100%;
+      border-radius: 24px 24px 8px 8px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ac, #1677ff) 88%, #fff), var(--ac, #1677ff) 55%, color-mix(in srgb, var(--ac, #1677ff) 78%, #000));
+      box-shadow: 0 0 26px color-mix(in srgb, var(--ac, #1677ff) 48%, transparent);
+      position: relative;
+      transition: height 1.6s var(--ease-out);
+    }
+
+    .race-fill .score {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .race-item.lead .race-tube {
+      border-color: color-mix(in srgb, var(--ac, #1677ff) 70%, transparent);
+      box-shadow: 0 0 34px color-mix(in srgb, var(--ac, #1677ff) 40%, transparent);
+    }
+
+    .lead-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 26px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, #ffd666, #faad14);
+      color: #5c3d00;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px rgba(250, 173, 20, 0.45);
+      white-space: nowrap;
+      animation: leadPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes leadPulse {
+      0%, 100% { box-shadow: 0 4px 14px rgba(250, 173, 20, 0.35); }
+      50% { box-shadow: 0 4px 26px rgba(250, 173, 20, 0.7); }
+    }
+
+    .race-pct {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ac, #fff);
+      letter-spacing: 1px;
+    }
+
+    .race-item.lead .race-pct {
+      text-shadow: 0 0 14px color-mix(in srgb, var(--ac, #1677ff) 65%, transparent);
+    }
+
+    .match-disclaimer {
+      padding-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+
+    <!-- 流程步骤条：第 2 步高亮 -->
+    <nav class="steps glass" aria-label="测试流程">
+      <div class="step done">
+        <span class="step-dot">✓</span><span class="step-label">勾选特质</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step active">
+        <span class="step-dot">2</span><span class="step-label">匹配职业</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">3</span><span class="step-label">揭晓画像</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">4</span><span class="step-label">扫码保存</span>
+      </div>
+    </nav>
+
+    <h1 class="match-title soft-glow">正在为你匹配职业方向…</h1>
+    <p class="match-subtitle">五色能量柱正在竞速 · 你的特质正在汇聚成答案</p>
+
+    <!-- 五条竞速能量柱 -->
+    <main class="race-area">
+      <div class="race-item lead" style="--ac: #2E6BE6;">
+        <div class="race-name">
+          <span class="nm">法官</span>
+          <span class="sc">苍穹蓝</span>
+        </div>
+        <div class="race-tube">
+          <div class="race-fill" style="height: 70%;">
+            <span class="score">70%</span>
+            <span class="lead-badge">⚡ 领跑</span>
+          </div>
+        </div>
+        <span class="race-pct">70%</span>
+      </div>
+
+      <div class="race-item" style="--ac: #C8102E;">
+        <div class="race-name">
+          <span class="nm">检察官</span>
+          <span class="sc">中国红</span>
+        </div>
+        <div class="race-tube">
+          <div class="race-fill" style="height: 58%;">
+            <span class="score">58%</span>
+          </div>
+        </div>
+        <span class="race-pct">58%</span>
+      </div>
+
+      <div class="race-item" style="--ac: #F5F7FA;">
+        <div class="race-name">
+          <span class="nm">律师</span>
+          <span class="sc">皓月白</span>
+        </div>
+        <div class="race-tube">
+          <div class="race-fill" style="height: 45%;">
+            <span class="score">45%</span>
+          </div>
+        </div>
+        <span class="race-pct">45%</span>
+      </div>
+
+      <div class="race-item" style="--ac: #7B5EA7;">
+        <div class="race-name">
+          <span class="nm">企业法务</span>
+          <span class="sc">琉璃紫</span>
+        </div>
+        <div class="race-tube">
+          <div class="race-fill" style="height: 32%;">
+            <span class="score">32%</span>
+          </div>
+        </div>
+        <span class="race-pct">32%</span>
+      </div>
+
+      <div class="race-item" style="--ac: #12B5A5;">
+        <div class="race-name">
+          <span class="nm">AI伦理合规顾问</span>
+          <span class="sc">科创青</span>
+        </div>
+        <div class="race-tube">
+          <div class="race-fill" style="height: 20%;">
+            <span class="score">20%</span>
+          </div>
+        </div>
+        <span class="race-pct">20%</span>
+      </div>
+    </main>
+
+    <footer class="disclaimer match-disclaimer">
+      本结果为兴趣初步画像，仅供参考 · 测试时长约 2 分钟
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>体能赋能 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 72px 22px;
+      gap: 14px;
+    }
+
+    .fit-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 6px;
+    }
+
+    .fit-title {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .fit-title .job {
+      color: #2e6be6;
+      text-shadow: 0 0 26px rgba(46, 107, 230, 0.5);
+    }
+
+    .fit-subtitle {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .fit-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 360px 1fr 1.05fr;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    /* 左栏插画卡 */
+    .fit-illust-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(46, 107, 230, 0.35);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fit-illust {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #2e6be6 0%, #0e2b5e 100%);
+    }
+
+    .fit-illust img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.82;
+      display: block;
+    }
+
+    .fit-illust::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 35%, rgba(8, 14, 26, 0.92) 100%);
+    }
+
+    .fit-illust-info {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 16px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .fit-illust-info .nm {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    .fit-illust-info .sg {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 1px;
+    }
+
+    /* 中右栏面板 */
+    .fit-panel {
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fit-panel .list {
+      margin-top: 12px;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .fit-panel .num-item {
+      flex: 1;
+      align-items: center;
+    }
+
+    /* 时间线 */
+    .timeline {
+      margin-top: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(46, 107, 230, 0.7), rgba(46, 107, 230, 0.12));
+      border-radius: 2px;
+    }
+
+    .tl-node {
+      position: relative;
+      padding: 0 0 14px 34px;
+      flex: 1;
+    }
+
+    .tl-node:last-child {
+      padding-bottom: 0;
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0b1220;
+      border: 2px solid #2e6be6;
+      box-shadow: 0 0 12px rgba(46, 107, 230, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tl-dot::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2e6be6;
+      box-shadow: 0 0 8px rgba(46, 107, 230, 0.9);
+    }
+
+    .tl-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .tl-content {
+      margin-top: 5px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.3px;
+    }
+
+    .fit-foot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding-top: 2px;
+    }
+
+    .fit-actions {
+      display: flex;
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+
+    <!-- 顶部 -->
+    <header class="fit-head">
+      <div>
+        <h1 class="fit-title"><span class="job">法官</span> · 体能赋能方案</h1>
+        <p class="fit-subtitle">身体是职业长跑的本钱，大学四年一步一步来</p>
+      </div>
+      <button class="btn btn-ghost">返回画像</button>
+    </header>
+
+    <main class="fit-main">
+      <!-- 左栏：职业插画卡 -->
+      <aside class="fit-illust-card">
+        <div class="fit-illust">
+          <img src="../assets/illustrations/judge.png" alt="法官">
+          <div class="fit-illust-info">
+            <span class="tag career-tag" style="--tc:#2E6BE6;">苍穹蓝 #2E6BE6</span>
+            <div class="nm">法官</div>
+            <div class="sg">「法平如水，公正如一」</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 中栏：身体素质达标要求 -->
+      <section class="fit-panel glass">
+        <h2 class="panel-title" style="--tt:#2E6BE6;">身体素质达标要求</h2>
+        <div class="list">
+          <div class="num-item">
+            <span class="num" style="--nn:#2E6BE6;">1</span>
+            <span class="num-text"><strong>体检标准：</strong>严格符合公务员录用体检通用标准，无传染病、无影响履职的身体缺陷。</span>
+          </div>
+          <div class="num-item">
+            <span class="num" style="--nn:#2E6BE6;">2</span>
+            <span class="num-text"><strong>体态风貌：</strong>五官端正、体态得体，具备良好精神风貌，适配庭审履职场景。</span>
+          </div>
+          <div class="num-item">
+            <span class="num" style="--nn:#2E6BE6;">3</span>
+            <span class="num-text"><strong>视力要求：</strong>视力达标，无色盲色弱，可长期审阅卷宗、研判案件。</span>
+          </div>
+          <div class="num-item">
+            <span class="num" style="--nn:#2E6BE6;">4</span>
+            <span class="num-text"><strong>身心耐力：</strong>身心稳定、耐力充足，可适应连续开庭、密集合议、加班办案的高强度节奏。</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右栏：四年锻炼计划 -->
+      <section class="fit-panel glass">
+        <h2 class="panel-title" style="--tt:#2E6BE6;">大学四年阶梯式锻炼计划</h2>
+        <div class="timeline">
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-title">大一 · 体能筑基</div>
+            <div class="tl-content">按公务员体检标准完成预检，建立慢跑＋拉伸习惯，改善体态。</div>
+          </div>
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-title">大二 · 专项强化</div>
+            <div class="tl-content">站姿坐姿形体训练，下肢耐力训练，适配连续开庭久坐/久站。</div>
+          </div>
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-title">大三 · 职业场景模拟</div>
+            <div class="tl-content">长时间庭审模拟下的注意力训练，情绪调节与放松练习。</div>
+          </div>
+          <div class="tl-node">
+            <span class="tl-dot"></span>
+            <div class="tl-title">大四 · 达标冲刺</div>
+            <div class="tl-content">体检复查与达标冲刺，保持有氧＋核心训练常态化。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部操作 -->
+    <footer class="fit-foot">
+      <div class="fit-actions">
+        <button class="btn btn-primary btn-lg">扫码带走</button>
+        <button class="btn btn-ghost btn-lg">导师对接</button>
+      </div>
+      <div class="disclaimer">本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。</div>
+    </footer>
+  </div>
+</body>
+</html>

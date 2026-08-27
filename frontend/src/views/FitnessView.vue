@@ -23,8 +23,18 @@
         <template v-else>
           <section class="fitness-body">
             <aside v-if="careerIllustration(report.career.id)" class="fitness-side panel-in">
-              <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
+              <div class="side-illust">
+                <img :src="careerIllustration(report.career.id)" :alt="report.career.name" />
+                <div class="side-illust-mask" />
+              </div>
               <div class="side-meta">
+                <CareerAvatar
+                  :id="report.career.id"
+                  :name="report.career.name"
+                  :color="careerColor"
+                  size="md"
+                  class="side-avatar"
+                />
                 <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
                 <a-tag :color="careerColor" bordered class="side-color">
                   {{ report.career.colorName }}
@@ -176,6 +186,7 @@ const careerTheme = computed(() => ({
 
 /* 侧边插画卡 */
 .fitness-side {
+  position: relative;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -186,25 +197,44 @@ const careerTheme = computed(() => ({
   backdrop-filter: blur(12px);
 }
 
-.fitness-side img {
-  width: 100%;
-  flex: 1;
+.side-illust {
+  position: relative;
+  height: 55%;
   min-height: 0;
+  overflow: hidden;
+}
+
+.side-illust img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  object-position: center 28%;
+  display: block;
+}
+
+.side-illust-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 13, 26, 0.1) 0%, rgba(6, 13, 26, 0.7) 100%);
 }
 
 .side-meta {
-  padding: clamp(10px, 1.4vh, 18px) clamp(12px, 1.4vw, 20px) clamp(14px, 2vh, 22px);
+  flex: 1;
+  padding: clamp(12px, 1.6vh, 22px) clamp(12px, 1.4vw, 22px);
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   align-items: center;
+  gap: var(--space-2);
+  min-height: 0;
+}
+
+.side-avatar {
+  margin-bottom: var(--space-2);
 }
 
 .side-name {
-  font-size: clamp(18px, 1.8vw, 24px);
+  font-size: clamp(20px, 2vw, 28px);
   font-weight: var(--fw-heavy);
   letter-spacing: 2px;
 }
@@ -220,6 +250,7 @@ const careerTheme = computed(() => ({
   letter-spacing: 0.5px;
   font-style: italic;
   margin-top: var(--space-2);
+  line-height: 1.5;
 }
 
 /* 面板 */

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>首页 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 34px 84px 30px;
+      gap: 14px;
+    }
+
+    /* ---- 顶部 ---- */
+    .home-head {
+      text-align: center;
+    }
+
+    .home-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      height: 34px;
+      padding: 0 18px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(122, 184, 255, 0.45);
+      background: rgba(22, 119, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 14px;
+      letter-spacing: 2px;
+      box-shadow: 0 0 20px rgba(22, 119, 255, 0.18);
+    }
+
+    .home-tag .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 10px var(--brand), 0 0 18px var(--brand);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+
+    .home-title {
+      margin-top: 16px;
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      line-height: 1.12;
+    }
+
+    .home-subtitle {
+      margin-top: 14px;
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: var(--text-sub);
+    }
+
+    /* ---- 步骤条（未开始） ---- */
+    .home-steps {
+      margin: 4px auto 0;
+    }
+
+    /* ---- 职业卡片 ---- */
+    .home-grid {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .career-card {
+      width: 302px;
+      height: 452px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
+        border-color 0.35s;
+    }
+
+    .career-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ac, var(--brand));
+      box-shadow: 0 0 18px var(--ac, var(--brand));
+      z-index: 3;
+    }
+
+    .career-card:hover {
+      transform: translateY(-8px);
+      border-color: color-mix(in srgb, var(--ac, #1677ff) 55%, transparent);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 34px color-mix(in srgb, var(--ac, #1677ff) 30%, transparent);
+    }
+
+    .career-illust {
+      height: 178px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .career-illust img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .career-illust::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(7, 12, 22, 0.92) 100%);
+    }
+
+    .career-card-body {
+      position: relative;
+      padding: 18px 20px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: -34px;
+      z-index: 2;
+    }
+
+    .career-name {
+      font-size: 27px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+
+    .career-slogan {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 1px;
+      line-height: 1.5;
+    }
+
+    /* ---- 底部 ---- */
+    .home-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    .home-actions {
+      display: flex;
+      gap: 18px;
+    }
+
+    .home-tip {
+      font-size: 14px;
+      color: var(--text-faint);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+
+    <!-- 顶部 -->
+    <header class="home-head">
+      <div class="home-tag"><span class="dot"></span>法学院迎新特别活动 · V1.0</div>
+      <h1 class="home-title glow-text">五彩法途 · 筑梦未来</h1>
+      <p class="home-subtitle">75 个特质词 · 5 大法律职业方向 · 3 分钟生成专属职业画像</p>
+    </header>
+
+    <!-- 流程步骤条：未开始 -->
+    <nav class="steps glass home-steps" aria-label="测试流程">
+      <div class="step">
+        <span class="step-dot">1</span><span class="step-label">勾选特质</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">2</span><span class="step-label">匹配职业</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">3</span><span class="step-label">揭晓画像</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <span class="step-dot">4</span><span class="step-label">扫码保存</span>
+      </div>
+    </nav>
+
+    <!-- 五张职业卡片 -->
+    <section class="home-grid">
+      <article class="career-card" style="--ac: var(--c-lawyer);">
+        <div class="career-illust">
+          <img src="../assets/illustrations/lawyer.png" alt="律师">
+        </div>
+        <div class="career-card-body">
+          <div class="career-avatar avatar-md" style="--ac: var(--c-lawyer);">
+            <img src="../assets/icons/lawyer.png" alt="">
+          </div>
+          <div class="career-name" style="color: var(--c-lawyer);">律师</div>
+          <span class="tag career-tag" style="--tc: var(--c-lawyer);">皓月白 #F5F7FA</span>
+          <div class="career-slogan">“以法为盾，以理服人”</div>
+        </div>
+      </article>
+
+      <article class="career-card" style="--ac: var(--c-judge);">
+        <div class="career-illust">
+          <img src="../assets/illustrations/judge.png" alt="法官">
+        </div>
+        <div class="career-card-body">
+          <div class="career-avatar avatar-md" style="--ac: var(--c-judge);">
+            <img src="../assets/icons/judge.png" alt="">
+          </div>
+          <div class="career-name" style="color: var(--c-judge);">法官</div>
+          <span class="tag career-tag" style="--tc: var(--c-judge);">苍穹蓝 #2E6BE6</span>
+          <div class="career-slogan">“法平如水，公正如一”</div>
+        </div>
+      </article>
+
+      <article class="career-card" style="--ac: var(--c-prosecutor);">
+        <div class="career-illust">
+          <img src="../assets/illustrations/prosecutor.png" alt="检察官">
+        </div>
+        <div class="career-card-body">
+          <div class="career-avatar avatar-md" style="--ac: var(--c-prosecutor);">
+            <img src="../assets/icons/prosecutor.png" alt="">
+          </div>
+          <div class="career-name" style="color: var(--c-prosecutor);">检察官</div>
+          <span class="tag career-tag" style="--tc: var(--c-prosecutor);">中国红 #C8102E</span>
+          <div class="career-slogan">“恪守正义，敢于亮剑”</div>
+        </div>
+      </article>
+
+      <article class="career-card" style="--ac: var(--c-legal);">
+        <div class="career-illust">
+          <img src="../assets/illustrations/legal.png" alt="企业法务">
+        </div>
+        <div class="career-card-body">
+          <div class="career-avatar avatar-md" style="--ac: var(--c-legal);">
+            <img src="../assets/icons/legal.png" alt="">
+          </div>
+          <div class="career-name" style="color: var(--c-legal);">企业法务</div>
+          <span class="tag career-tag" style="--tc: var(--c-legal);">琉璃紫 #7B5EA7</span>
+          <div class="career-slogan">“行稳致远，合规制胜”</div>
+        </div>
+      </article>
+
+      <article class="career-card" style="--ac: var(--c-ai);">
+        <div class="career-illust">
+          <img src="../assets/illustrations/ai-ethics.png" alt="AI伦理合规顾问">
+        </div>
+        <div class="career-card-body">
+          <div class="career-avatar avatar-md" style="--ac: var(--c-ai);">
+            <img src="../assets/icons/ai-ethics.png" alt="">
+          </div>
+          <div class="career-name" style="color: var(--c-ai);">AI伦理合规顾问</div>
+          <span class="tag career-tag" style="--tc: var(--c-ai);">科创青 #12B5A5</span>
+          <div class="career-slogan">“科技向善，规则先行”</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 底部操作 -->
+    <footer class="home-footer">
+      <div class="home-actions">
+        <button class="btn btn-primary btn-lg">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          </span>
+          开始测试
+        </button>
+        <button class="btn btn-ghost btn-lg">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.5l2.95 6.06 6.72.86-4.94 4.67 1.3 6.6L12 17.4l-6.03 3.29 1.3-6.6L2.33 9.42l6.72-.86L12 2.5z" opacity="0.9"/></svg>
+          </span>
+          我的收藏
+        </button>
+      </div>
+      <div class="home-tip">本结果为兴趣初步画像，仅供参考 · 测试时长约 2 分钟</div>
+    </footer>
+  </div>
+</body>
+</html>

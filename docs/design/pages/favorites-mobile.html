@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的收藏 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .m-page {
+      width: 390px;
+      height: 844px;
+      margin: 0 auto;
+      background: #f5f7fa;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 吸顶栏 */
+    .fav-head {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 16px 14px;
+      background: rgba(245, 247, 250, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e6ebf2;
+    }
+
+    .fav-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #1f2733;
+      letter-spacing: 0.5px;
+    }
+
+    .fav-title svg {
+      width: 18px;
+      height: 18px;
+      fill: #faad14;
+    }
+
+    .fav-count {
+      height: 20px;
+      min-width: 20px;
+      padding: 0 7px;
+      border-radius: var(--radius-pill);
+      background: #faad14;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fav-head-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .fav-head-actions .m-btn {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 13px;
+    }
+
+    .fav-head-actions .m-btn-danger {
+      background: #fff;
+      border-color: #ffccc7;
+      color: #c8102e;
+    }
+
+    /* 列表 */
+    .fav-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .fav-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(31, 39, 51, 0.06);
+      border-left: 4px solid var(--cc, #1677ff);
+      padding: 14px;
+      cursor: pointer;
+    }
+
+    .fav-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fav-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 13px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: linear-gradient(140deg, var(--cc, #1677ff), color-mix(in srgb, var(--cc, #1677ff) 72%, #000));
+      box-shadow: 0 0 14px color-mix(in srgb, var(--cc, #1677ff) 36%, transparent);
+    }
+
+    .fav-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .fav-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .fav-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fav-name {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #1f2733;
+    }
+
+    .fav-match-tag {
+      height: 20px;
+      padding: 0 8px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--cc, #1677ff);
+    }
+
+    .fav-code {
+      margin-top: 5px;
+      font-size: 12.5px;
+      color: #64748b;
+      letter-spacing: 0.3px;
+    }
+
+    .fav-time {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #8a97a8;
+    }
+
+    .fav-time svg {
+      width: 13px;
+      height: 13px;
+      stroke: #8a97a8;
+    }
+
+    .fav-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e6ebf2;
+    }
+
+    .fav-actions .m-btn {
+      height: 32px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .fav-actions .m-btn-danger {
+      background: #fff;
+      border-color: #ffd6d0;
+      color: #c8102e;
+    }
+
+    /* 空状态（设计稿附注：实际为可切换状态） */
+    .empty-note {
+      margin: 0 16px 16px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(250, 173, 20, 0.1);
+      border: 1px dashed rgba(250, 173, 20, 0.5);
+      color: #8a6d1a;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="m-page">
+    <!-- 吸顶栏 -->
+    <header class="fav-head">
+      <div class="fav-title">
+        <svg viewBox="0 0 24 24"><path d="M12 2.5l2.95 6.06 6.72.86-4.94 4.67 1.3 6.6L12 17.4l-6.03 3.29 1.3-6.6L2.33 9.42l6.72-.86L12 2.5z"/></svg>
+        我的收藏
+        <span class="fav-count">2</span>
+      </div>
+      <div class="fav-head-actions">
+        <button class="m-btn m-btn-ghost">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+          首页
+        </button>
+        <button class="m-btn m-btn-danger">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          清空
+        </button>
+      </div>
+    </header>
+
+    <!-- 收藏列表 -->
+    <main class="fav-list">
+      <article class="fav-card" style="--cc:#2E6BE6;">
+        <div class="fav-main">
+          <div class="fav-avatar"><img src="../assets/icons/judge.png" alt="法官"></div>
+          <div class="fav-info">
+            <div class="fav-name-row">
+              <span class="fav-name">法官</span>
+              <span class="fav-match-tag">86%</span>
+            </div>
+            <div class="fav-code">编号 WCT202608271234</div>
+            <div class="fav-time">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              生成于 2026-08-27 10:30
+            </div>
+          </div>
+        </div>
+        <div class="fav-actions">
+          <button class="m-btn m-btn-ghost">取消收藏</button>
+          <button class="m-btn m-btn-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            打开报告
+          </button>
+        </div>
+      </article>
+
+      <article class="fav-card" style="--cc:#C8102E;">
+        <div class="fav-main">
+          <div class="fav-avatar"><img src="../assets/icons/prosecutor.png" alt="检察官"></div>
+          <div class="fav-info">
+            <div class="fav-name-row">
+              <span class="fav-name">检察官</span>
+              <span class="fav-match-tag">72%</span>
+            </div>
+            <div class="fav-code">编号 WCT202608271205</div>
+            <div class="fav-time">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              生成于 2026-08-26 15:20
+            </div>
+          </div>
+        </div>
+        <div class="fav-actions">
+          <button class="m-btn m-btn-ghost">取消收藏</button>
+          <button class="m-btn m-btn-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            打开报告
+          </button>
+        </div>
+      </article>
+
+      <div class="empty-note">
+        空状态示意：当收藏为 0 时展示 Empty 组件「还没有收藏报告，快去测试并收藏一份吧」+「前往测试」按钮，此稿展示的是已收藏 2 份的状态。
+      </div>
+    </main>
+  </div>
+</body>
+</html>

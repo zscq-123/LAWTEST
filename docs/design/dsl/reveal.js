@@ -1,0 +1,51 @@
+let ops = `
+bg=I("2:65",{type:"frame",name:"背景光晕",width:1920,height:1080,layoutPositioning:true,left:0,top:0});
+gl1=I(bg,{type:"frame",name:"蓝光",left:-160,top:-140,width:980,height:620,cornerRadius:"auto",fillPaints:[{type:"gradient_radial",stops:[{color:"#2E6BE629",position:0},{color:"#2E6BE600",position:1}]}]});
+gl2=I(bg,{type:"frame",name:"青光",left:1150,top:-160,width:900,height:580,cornerRadius:"auto",fillPaints:[{type:"gradient_radial",stops:[{color:"#12B5A524",position:0},{color:"#12B5A500",position:1}]}]});
+gl3=I(bg,{type:"frame",name:"紫光",left:-180,top:560,width:980,height:640,cornerRadius:"auto",fillPaints:[{type:"gradient_radial",stops:[{color:"#7B5EA72E",position:0},{color:"#7B5EA700",position:1}]}]});
+gl4=I(bg,{type:"frame",name:"红光",left:1120,top:540,width:960,height:620,cornerRadius:"auto",fillPaints:[{type:"gradient_radial",stops:[{color:"#C8102E29",position:0},{color:"#C8102E00",position:1}]}]});
+burst=I(bg,{type:"frame",name:"中心光爆",left:360,top:120,width:1200,height:840,cornerRadius:"auto",fillPaints:[{type:"gradient_radial",stops:[{color:"#2E6BE633",position:0},{color:"#2E6BE600",position:0.7}]}]});
+
+steps=I("2:65",{type:"frame",name:"流程步骤条",width:780,height:60,autoLayout:{direction:"horizontal",alignItems:"center",gap:0,padding:[14,30]},cornerRadius:"$r14",fillPaints:"$glass_bg",stroke:{borderWeight:1,strokePaints:"$glass_border"},effects:[{type:"background_blur",radius:12,saturation:1}]});
+st1=I(steps,{type:"frame",name:"步骤1",width:110,height:30,autoLayout:{direction:"horizontal",alignItems:"center",gap:10}});
+sd1=I(st1,{type:"frame",name:"圆点1",width:30,height:30,cornerRadius:"auto",fillPaints:"#1677FF2E",stroke:{borderWeight:1,strokePaints:"$brand"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+sn1=I(sd1,{type:"icon_font",iconFontFamily:"lucide",iconFontName:"check",width:14,height:14,fillPaints:"#6AA8FF"});
+sl1=I(st1,{type:"text",nodeText:"勾选特质",fontFamily:"$font_main",fontSize:"$fs14",fontWeight:400,letterSpacing:1,fillPaints:"#FFFFFFC7"});
+ln1=I(steps,{type:"frame",name:"连线1",width:88,height:1,fillPaints:[{type:"gradient_linear",stops:[{color:"#1677FFB3",position:0},{color:"#FFFFFF24",position:1}],rotation:90}]});
+st2=I(steps,{type:"frame",name:"步骤2",width:110,height:30,autoLayout:{direction:"horizontal",alignItems:"center",gap:10}});
+sd2=I(st2,{type:"frame",name:"圆点2",width:30,height:30,cornerRadius:"auto",fillPaints:"#1677FF2E",stroke:{borderWeight:1,strokePaints:"$brand"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+sn2=I(sd2,{type:"icon_font",iconFontFamily:"lucide",iconFontName:"check",width:14,height:14,fillPaints:"#6AA8FF"});
+sl2=I(st2,{type:"text",nodeText:"匹配职业",fontFamily:"$font_main",fontSize:"$fs14",fontWeight:400,letterSpacing:1,fillPaints:"#FFFFFFC7"});
+ln2=I(steps,{type:"frame",name:"连线2",width:88,height:1,fillPaints:[{type:"gradient_linear",stops:[{color:"#1677FFB3",position:0},{color:"#FFFFFF24",position:1}],rotation:90}]});
+st3=I(steps,{type:"frame",name:"步骤3",width:110,height:30,autoLayout:{direction:"horizontal",alignItems:"center",gap:10}});
+sd3=I(st3,{type:"frame",name:"圆点3",width:30,height:30,cornerRadius:"auto",fillPaints:"$brand",stroke:{borderWeight:1,strokePaints:"$brand"},effects:[{type:"drop_shadow",color:"#1677FF73",radius:14}],autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+sn3=I(sd3,{type:"text",nodeText:"3",fontFamily:"$font_main",fontSize:"$fs13",fontWeight:700,fillPaints:"$white"});
+sl3=I(st3,{type:"text",nodeText:"揭晓画像",fontFamily:"$font_main",fontSize:"$fs14",fontWeight:600,letterSpacing:1,fillPaints:"$white"});
+ln3=I(steps,{type:"frame",name:"连线3",width:88,height:1,fillPaints:"#FFFFFF24"});
+st4=I(steps,{type:"frame",name:"步骤4",width:110,height:30,autoLayout:{direction:"horizontal",alignItems:"center",gap:10}});
+sd4=I(st4,{type:"frame",name:"圆点4",width:30,height:30,cornerRadius:"auto",fillPaints:"#FFFFFF0A",stroke:{borderWeight:1,strokePaints:"#FFFFFF38"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+sn4=I(sd4,{type:"text",nodeText:"4",fontFamily:"$font_main",fontSize:"$fs13",fontWeight:700,fillPaints:"$text_faint"});
+sl4=I(st4,{type:"text",nodeText:"扫码保存",fontFamily:"$font_main",fontSize:"$fs14",fontWeight:400,letterSpacing:1,fillPaints:"$text_faint"});
+
+body=I("2:65",{type:"frame",name:"揭晓内容",width:1920,height:900,autoLayout:{direction:"vertical",alignItems:"center",gap:18,padding:[30,0,0,0]}});
+rtag=I(body,{type:"frame",name:"画像标签",width:280,height:40,cornerRadius:"$r_pill",fillPaints:"#2E6BE61F",stroke:{borderWeight:1,strokePaints:"#2E6BE699"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+rtag1=I(rtag,{type:"text",nodeText:"你的职业画像已生成",fontFamily:"$font_main",fontSize:"$fs16",fontWeight:400,letterSpacing:3,fillPaints:"#9FC3FF"});
+rav=I(body,{type:"frame",name:"职业头像",width:132,height:132,cornerRadius:"$r24",fillPaints:[{type:"gradient_linear",stops:[{color:"$c_judge",position:0},{color:"#123A80",position:1}],rotation:140}],effects:[{type:"drop_shadow",color:"#2E6BE6A6",radius:40}],autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+ravi=I(rav,{type:"icon_font",iconFontFamily:"lucide",iconFontName:"landmark",width:64,height:64,fillPaints:"$white"});
+rnm=I(body,{type:"text",nodeText:"法官",fontFamily:"$font_main",fontSize:"$fs64",fontWeight:800,letterSpacing:8,fillPaints:"$c_judge",effects:[{type:"drop_shadow",color:"#2E6BE68C",radius:34,offset:{x:0,y:0}},{type:"drop_shadow",color:"#00000099",radius:8,offset:{x:0,y:2}}]});
+rmeta=I(body,{type:"frame",name:"标签行",width:760,height:36,autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center",gap:14}});
+rmt=I(rmeta,{type:"frame",name:"颜色标签",width:170,height:32,cornerRadius:"$r_pill",fillPaints:"#2E6BE629",stroke:{borderWeight:1,strokePaints:"#2E6BE673"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+rmt1=I(rmt,{type:"text",nodeText:"苍穹蓝 #2E6BE6",fontFamily:"$font_main",fontSize:"$fs14",fontWeight:500,fillPaints:"$c_judge"});
+rms=I(rmeta,{type:"text",nodeText:"「法平如水，公正如一」",fontFamily:"$font_main",fontSize:"$fs18",fontWeight:400,letterSpacing:3,fillPaints:"#FFFFFFC7"});
+rmch=I(body,{type:"text",nodeText:"86%",fontFamily:"$font_main",fontSize:"$fs96",fontWeight:800,letterSpacing:2,fillPaints:"$c_judge",effects:[{type:"drop_shadow",color:"#2E6BE699",radius:40,offset:{x:0,y:0}},{type:"drop_shadow",color:"#00000099",radius:10,offset:{x:0,y:3}}]});
+rsec=I(body,{type:"frame",name:"第二适配",width:300,height:42,cornerRadius:"$r_pill",fillPaints:"#C8102E1F",stroke:{borderWeight:1,strokePaints:"#C8102E80"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+rsec1=I(rsec,{type:"text",nodeText:"第二适配 · 检察官 · 72%",fontFamily:"$font_main",fontSize:"$fs15",fontWeight:400,letterSpacing:1,fillPaints:"#FF9AA8"});
+ract=I(body,{type:"frame",name:"操作区",width:560,height:56,autoLayout:{direction:"horizontal",gap:16,alignItems:"center",justifyContent:"center"}});
+rb1=I(ract,{type:"frame",name:"查看职业画像",width:260,height:56,cornerRadius:"$r_pill",fillPaints:[{type:"gradient_linear",stops:[{color:"$brand_light",position:0},{color:"$brand",position:1}],rotation:180}],effects:[{type:"drop_shadow",color:"#1677FF73",radius:24,offset:{x:0,y:6}}],autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center",gap:8}});
+rb1t=I(rb1,{type:"text",nodeText:"查看职业画像",fontFamily:"$font_main",fontSize:"$fs18",fontWeight:600,letterSpacing:1,fillPaints:"$white"});
+rb2=I(ract,{type:"frame",name:"重新测试",width:260,height:56,cornerRadius:"$r_pill",fillPaints:"#FFFFFF0A",stroke:{borderWeight:1,strokePaints:"#FFFFFF47"},autoLayout:{direction:"horizontal",alignItems:"center",justifyContent:"center"}});
+rb2t=I(rb2,{type:"text",nodeText:"重新测试",fontFamily:"$font_main",fontSize:"$fs18",fontWeight:600,letterSpacing:1,fillPaints:"#FFFFFFE0"});
+rdsc=I(body,{type:"text",nodeText:"本结果为兴趣初步画像，仅供参考 · 测试时长约 2 分钟",fontFamily:"$font_main",fontSize:"$fs13",fontWeight:400,letterSpacing:1,fillPaints:"$text_faint"});
+`;
+
+export default { tool: "apply_design", args: { operations: ops } };

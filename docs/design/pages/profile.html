@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>职业画像 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 72px 22px;
+      gap: 14px;
+    }
+
+    .prof-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 6px;
+    }
+
+    .prof-title {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #2e6be6;
+      text-shadow: 0 0 28px rgba(46, 107, 230, 0.5);
+    }
+
+    .prof-subtitle {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .prof-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    /* ---- 左侧 Hero ---- */
+    .hero-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(46, 107, 230, 0.35);
+      box-shadow: var(--shadow-card), 0 0 34px rgba(46, 107, 230, 0.16);
+    }
+
+    .hero-illust {
+      height: 190px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #2e6be6 0%, #123a80 100%);
+    }
+
+    .hero-illust img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+      display: block;
+    }
+
+    .hero-illust::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 42%, rgba(9, 15, 28, 0.94) 100%);
+    }
+
+    .hero-body {
+      flex: 1;
+      padding: 18px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(10, 17, 31, 0.6);
+      position: relative;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: -58px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-name {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    .hero-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-match {
+      font-size: 30px;
+      font-weight: 800;
+      color: #2e6be6;
+      letter-spacing: 1px;
+    }
+
+    .hero-slogan {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.66);
+      letter-spacing: 1px;
+    }
+
+    .hero-second {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 30px;
+      padding: 0 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(200, 16, 46, 0.12);
+      border: 1px solid rgba(200, 16, 46, 0.45);
+      color: #ff9aa8;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+
+    .hero-actions .btn-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ---- 右侧面板 ---- */
+    .prof-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .panel {
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+    }
+
+    .panel-body {
+      margin-top: 8px;
+    }
+
+    .prof-right .panel-title {
+      font-size: 20px;
+    }
+
+    .prof-right .panel-title::before {
+      width: 4px;
+      height: 17px;
+    }
+
+    .radar-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .radar-values {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+      flex: 1;
+    }
+
+    .radar-val {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .radar-val b {
+      color: #6aa8ff;
+      font-weight: 800;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .prof-right .num-item {
+      padding: 9px 14px;
+    }
+
+    .prof-right .num {
+      width: 24px;
+      height: 24px;
+      font-size: 12.5px;
+    }
+
+    .prof-right .num-text {
+      font-size: 13.5px;
+      line-height: 1.52;
+    }
+
+    .prof-disclaimer {
+      padding-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+
+    <!-- 顶部 -->
+    <header class="prof-head">
+      <div>
+        <h1 class="prof-title">我的职业画像</h1>
+        <p class="prof-subtitle">生成于 2026-08-27 10:30 · 报告编号 WCT202608271234</p>
+      </div>
+      <button class="btn btn-ghost">重新测试</button>
+    </header>
+
+    <main class="prof-main">
+      <!-- 左栏 Hero -->
+      <aside class="hero-card">
+        <div class="hero-illust">
+          <img src="../assets/illustrations/judge.png" alt="法官">
+        </div>
+        <div class="hero-body">
+          <div class="hero-top">
+            <div class="career-avatar avatar-lg" style="--ac: #2E6BE6;">
+              <img src="../assets/icons/judge.png" alt="">
+            </div>
+            <div>
+              <div class="hero-name">法官</div>
+              <div class="hero-tag-row" style="margin-top:6px;">
+                <span class="tag career-tag" style="--tc: #2E6BE6;">苍穹蓝 · 专属色 #2E6BE6</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-tag-row">
+            <span class="hero-match">86%</span>
+            <span class="hero-slogan">「法平如水，公正如一」</span>
+          </div>
+          <span class="hero-second">第二适配 · 检察官 · 72%</span>
+          <div class="hero-actions">
+            <button class="btn btn-primary">查看体能方案</button>
+            <div class="btn-row2">
+              <button class="btn btn-ghost btn-sm" style="height:44px;">生成二维码</button>
+              <button class="btn btn-ghost btn-sm" style="height:44px;">导师对接</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 右栏 -->
+      <section class="prof-right no-scrollbar">
+        <div class="panel glass">
+          <h2 class="panel-title" style="--tt:#2E6BE6;">能力雷达图</h2>
+          <div class="panel-body radar-row">
+            <svg id="radar" width="250" height="225" viewBox="0 0 300 270"></svg>
+            <div class="radar-values">
+              <div class="radar-val"><span>逻辑思辨</span><b>92</b></div>
+              <div class="radar-val"><span>沟通协作</span><b>78</b></div>
+              <div class="radar-val"><span>抗压执行</span><b>85</b></div>
+              <div class="radar-val"><span>严谨细致</span><b>96</b></div>
+              <div class="radar-val"><span>创新适应</span><b>64</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel glass">
+          <h2 class="panel-title" style="--tt:#2E6BE6;">你的能力优势</h2>
+          <div class="panel-body list">
+            <div class="num-item">
+              <span class="num" style="--nn:#2E6BE6;">1</span>
+              <span class="num-text"><strong>公正无私、是非分明：</strong>心中有标尺，天然能守住中立与底线。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#2E6BE6;">2</span>
+              <span class="num-text"><strong>严谨审慎、客观理性：</strong>不轻信、不臆断，习惯用证据和逻辑说话。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#2E6BE6;">3</span>
+              <span class="num-text"><strong>大局观强、思维缜密：</strong>看问题不局限于局部，能统筹全局。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#2E6BE6;">4</span>
+              <span class="num-text"><strong>耐心细致、克制谦和：</strong>坐得住、沉得下，情绪稳定有定力。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel glass">
+          <h2 class="panel-title" style="--tt:#FAAD14;">短板与提升建议</h2>
+          <div class="panel-body list">
+            <div class="num-item">
+              <span class="num" style="--nn:#FAAD14;">1</span>
+              <span class="num-text">连续开庭与久坐对体态和腰椎考验大——从大一开始练核心与站姿。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#FAAD14;">2</span>
+              <span class="num-text">过度追求周全可能决策偏慢——练习在信息有限时果断决策。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#FAAD14;">3</span>
+              <span class="num-text">克制内敛易把情绪闷在心里——学会健康释放压力。</span>
+            </div>
+            <div class="num-item">
+              <span class="num" style="--nn:#FAAD14;">4</span>
+              <span class="num-text">专业之外多接触社会百态，才能让裁判更贴近人情。</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="disclaimer prof-disclaimer">本结果为兴趣初步画像，仅供参考</footer>
+  </div>
+
+  <script>
+    const RADAR = [
+      { label: "逻辑思辨", value: 92 },
+      { label: "沟通协作", value: 78 },
+      { label: "抗压执行", value: 85 },
+      { label: "严谨细致", value: 96 },
+      { label: "创新适应", value: 64 }
+    ];
+    const svg = document.getElementById("radar");
+    const cx = 150, cy = 132, R = 104;
+    const NS = "http://www.w3.org/2000/svg";
+    const pt = (i, r) => {
+      const a = (-90 + i * 72) * Math.PI / 180;
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    };
+    let g = document.createElementNS(NS, "g");
+    // 网格
+    [0.25, 0.5, 0.75, 1].forEach((lv) => {
+      let pts = "";
+      for (let i = 0; i < 5; i++) {
+        const [x, y] = pt(i, R * lv);
+        pts += (i ? " " : "") + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      const poly = document.createElementNS(NS, "polygon");
+      poly.setAttribute("points", pts);
+      poly.setAttribute("fill", lv === 1 ? "rgba(46,107,230,0.06)" : "none");
+      poly.setAttribute("stroke", "rgba(255,255,255,0.14)");
+      g.appendChild(poly);
+    });
+    // 轴线
+    for (let i = 0; i < 5; i++) {
+      const [x, y] = pt(i, R);
+      const line = document.createElementNS(NS, "line");
+      line.setAttribute("x1", cx); line.setAttribute("y1", cy);
+      line.setAttribute("x2", x); line.setAttribute("y2", y);
+      line.setAttribute("stroke", "rgba(255,255,255,0.14)");
+      g.appendChild(line);
+    }
+    // 数值多边形
+    let pts = "";
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R * d.value / 100);
+      pts += (i ? " " : "") + x.toFixed(1) + "," + y.toFixed(1);
+    });
+    const poly = document.createElementNS(NS, "polygon");
+    poly.setAttribute("points", pts);
+    poly.setAttribute("fill", "rgba(46,107,230,0.32)");
+    poly.setAttribute("stroke", "#2E6BE6");
+    poly.setAttribute("stroke-width", "2.4");
+    poly.setAttribute("stroke-linejoin", "round");
+    g.appendChild(poly);
+    // 顶点
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R * d.value / 100);
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", x); c.setAttribute("cy", y);
+      c.setAttribute("r", "4");
+      c.setAttribute("fill", "#6aa8ff");
+      c.setAttribute("stroke", "#fff");
+      c.setAttribute("stroke-width", "1.4");
+      g.appendChild(c);
+    });
+    svg.appendChild(g);
+    // 标签
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R + 26);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x); t.setAttribute("y", y);
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("dominant-baseline", "middle");
+      t.setAttribute("fill", "rgba(255,255,255,0.72)");
+      t.setAttribute("font-size", "13");
+      t.textContent = d.label;
+      svg.appendChild(t);
+    });
+  </script>
+</body>
+</html>

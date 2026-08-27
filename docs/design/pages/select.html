@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>特质词选择 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 72px 22px;
+      gap: 12px;
+    }
+
+    /* ---- 顶部 ---- */
+    .sel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+    }
+
+    .sel-title {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .sel-subtitle {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .sel-progress {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      width: 560px;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+    }
+
+    .progress-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-track {
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, #73d13d, #52c41a);
+      box-shadow: 0 0 10px rgba(82, 196, 26, 0.55);
+    }
+
+    .progress-caption {
+      font-size: 13px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .progress-count {
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .progress-count .total {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    .progress-note {
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* ---- 五列词卡 ---- */
+    .word-area {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      min-height: 0;
+    }
+
+    .word-col {
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .word-col-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-left: 2px solid var(--ac, var(--brand));
+      background: linear-gradient(90deg, color-mix(in srgb, var(--ac, #1677ff) 12%, transparent), rgba(255, 255, 255, 0.02));
+    }
+
+    .word-col-head .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ac, var(--brand));
+      box-shadow: 0 0 10px var(--ac, var(--brand));
+      flex-shrink: 0;
+    }
+
+    .word-col-head .name {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .word-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-content: start;
+      min-height: 0;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+
+    .word-card {
+      height: 66px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.68);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-out);
+      user-select: none;
+    }
+
+    .word-card:not(.on):hover {
+      border-color: color-mix(in srgb, var(--ac, #1677ff) 60%, transparent);
+      color: #fff;
+    }
+
+    .word-card.on {
+      color: #fff;
+      font-weight: 600;
+      border-style: solid;
+      border-color: var(--ac, var(--brand));
+      background: color-mix(in srgb, var(--ac, #1677ff) 22%, transparent);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--ac, #1677ff) 38%, transparent);
+    }
+
+    .word-card.core {
+      border-style: dashed;
+    }
+
+    .word-card.core.on {
+      border-style: dashed;
+    }
+
+    /* ---- 底部：能量池 + 操作 ---- */
+    .sel-foot {
+      display: flex;
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    .energy-pool {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      gap: 16px;
+      padding: 14px 28px 12px;
+      border-radius: var(--radius-lg);
+    }
+
+    .energy-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 118px;
+    }
+
+    .energy-bar-wrap {
+      width: 26px;
+      height: 96px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .energy-bar {
+      width: 100%;
+      border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ac, #1677ff) 92%, #fff), var(--ac, #1677ff));
+      box-shadow: 0 0 18px color-mix(in srgb, var(--ac, #1677ff) 55%, transparent);
+      position: relative;
+      transition: height 0.8s var(--ease-out);
+    }
+
+    .energy-bar .val {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .energy-item .label {
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .energy-item .score {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ac, #fff);
+    }
+
+    .sel-actions {
+      width: 470px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      border-radius: var(--radius-lg);
+      padding: 16px 22px;
+    }
+
+    .alert {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(82, 196, 26, 0.12);
+      border: 1px solid rgba(82, 196, 26, 0.35);
+      color: #b7eb8f;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .alert .a-ico {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--success);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .sel-btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .sel-btn-row .btn {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop-bg"></div>
+
+    <!-- 顶部：标题 + 进度 -->
+    <header class="sel-head">
+      <div>
+        <h1 class="sel-title">勾选最像你的特质词</h1>
+        <p class="sel-subtitle">每词对应一个职业方向，颜色即该职业 · 虚线边框为核心词</p>
+      </div>
+      <div class="sel-progress glass">
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <div class="progress-caption">进度 · 选满 10 个即可开始匹配</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="progress-count">10<span class="total"> / 10</span></div>
+          <div class="progress-note">已选 10 个词</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 五列词卡 -->
+    <main class="word-area" id="wordArea"></main>
+
+    <!-- 底部：能量池 + 操作 -->
+    <footer class="sel-foot">
+      <div class="energy-pool glass" id="energyPool"></div>
+      <div class="sel-actions glass">
+        <div class="alert">
+          <span class="a-ico">✓</span>
+          已满足测试条件，可以开始匹配
+        </div>
+        <div class="sel-btn-row">
+          <button class="btn btn-ghost">返回首页</button>
+          <button class="btn btn-primary">开始匹配</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const CAREERS = [
+      { id: 1, name: "律师", colorName: "皓月白", color: "#F5F7FA", slogan: "以法为盾，以理服人" },
+      { id: 2, name: "法官", colorName: "苍穹蓝", color: "#2E6BE6", slogan: "法平如水，公正如一" },
+      { id: 3, name: "检察官", colorName: "中国红", color: "#C8102E", slogan: "恪守正义，敢于亮剑" },
+      { id: 4, name: "企业法务", colorName: "琉璃紫", color: "#7B5EA7", slogan: "行稳致远，合规制胜" },
+      { id: 5, name: "AI伦理合规顾问", colorName: "科创青", color: "#12B5A5", slogan: "科技向善，规则先行" }
+    ];
+
+    // 每职业 15 个词，1 = 核心词
+    const WORDS = [
+      ["思辨敏捷", 1, "口齿清晰", 0, "文笔流畅", 0, "逻辑缜密", 1, "善于沟通", 1, "临场应变", 1, "共情包容", 0, "抗压坚韧", 1,
+        "细节敏锐", 0, "善于论证", 0, "灵活变通", 0, "责任心强", 0, "表达自信", 0, "复盘总结", 0, "维权果敢", 0],
+      ["公正无私", 1, "沉稳内敛", 0, "严谨审慎", 1, "是非分明", 0, "敬畏规则", 1, "客观理性", 1, "耐心细致", 0, "大局观强", 0,
+        "坚守底线", 1, "思维缜密", 0, "克制谦和", 0, "履职尽责", 0, "明辨是非", 0, "廉洁自律", 0, "公允中立", 0],
+      ["立场坚定", 1, "嫉恶扬善", 1, "严谨细致", 0, "敢于担当", 1, "权责明晰", 0, "洞察力强", 0, "恪守正义", 1, "执纪严明", 0,
+        "求真务实", 0, "思维严谨", 0, "行动力强", 0, "忠于法治", 1, "严谨履职", 0, "敢于监督", 0, "清正自律", 0],
+      ["风控敏锐", 1, "细致严谨", 1, "合规审慎", 1, "统筹协调", 0, "务实高效", 0, "保密自律", 1, "思维周全", 0, "善于复盘", 0,
+        "适配性强", 0, "成本可控", 0, "风险预判", 1, "流程规范", 0, "沟通稳妥", 0, "落地执行力强", 0, "耐心细致", 0],
+      ["创新思维", 1, "跨界融合", 1, "与时俱进", 0, "审慎包容", 0, "逻辑前沿", 0, "敬畏科技", 1, "坚守伦理", 1, "敏锐洞察", 0,
+        "迭代学习", 0, "全局思辨", 0, "规则优化", 0, "数据敏感", 1, "合规前瞻", 0, "跨界思辨", 0, "求真务实", 0]
+    ];
+
+    // 已选中的词（选中态示例）
+    const SELECTED = [
+      "思辨敏捷", "逻辑缜密", "善于沟通",
+      "公正无私", "严谨审慎", "敬畏规则",
+      "敢于担当", "恪守正义",
+      "细致严谨",
+      "创新思维"
+    ];
+
+    const ENERGIES = [
+      { name: "法官", score: 6 },
+      { name: "检察官", score: 5 },
+      { name: "律师", score: 4 },
+      { name: "企业法务", score: 3 },
+      { name: "AI伦理", score: 2 }
+    ];
+
+    const area = document.getElementById("wordArea");
+    CAREERS.forEach((c, ci) => {
+      const col = document.createElement("div");
+      col.className = "word-col";
+      col.style.setProperty("--ac", c.color);
+
+      const head = document.createElement("div");
+      head.className = "word-col-head";
+      head.innerHTML =
+        '<span class="dot"></span>' +
+        '<span class="name">' + c.name + "</span>" +
+        '<span class="tag career-tag" style="--tc:' + c.color + '">' + c.colorName + "</span>";
+      col.appendChild(head);
+
+      const grid = document.createElement("div");
+      grid.className = "word-grid no-scrollbar";
+      for (let i = 0; i < 15; i++) {
+        const word = WORDS[ci][i * 2];
+        const core = WORDS[ci][i * 2 + 1] === 1;
+        const on = SELECTED.includes(word);
+        const card = document.createElement("div");
+        card.className = "word-card" + (core ? " core" : "") + (on ? " on" : "");
+        card.textContent = word;
+        grid.appendChild(card);
+      }
+      col.appendChild(grid);
+      area.appendChild(col);
+    });
+
+    const pool = document.getElementById("energyPool");
+    const maxE = Math.max(...ENERGIES.map((e) => e.score));
+    ENERGIES.forEach((e) => {
+      const c = CAREERS.find((x) => x.name.startsWith(e.name.replace("AI伦理", "AI伦理合规顾问")) || x.name === e.name + "合规顾问" || x.name === e.name);
+      const color = e.name === "AI伦理" ? "#12B5A5"
+        : e.name === "法官" ? "#2E6BE6"
+        : e.name === "检察官" ? "#C8102E"
+        : e.name === "律师" ? "#F5F7FA"
+        : "#7B5EA7";
+      const item = document.createElement("div");
+      item.className = "energy-item";
+      item.style.setProperty("--ac", color);
+      item.innerHTML =
+        '<div class="energy-bar-wrap">' +
+          '<div class="energy-bar" style="height:' + (e.score / maxE * 100) + '%">' +
+            '<span class="val">' + e.score + "</span>" +
+          "</div>" +
+        "</div>" +
+        '<span class="label">' + e.name + "</span>" +
+        '<span class="score">' + e.score + " 分</span>";
+      pool.appendChild(item);
+    });
+  </script>
+</body>
+</html>

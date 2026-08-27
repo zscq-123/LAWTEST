@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>手机报告页 · 五彩法途</title>
+  <link rel="stylesheet" href="../css/system.css">
+  <style>
+    .m-page {
+      width: 390px;
+      height: 2400px;
+      margin: 0 auto;
+      background: #f5f7fa;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .m-body {
+      padding: 0 0 84px;
+    }
+
+    /* ---- Hero ---- */
+    .hero {
+      height: 424px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #2e6be6 0%, #123a80 62%, #0b1d40 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 24px 34px;
+      color: #fff;
+    }
+
+    .hero img.bg-illust {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.42;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 70% at 50% 100%, rgba(9, 18, 38, 0.62), transparent 70%);
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-pill {
+      height: 28px;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero .job-name {
+      margin-top: 14px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 5px;
+    }
+
+    .hero .job-slogan {
+      margin-top: 8px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .hero .match {
+      margin-top: 16px;
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 1px;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.35);
+    }
+
+    .hero .match small {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .hero .divider {
+      width: 64px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.4);
+      margin: 18px 0 12px;
+    }
+
+    .hero .second {
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .hero .code {
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* ---- 章节 ---- */
+    .m-card {
+      padding: 14px;
+    }
+
+    .tag-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .word-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--tc);
+      background: color-mix(in srgb, var(--tc) 10%, #fff);
+      border: 1px solid color-mix(in srgb, var(--tc) 34%, transparent);
+      letter-spacing: 0.5px;
+    }
+
+    .m-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .m-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .m-item .m-num {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--nn, #1677ff);
+      margin-top: 1px;
+    }
+
+    .m-item .m-text {
+      font-size: 13px;
+      line-height: 1.52;
+      color: #3d4a5c;
+      letter-spacing: 0.2px;
+    }
+
+    .m-item .m-text b {
+      color: #1f2733;
+      font-weight: 700;
+    }
+
+    .radar-box {
+      display: flex;
+      justify-content: center;
+      padding: 2px 0 0;
+    }
+
+    /* 移动端时间线 */
+    .m-timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .m-timeline::before {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, #2e6be6 0%, rgba(46, 107, 230, 0.15) 100%);
+      border-radius: 2px;
+    }
+
+    .m-tl-node {
+      position: relative;
+      padding: 0 0 12px 22px;
+    }
+
+    .m-tl-node:last-child {
+      padding-bottom: 0;
+    }
+
+    .m-tl-dot {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #2e6be6;
+      box-shadow: 0 0 0 3px rgba(46, 107, 230, 0.18);
+    }
+
+    .m-tl-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2733;
+      letter-spacing: 0.5px;
+    }
+
+    .m-tl-content {
+      margin-top: 4px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #64748b;
+    }
+
+    /* 导师卡 */
+    .mentor-card {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f5f7fa;
+      border: 1px solid #e6ebf2;
+    }
+
+    .mentor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, #2e6be6, #123a80);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .mentor-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mentor-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1f2733;
+    }
+
+    .mentor-title {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .mentor-wechat {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #2e6be6;
+    }
+
+    .mentor-btn {
+      flex-shrink: 0;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      background: #1677ff;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(22, 119, 255, 0.32);
+    }
+
+    /* 免责 + 收藏入口 */
+    .m-disclaimer {
+      text-align: center;
+      font-size: 11.5px;
+      color: #8a97a8;
+      line-height: 1.7;
+      padding: 8px 36px 4px;
+    }
+
+    .fav-entry {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 0 2px;
+      font-size: 14px;
+      color: #1677ff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .fav-entry svg {
+      width: 14px;
+      height: 14px;
+      stroke: #1677ff;
+    }
+
+    /* 底部固定操作栏 */
+    .m-actionbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 78px;
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(31, 39, 51, 0.08);
+      box-shadow: 0 -6px 24px rgba(31, 39, 51, 0.08);
+    }
+
+    .m-actionbar .m-btn {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="m-page">
+    <div class="m-body">
+      <!-- Hero -->
+      <section class="hero">
+        <img class="bg-illust" src="../assets/illustrations/judge.png" alt="">
+        <span class="hero-pill">五彩法途 · 职业画像</span>
+        <h1 class="job-name">法官</h1>
+        <div class="job-slogan">「法平如水，公正如一」</div>
+        <div class="match">86<small>%</small></div>
+        <div class="divider"></div>
+        <div class="second">第二适配 · 检察官 · 72%</div>
+        <div class="code">报告编号 WCT202608271234</div>
+      </section>
+
+      <!-- 1 你勾选的特质词 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">你勾选的特质词</h2>
+        <div class="tag-flow">
+          <span class="word-tag" style="--tc:#2E6BE6;">公正无私</span>
+          <span class="word-tag" style="--tc:#2E6BE6;">严谨审慎</span>
+          <span class="word-tag" style="--tc:#2E6BE6;">敬畏规则</span>
+          <span class="word-tag" style="--tc:#C8102E;">敢于担当</span>
+          <span class="word-tag" style="--tc:#C8102E;">恪守正义</span>
+          <span class="word-tag" style="--tc:#F5F7FA;">思辨敏捷</span>
+          <span class="word-tag" style="--tc:#F5F7FA;">逻辑缜密</span>
+          <span class="word-tag" style="--tc:#F5F7FA;">善于沟通</span>
+          <span class="word-tag" style="--tc:#7B5EA7;">细致严谨</span>
+          <span class="word-tag" style="--tc:#12B5A5;">创新思维</span>
+        </div>
+      </section>
+
+      <!-- 2 能力优势 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">你的能力优势</h2>
+        <div class="m-list">
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">1</span>
+            <span class="m-text"><b>公正无私、是非分明：</b>心中有标尺，天然能守住中立与底线。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">2</span>
+            <span class="m-text"><b>严谨审慎、客观理性：</b>不轻信、不臆断，习惯用证据和逻辑说话。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">3</span>
+            <span class="m-text"><b>大局观强、思维缜密：</b>看问题不局限于局部，能统筹全局。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">4</span>
+            <span class="m-text"><b>耐心细致、克制谦和：</b>坐得住、沉得下，情绪稳定有定力。</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 短板与提升建议 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#FAAD14;">短板与提升建议</h2>
+        <div class="m-list">
+          <div class="m-item">
+            <span class="m-num" style="--nn:#FAAD14;">1</span>
+            <span class="m-text">连续开庭与久坐对体态和腰椎考验大——从大一开始练核心与站姿。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#FAAD14;">2</span>
+            <span class="m-text">过度追求周全可能决策偏慢——练习在信息有限时果断决策。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#FAAD14;">3</span>
+            <span class="m-text">克制内敛易把情绪闷在心里——学会健康释放压力。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#FAAD14;">4</span>
+            <span class="m-text">专业之外多接触社会百态，才能让裁判更贴近人情。</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 能力雷达图 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">能力雷达图</h2>
+        <div class="radar-box">
+          <svg id="mRadar" width="272" height="196" viewBox="0 0 300 236"></svg>
+        </div>
+      </section>
+
+      <!-- 5 身体素质达标要求 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">身体素质达标要求</h2>
+        <div class="m-list">
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">1</span>
+            <span class="m-text"><b>体检标准：</b>严格符合公务员录用体检通用标准，无传染病、无影响履职的身体缺陷。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">2</span>
+            <span class="m-text"><b>体态风貌：</b>五官端正、体态得体，具备良好精神风貌，适配庭审履职场景。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">3</span>
+            <span class="m-text"><b>视力要求：</b>视力达标，无色盲色弱，可长期审阅卷宗、研判案件。</span>
+          </div>
+          <div class="m-item">
+            <span class="m-num" style="--nn:#2E6BE6;">4</span>
+            <span class="m-text"><b>身心耐力：</b>身心稳定、耐力充足，可适应连续开庭、密集合议、加班办案的高强度节奏。</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 大学四年锻炼计划 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">大学四年锻炼计划</h2>
+        <div class="m-timeline">
+          <div class="m-tl-node">
+            <span class="m-tl-dot"></span>
+            <div class="m-tl-title">大一 · 体能筑基</div>
+            <div class="m-tl-content">按公务员体检标准完成预检，建立慢跑＋拉伸习惯，改善体态。</div>
+          </div>
+          <div class="m-tl-node">
+            <span class="m-tl-dot"></span>
+            <div class="m-tl-title">大二 · 专项强化</div>
+            <div class="m-tl-content">站姿坐姿形体训练，下肢耐力训练，适配连续开庭久坐/久站。</div>
+          </div>
+          <div class="m-tl-node">
+            <span class="m-tl-dot"></span>
+            <div class="m-tl-title">大三 · 职业场景模拟</div>
+            <div class="m-tl-content">长时间庭审模拟下的注意力训练，情绪调节与放松练习。</div>
+          </div>
+          <div class="m-tl-node">
+            <span class="m-tl-dot"></span>
+            <div class="m-tl-title">大四 · 达标冲刺</div>
+            <div class="m-tl-content">体检复查与达标冲刺，保持有氧＋核心训练常态化。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 实务导师对接 -->
+      <section class="m-card">
+        <h2 class="m-section-title" style="--sec:#2E6BE6;">实务导师对接</h2>
+        <div class="m-list">
+          <div class="mentor-card">
+            <div class="mentor-avatar">王</div>
+            <div class="mentor-info">
+              <div class="mentor-name">王法官（示例）</div>
+              <div class="mentor-title">基层法院法官 · 民事审判庭</div>
+              <div class="mentor-wechat">微信：wang-judge-demo</div>
+            </div>
+            <button class="mentor-btn">预约交流</button>
+          </div>
+          <div class="mentor-card">
+            <div class="mentor-avatar">孙</div>
+            <div class="mentor-info">
+              <div class="mentor-name">孙法官（示例）</div>
+              <div class="mentor-title">中级法院法官 · 刑事审判庭</div>
+              <div class="mentor-wechat">微信：sun-judge-demo</div>
+            </div>
+            <button class="mentor-btn">预约交流</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 免责声明 + 收藏入口 -->
+      <div class="m-disclaimer">
+        本结果为兴趣初步画像，仅供参考<br>
+        本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。
+      </div>
+      <div class="fav-entry">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.95 6.06 6.72.86-4.94 4.67 1.3 6.6L12 17.4l-6.03 3.29 1.3-6.6L2.33 9.42l6.72-.86L12 2.5z"/></svg>
+        我的收藏
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <!-- 底部固定操作栏 -->
+    <div class="m-actionbar">
+      <button class="m-btn m-btn-primary">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        保存长图
+      </button>
+      <button class="m-btn m-btn-ghost">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.5l2.95 6.06 6.72.86-4.94 4.67 1.3 6.6L12 17.4l-6.03 3.29 1.3-6.6L2.33 9.42l6.72-.86L12 2.5z" opacity="0.75"/></svg>
+        收藏
+      </button>
+      <button class="m-btn m-btn-ghost">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 10a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+        复制链接
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const RADAR = [
+      { label: "逻辑思辨", value: 92 },
+      { label: "沟通协作", value: 78 },
+      { label: "抗压执行", value: 85 },
+      { label: "严谨细致", value: 96 },
+      { label: "创新适应", value: 64 }
+    ];
+    const svg = document.getElementById("mRadar");
+    const cx = 150, cy = 116, R = 88;
+    const NS = "http://www.w3.org/2000/svg";
+    const pt = (i, r) => {
+      const a = (-90 + i * 72) * Math.PI / 180;
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    };
+    const g = document.createElementNS(NS, "g");
+    [0.25, 0.5, 0.75, 1].forEach((lv) => {
+      let pts = "";
+      for (let i = 0; i < 5; i++) {
+        const [x, y] = pt(i, R * lv);
+        pts += (i ? " " : "") + x.toFixed(1) + "," + y.toFixed(1);
+      }
+      const poly = document.createElementNS(NS, "polygon");
+      poly.setAttribute("points", pts);
+      poly.setAttribute("fill", lv === 1 ? "rgba(46,107,230,0.05)" : "none");
+      poly.setAttribute("stroke", "rgba(31,39,51,0.14)");
+      g.appendChild(poly);
+    });
+    for (let i = 0; i < 5; i++) {
+      const [x, y] = pt(i, R);
+      const line = document.createElementNS(NS, "line");
+      line.setAttribute("x1", cx); line.setAttribute("y1", cy);
+      line.setAttribute("x2", x); line.setAttribute("y2", y);
+      line.setAttribute("stroke", "rgba(31,39,51,0.14)");
+      g.appendChild(line);
+    }
+    let pts = "";
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R * d.value / 100);
+      pts += (i ? " " : "") + x.toFixed(1) + "," + y.toFixed(1);
+    });
+    const poly = document.createElementNS(NS, "polygon");
+    poly.setAttribute("points", pts);
+    poly.setAttribute("fill", "rgba(46,107,230,0.22)");
+    poly.setAttribute("stroke", "#2E6BE6");
+    poly.setAttribute("stroke-width", "2.2");
+    poly.setAttribute("stroke-linejoin", "round");
+    g.appendChild(poly);
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R * d.value / 100);
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", x); c.setAttribute("cy", y);
+      c.setAttribute("r", "3.6");
+      c.setAttribute("fill", "#2E6BE6");
+      c.setAttribute("stroke", "#fff");
+      c.setAttribute("stroke-width", "1.2");
+      g.appendChild(c);
+    });
+    svg.appendChild(g);
+    RADAR.forEach((d, i) => {
+      const [x, y] = pt(i, R + 20);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x); t.setAttribute("y", y);
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("dominant-baseline", "middle");
+      t.setAttribute("fill", "#64748b");
+      t.setAttribute("font-size", "12");
+      t.textContent = d.label;
+      svg.appendChild(t);
+    });
+  </script>
+</body>
+</html>
