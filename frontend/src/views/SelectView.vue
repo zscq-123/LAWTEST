@@ -6,7 +6,7 @@
         <div>
           <h1 class="screen-title">勾选最像你的特质词</h1>
           <p class="screen-subtitle">
-            每词对应一个职业方向，颜色即该职业 · 虚线边框为核心词
+            盲选模式：不显示职业名称，凭直觉勾选 · 虚线边框为核心词
           </p>
         </div>
         <div class="select-progress">
@@ -37,18 +37,14 @@
           class="select-empty"
         />
         <section
-          v-for="career in store.careers"
+          v-for="(career, index) in store.careers"
           :key="career.id"
           class="word-group"
           :style="{ '--career-color': career.colorCode }"
-          :aria-label="`${career.name} 词库`"
         >
           <header class="group-head">
             <span class="group-dot" />
-            <span class="group-name">{{ career.name }}</span>
-            <a-tag :color="career.colorCode" bordered class="group-color">
-              {{ career.colorName }}
-            </a-tag>
+            <span class="group-name">第 {{ index + 1 }} 组</span>
           </header>
           <div class="group-words">
             <button
@@ -97,7 +93,7 @@
         </div>
         <div class="energy-tracks">
           <div
-            v-for="career in store.careers"
+            v-for="(career, index) in store.careers"
             :key="career.id"
             class="energy-track"
           >
@@ -116,7 +112,7 @@
               />
             </div>
             <div class="energy-info">
-              <div class="energy-name">{{ career.name }}</div>
+              <div class="energy-name">第 {{ index + 1 }} 组</div>
               <div class="energy-score">{{ liveScores[career.id] || 0 }} 分</div>
             </div>
           </div>
