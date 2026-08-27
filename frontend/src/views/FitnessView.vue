@@ -4,10 +4,10 @@
       <div class="screen-page fitness-page">
         <div class="fitness-head">
           <div>
-            <h1 class="screen-title" style="font-size: 34px">
+            <h1 class="screen-title">
               {{ report?.career?.name || '' }} · 体能赋能方案
             </h1>
-            <p class="screen-subtitle" style="font-size: 16px">
+            <p class="screen-subtitle">
               身体是职业长跑的本钱，大学四年一步一步来
             </p>
           </div>
@@ -118,7 +118,7 @@ const careerTheme = computed(() => ({
 
 <style scoped>
 .fitness-page {
-  padding-top: 36px;
+  padding-top: clamp(14px, 3vh, 44px);
 }
 
 .fitness-head {
@@ -136,20 +136,20 @@ const careerTheme = computed(() => ({
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 28px;
-  margin-top: 22px;
+  gap: clamp(14px, 2vw, 32px);
+  margin-top: clamp(10px, 2vh, 28px);
   min-height: 0;
   overflow-y: auto;
 }
 
 .panel {
-  padding: 26px 30px;
+  padding: clamp(14px, 1.9vh, 30px) clamp(16px, 2vw, 34px);
 }
 
 .panel-title {
-  font-size: 22px;
+  font-size: clamp(16px, 1.6vw, 24px);
   font-weight: 600;
-  margin-bottom: 18px;
+  margin-bottom: clamp(8px, 1.3vh, 20px);
   color: rgba(255, 255, 255, 0.92);
   display: flex;
   align-items: center;
@@ -157,25 +157,25 @@ const careerTheme = computed(() => ({
 }
 
 .req-item {
-  padding: 10px 0 !important;
-  font-size: 16px;
+  padding: clamp(5px, 0.8vh, 12px) 0 !important;
+  font-size: clamp(13px, 1.15vw, 17px);
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.82);
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: clamp(8px, 0.8vw, 14px);
 }
 
 .req-badge {
   flex-shrink: 0;
-  width: 26px;
-  height: 26px;
+  width: clamp(20px, 1.8vh, 28px);
+  height: clamp(20px, 1.8vh, 28px);
   border-radius: 50%;
   color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: clamp(11px, 1vw, 15px);
   font-weight: 600;
   margin-top: 2px;
 }
@@ -185,37 +185,37 @@ const careerTheme = computed(() => ({
 }
 
 .plan-stage {
-  font-size: 18px;
+  font-size: clamp(14px, 1.35vw, 20px);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
 }
 
 .plan-content {
-  font-size: 16px;
+  font-size: clamp(13px, 1.15vw, 17px);
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.75);
-  margin-top: 4px;
+  margin-top: clamp(2px, 0.4vh, 6px);
 }
 
 .fitness-actions {
-  margin-top: 18px;
+  margin-top: clamp(8px, 1.6vh, 22px);
   display: flex;
-  gap: 14px;
+  gap: clamp(10px, 1vw, 18px);
   justify-content: center;
   flex-shrink: 0;
 }
 
 .fitness-actions :deep(.ant-btn-lg) {
-  height: 52px;
-  padding: 0 36px;
-  font-size: 17px;
+  height: clamp(38px, 4vh, 56px);
+  padding: 0 clamp(20px, 2.4vw, 40px);
+  font-size: clamp(14px, 1.25vw, 19px);
   border-radius: 26px;
 }
 
 .fitness-disclaimer {
-  margin-top: 12px;
+  margin-top: clamp(6px, 1.2vh, 16px);
   text-align: center;
-  font-size: 14px;
+  font-size: clamp(12px, 0.9vw, 15px);
   color: rgba(255, 255, 255, 0.4);
   flex-shrink: 0;
 }

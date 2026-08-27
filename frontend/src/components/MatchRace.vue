@@ -47,8 +47,8 @@ function pct(id: number): string {
 <style scoped>
 .race {
   display: flex;
-  gap: 28px;
-  height: 460px;
+  gap: clamp(14px, 1.8vw, 32px);
+  height: clamp(250px, 40vh, 500px);
   align-items: stretch;
   justify-content: center;
   animation: floatUp 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) both;
@@ -56,7 +56,7 @@ function pct(id: number): string {
 
 .race-track {
   flex: 1;
-  max-width: 220px;
+  max-width: clamp(120px, 12vw, 240px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -66,21 +66,21 @@ function pct(id: number): string {
 .race-label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  font-size: 20px;
+  gap: clamp(6px, 0.6vw, 12px);
+  margin-bottom: clamp(8px, 1.4vh, 16px);
+  font-size: clamp(14px, 1.35vw, 22px);
   color: rgba(255, 255, 255, 0.92);
 }
 
 .race-dot {
-  width: 14px;
-  height: 14px;
+  width: clamp(10px, 0.8vw, 15px);
+  height: clamp(10px, 0.8vw, 15px);
   border-radius: 50%;
 }
 
 .race-meter {
   flex: 1;
-  width: 64px;
+  width: clamp(36px, 3.4vw, 72px);
   border-radius: 32px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -100,14 +100,14 @@ function pct(id: number): string {
 }
 
 .race-value {
-  font-size: 22px;
+  font-size: clamp(16px, 1.6vw, 24px);
   font-weight: 700;
   color: #fff;
 }
 
 .race-pct {
-  margin-top: 12px;
-  font-size: 18px;
+  margin-top: clamp(6px, 1.2vh, 14px);
+  font-size: clamp(14px, 1.3vw, 20px);
   color: rgba(255, 255, 255, 0.7);
 }
 </style>

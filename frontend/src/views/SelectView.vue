@@ -3,8 +3,8 @@
     <div class="screen-page">
       <div class="select-head">
         <div>
-          <h1 class="screen-title" style="font-size: 34px">选择最像你的 10 个特质词</h1>
-          <p class="screen-subtitle" style="font-size: 16px">
+          <h1 class="screen-title">选择最像你的 10 个特质词</h1>
+          <p class="screen-subtitle">
             每个词都属于一个职业方向，颜色代表该职业 · 核心词有虚线边框
           </p>
         </div>
@@ -171,30 +171,30 @@ onBeforeUnmount(() => {
 }
 
 .select-count :deep(.ant-badge-count) {
-  font-size: 20px;
-  height: 28px;
-  line-height: 28px;
-  min-width: 28px;
-  padding: 0 8px;
+  font-size: clamp(14px, 1.4vw, 22px);
+  height: clamp(20px, 2.2vh, 30px);
+  line-height: clamp(20px, 2.2vh, 30px);
+  min-width: clamp(20px, 2.2vh, 30px);
+  padding: 0 clamp(4px, 0.5vw, 10px);
 }
 
 .count-box {
-  font-size: 18px;
+  font-size: clamp(14px, 1.3vw, 20px);
   color: rgba(255, 255, 255, 0.7);
 }
 
 .select-groups {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(10px, 1.3vw, 22px);
   overflow: hidden;
-  margin-top: 14px;
+  margin-top: clamp(8px, 1.6vh, 20px);
 }
 
 .word-group {
   border-left: 3px solid var(--career-color);
-  padding-left: 14px;
+  padding-left: clamp(8px, 0.9vw, 16px);
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -203,17 +203,17 @@ onBeforeUnmount(() => {
 .group-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 18px;
+  gap: clamp(4px, 0.5vw, 9px);
+  font-size: clamp(13px, 1.15vw, 19px);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 12px;
+  margin-bottom: clamp(6px, 1.1vh, 14px);
   flex-shrink: 0;
 }
 
 .group-dot {
-  width: 12px;
-  height: 12px;
+  width: clamp(9px, 0.7vw, 13px);
+  height: clamp(9px, 0.7vw, 13px);
   border-radius: 50%;
   display: inline-block;
 }
@@ -221,43 +221,38 @@ onBeforeUnmount(() => {
 .group-words {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: clamp(6px, 0.75vw, 12px);
   overflow-y: auto;
-  padding: 4px 4px 8px 0;
-}
-
-.word-card {
-  font-size: 15px;
-  padding: 8px 6px;
+  padding: clamp(2px, 0.4vh, 6px) clamp(2px, 0.3vw, 6px) clamp(4px, 0.8vh, 10px) 0;
 }
 
 .energy-bar {
-  margin-top: 16px;
+  margin-top: clamp(8px, 1.5vh, 20px);
   flex-shrink: 0;
 }
 
 .energy-label {
-  font-size: 15px;
+  font-size: clamp(12px, 1vw, 16px);
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 8px;
+  margin-bottom: clamp(4px, 0.7vh, 10px);
   letter-spacing: 2px;
 }
 
 .energy-tracks {
   display: flex;
-  gap: 24px;
+  gap: clamp(10px, 1.6vw, 28px);
 }
 
 .energy-track {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(6px, 0.7vw, 12px);
 }
 
 .energy-fill-wrap {
-  width: 12px;
-  height: 44px;
+  width: clamp(8px, 0.7vw, 14px);
+  height: clamp(28px, 4.2vh, 52px);
   background: rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   overflow: hidden;
@@ -272,32 +267,39 @@ onBeforeUnmount(() => {
 }
 
 .energy-name {
-  font-size: 14px;
+  font-size: clamp(11px, 0.95vw, 15px);
   color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
 }
 
 .energy-score {
-  font-size: 15px;
+  font-size: clamp(12px, 1.05vw, 16px);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .select-actions {
-  margin-top: 16px;
+  margin-top: clamp(8px, 1.6vh, 20px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
 }
 
+.select-actions :deep(.ant-btn-lg) {
+  height: clamp(36px, 4vh, 52px);
+  padding: 0 clamp(16px, 1.8vw, 30px);
+  font-size: clamp(14px, 1.25vw, 19px);
+  border-radius: 24px;
+}
+
 .hint-warn {
   color: #faad14;
-  font-size: 16px;
+  font-size: clamp(13px, 1.1vw, 17px);
 }
 
 .hint-ok {
   color: #52c41a;
-  font-size: 16px;
+  font-size: clamp(13px, 1.1vw, 17px);
 }
 </style>

@@ -74,32 +74,32 @@ async function start() {
 <style scoped>
 .home-head {
   text-align: center;
-  padding-top: 36px;
+  padding-top: clamp(16px, 3.5vh, 48px);
 }
 
 .home-badge {
   display: inline-block;
-  padding: 6px 22px;
+  padding: clamp(4px, 0.6vh, 8px) clamp(12px, 1.6vw, 26px);
   border-radius: 999px;
   border: 1px solid rgba(122, 184, 255, 0.5);
   color: rgba(255, 255, 255, 0.75);
-  font-size: 18px;
+  font-size: clamp(13px, 1.3vw, 20px);
   letter-spacing: 3px;
-  margin-bottom: 20px;
+  margin-bottom: clamp(10px, 1.8vh, 24px);
   background: rgba(22, 119, 255, 0.12);
 }
 
 .home-cards {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.8vw, 32px);
   align-content: center;
-  padding: 24px 0;
+  padding: clamp(12px, 2.5vh, 32px) 0;
 }
 
 .career-card {
-  padding: 30px 22px;
+  padding: clamp(14px, 2.2vw, 34px) clamp(12px, 1.6vw, 26px);
   text-align: center;
   border-top: 3px solid var(--career-color);
   cursor: pointer;
@@ -113,52 +113,52 @@ async function start() {
 }
 
 .career-icon {
-  width: 84px;
-  height: 84px;
+  width: clamp(52px, 5.4vw, 96px);
+  height: clamp(52px, 5.4vw, 96px);
   border-radius: 50%;
-  margin: 0 auto 18px;
+  margin: 0 auto clamp(10px, 1.6vh, 22px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
+  font-size: clamp(24px, 2.6vw, 44px);
   font-weight: 700;
   color: #fff;
   box-shadow: 0 0 28px var(--career-color) 66;
 }
 
 .career-name {
-  font-size: 26px;
+  font-size: clamp(18px, 1.9vw, 30px);
   font-weight: 700;
 }
 
 .career-color {
-  font-size: 15px;
+  font-size: clamp(12px, 1vw, 16px);
   color: rgba(255, 255, 255, 0.55);
   margin-top: 4px;
 }
 
 .career-slogan {
-  font-size: 16px;
+  font-size: clamp(13px, 1.15vw, 18px);
   color: rgba(255, 255, 255, 0.75);
-  margin-top: 14px;
+  margin-top: clamp(8px, 1.2vh, 18px);
   letter-spacing: 1px;
 }
 
 .home-footer {
   text-align: center;
-  padding-bottom: 28px;
+  padding-bottom: clamp(14px, 2.6vh, 36px);
 }
 
 .home-footer :deep(.ant-btn-lg) {
-  height: 64px;
-  padding: 0 64px;
-  font-size: 24px;
+  height: clamp(44px, 4.6vh, 68px);
+  padding: 0 clamp(32px, 4vw, 68px);
+  font-size: clamp(18px, 1.7vw, 26px);
   border-radius: 32px;
 }
 
 .home-tip {
-  margin-top: 16px;
-  font-size: 14px;
+  margin-top: clamp(8px, 1.4vh, 20px);
+  font-size: clamp(12px, 0.9vw, 15px);
   color: rgba(255, 255, 255, 0.4);
 }
 </style>

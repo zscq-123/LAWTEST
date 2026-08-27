@@ -1,5 +1,9 @@
 <template>
-  <div ref="chartRef" class="radar-chart" :style="{ height: height + 'px' }" />
+  <div
+    ref="chartRef"
+    class="radar-chart"
+    :style="{ height: `clamp(160px, 26vh, ${height || 300}px)` }"
+  />
 </template>
 
 <script setup lang="ts">

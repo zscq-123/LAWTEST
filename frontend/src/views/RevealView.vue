@@ -94,82 +94,82 @@ function restart() {
 
 .reveal-tag {
   display: inline-block;
-  padding: 8px 28px;
+  padding: clamp(5px, 0.7vh, 10px) clamp(16px, 2vw, 32px);
   border: 1px solid;
   border-radius: 999px;
-  font-size: 18px;
+  font-size: clamp(14px, 1.4vw, 20px);
   letter-spacing: 4px;
   background: rgba(255, 255, 255, 0.05);
 }
 
 .reveal-career {
-  margin-top: 34px;
+  margin-top: clamp(20px, 3.4vh, 44px);
 }
 
 .reveal-icon {
-  width: 120px;
-  height: 120px;
+  width: clamp(76px, 7vw, 140px);
+  height: clamp(76px, 7vw, 140px);
   border-radius: 50%;
-  margin: 0 auto 24px;
+  margin: 0 auto clamp(14px, 2.2vh, 30px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
+  font-size: clamp(32px, 3.2vw, 60px);
   font-weight: 700;
   color: #fff;
   animation: pulseGlow 2s ease-in-out infinite;
 }
 
 .reveal-name {
-  font-size: 72px;
+  font-size: clamp(44px, 5.2vw, 88px);
   font-weight: 800;
-  letter-spacing: 10px;
+  letter-spacing: clamp(4px, 0.6vw, 12px);
   margin: 0;
   animation: cardLight 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) both;
 }
 
 .reveal-rate {
-  font-size: 22px;
+  font-size: clamp(16px, 1.5vw, 24px);
   color: rgba(255, 255, 255, 0.8);
-  margin-top: 18px;
+  margin-top: clamp(10px, 1.8vh, 22px);
 }
 
 .reveal-rate b {
-  font-size: 30px;
+  font-size: clamp(22px, 2.2vw, 34px);
 }
 
 .reveal-slogan {
-  font-size: 20px;
+  font-size: clamp(15px, 1.4vw, 22px);
   color: rgba(255, 255, 255, 0.65);
   letter-spacing: 2px;
-  margin-top: 10px;
+  margin-top: clamp(6px, 1vh, 14px);
 }
 
 .reveal-alert {
-  margin-top: 24px;
-  width: 520px;
+  margin-top: clamp(12px, 2.2vh, 28px);
+  width: clamp(380px, 32vw, 580px);
 }
 
 .reveal-second {
-  margin-top: 18px;
-  font-size: 18px;
+  margin-top: clamp(10px, 1.8vh, 22px);
+  font-size: clamp(15px, 1.4vw, 20px);
   color: rgba(255, 255, 255, 0.7);
 }
 
 .reveal-actions {
-  margin-top: 40px;
+  margin-top: clamp(22px, 4vh, 48px);
 }
 
 .reveal-actions :deep(.ant-btn-lg) {
-  height: 56px;
-  padding: 0 44px;
-  font-size: 20px;
+  height: clamp(42px, 4.4vh, 60px);
+  padding: 0 clamp(26px, 3.2vw, 50px);
+  font-size: clamp(16px, 1.5vw, 22px);
   border-radius: 28px;
 }
 
 .reveal-tip {
-  margin-top: 18px;
-  font-size: 14px;
+  margin-top: clamp(10px, 1.8vh, 22px);
+  font-size: clamp(12px, 0.95vw, 15px);
   color: rgba(255, 255, 255, 0.4);
 }
 </style>

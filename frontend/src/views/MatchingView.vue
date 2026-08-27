@@ -82,16 +82,16 @@ onBeforeUnmount(() => {
 
 .matching-race {
   width: 100%;
-  margin-top: 40px;
+  margin-top: clamp(16px, 3.5vh, 48px);
   display: flex;
   justify-content: center;
-  min-height: 460px;
+  min-height: clamp(260px, 42vh, 520px);
   align-items: center;
 }
 
 .matching-tip {
-  margin-top: 28px;
-  font-size: 15px;
+  margin-top: clamp(12px, 2.5vh, 32px);
+  font-size: clamp(12px, 1vw, 16px);
   color: rgba(255, 255, 255, 0.45);
 }
 

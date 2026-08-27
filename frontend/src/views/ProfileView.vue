@@ -175,7 +175,7 @@ onMounted(() => {
 
 <style scoped>
 .profile-page {
-  padding-top: 36px;
+  padding-top: clamp(14px, 3vh, 44px);
 }
 
 .profile-head {
@@ -192,91 +192,91 @@ onMounted(() => {
 .profile-body {
   flex: 1;
   display: grid;
-  grid-template-columns: 480px 1fr;
-  gap: 32px;
-  margin-top: 20px;
+  grid-template-columns: minmax(280px, 32vw) 1fr;
+  gap: clamp(16px, 2vw, 36px);
+  margin-top: clamp(10px, 2vh, 26px);
   min-height: 0;
 }
 
 .profile-left {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(10px, 1.8vh, 24px);
 }
 
 .hero-card {
   flex: 1;
   border: 1px solid;
   border-radius: 12px;
-  padding: 34px 30px;
+  padding: clamp(16px, 2.4vw, 40px) clamp(14px, 2vw, 34px);
   text-align: center;
 }
 
 .hero-icon {
-  width: 92px;
-  height: 92px;
+  width: clamp(56px, 5.6vw, 110px);
+  height: clamp(56px, 5.6vw, 110px);
   border-radius: 50%;
-  margin: 0 auto 16px;
+  margin: 0 auto clamp(8px, 1.4vh, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  font-size: clamp(24px, 2.6vw, 48px);
   font-weight: 700;
   color: #fff;
   box-shadow: 0 0 36px currentColor;
 }
 
 .hero-name {
-  font-size: 40px;
+  font-size: clamp(26px, 2.8vw, 48px);
   font-weight: 800;
-  letter-spacing: 6px;
+  letter-spacing: clamp(2px, 0.4vw, 8px);
 }
 
 .hero-color {
-  margin-top: 6px;
-  font-size: 15px;
+  margin-top: clamp(2px, 0.5vh, 8px);
+  font-size: clamp(11px, 0.95vw, 16px);
   color: rgba(255, 255, 255, 0.55);
 }
 
 .hero-rate {
-  margin-top: 22px;
+  margin-top: clamp(10px, 1.8vh, 26px);
   display: flex;
   flex-direction: column;
 }
 
 .hero-rate-num {
-  font-size: 64px;
+  font-size: clamp(42px, 4.6vw, 76px);
   font-weight: 800;
   color: rgba(255, 255, 255, 0.95);
 }
 
 .hero-rate-label {
-  font-size: 16px;
+  font-size: clamp(12px, 1.05vw, 17px);
   color: rgba(255, 255, 255, 0.55);
 }
 
 .hero-slogan {
-  margin-top: 16px;
-  font-size: 19px;
+  margin-top: clamp(8px, 1.3vh, 18px);
+  font-size: clamp(14px, 1.35vw, 21px);
   color: rgba(255, 255, 255, 0.78);
 }
 
 .hero-second {
-  margin-top: 14px;
-  font-size: 16px;
+  margin-top: clamp(8px, 1.2vh, 16px);
+  font-size: clamp(12px, 1.15vw, 17px);
   color: rgba(255, 255, 255, 0.62);
 }
 
 .profile-actions {
   display: flex;
-  gap: 12px;
+  gap: clamp(8px, 0.9vw, 16px);
   justify-content: center;
 }
 
 .profile-actions :deep(.ant-btn-lg) {
-  height: 52px;
-  padding: 0 28px;
-  font-size: 17px;
+  height: clamp(38px, 4vh, 56px);
+  padding: 0 clamp(14px, 1.8vw, 32px);
+  font-size: clamp(14px, 1.25vw, 19px);
   border-radius: 26px;
 }
 
@@ -284,41 +284,41 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;
-  gap: 20px;
+  gap: clamp(10px, 1.6vh, 24px);
   min-height: 0;
   overflow-y: auto;
 }
 
 .panel {
-  padding: 22px 24px;
+  padding: clamp(12px, 1.6vh, 26px) clamp(14px, 1.8vw, 28px);
   min-width: 0;
 }
 
 .panel-title {
-  font-size: 20px;
+  font-size: clamp(15px, 1.5vw, 22px);
   font-weight: 600;
-  margin-bottom: 14px;
+  margin-bottom: clamp(6px, 1vh, 16px);
   color: rgba(255, 255, 255, 0.92);
 }
 
 .strength-item,
 .improve-item {
-  padding: 8px 0 !important;
+  padding: clamp(4px, 0.6vh, 10px) 0 !important;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 16px;
+  font-size: clamp(13px, 1.15vw, 17px);
   line-height: 1.6;
 }
 
 .item-icon {
-  margin-right: 10px;
-  font-size: 18px;
+  margin-right: clamp(6px, 0.7vw, 12px);
+  font-size: clamp(14px, 1.2vw, 19px);
 }
 
 .profile-disclaimer {
   text-align: center;
-  font-size: 14px;
+  font-size: clamp(12px, 0.9vw, 15px);
   color: rgba(255, 255, 255, 0.4);
-  margin-top: 14px;
+  margin-top: clamp(6px, 1.2vh, 16px);
   flex-shrink: 0;
 }
 </style>
