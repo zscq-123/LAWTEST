@@ -223,9 +223,9 @@ const careerTheme = computed(() => ({
   display: grid;
   grid-template-columns: minmax(200px, 0.8fr) 1fr 1.2fr;
   gap: clamp(14px, 1.8vw, 28px);
-  min-height: 0;
-  overflow-y: auto;
+  align-items: start;
   padding-right: 4px;
+  padding-bottom: clamp(8px, 1.2vh, 16px);
 }
 
 /* 侧边插画卡 */
@@ -236,15 +236,13 @@ const careerTheme = computed(() => ({
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   background: var(--bg-panel);
   backdrop-filter: blur(12px);
 }
 
 .side-illust {
   position: relative;
-  height: 55%;
-  min-height: 0;
+  height: clamp(140px, 20vh, 220px);
   overflow: hidden;
 }
 
@@ -270,7 +268,6 @@ const careerTheme = computed(() => ({
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  min-height: 0;
 }
 
 .side-avatar {

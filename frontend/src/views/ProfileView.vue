@@ -405,21 +405,19 @@ onMounted(() => {
   display: grid;
   grid-template-columns: minmax(320px, 30vw) 1fr;
   gap: clamp(14px, 1.8vw, 28px);
-  min-height: 0;
-  overflow-y: auto;
+  align-items: start;
   padding-right: 4px;
+  padding-bottom: clamp(8px, 1.2vh, 16px);
 }
 
 .profile-left {
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 1.6vh, 20px);
-  min-height: 0;
 }
 
 /* hero 卡片 */
 .hero-card {
-  flex: 1;
   position: relative;
   overflow: hidden;
   border: 1px solid;
@@ -431,7 +429,6 @@ onMounted(() => {
   align-items: center;
   gap: clamp(10px, 1.4vh, 18px);
   animation: panelReveal 0.55s var(--ease-out) both;
-  min-height: 0;
 }
 
 .hero-illust {
@@ -565,7 +562,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 1.6vh, 20px);
-  min-height: 0;
 }
 
 .panel {
