@@ -280,6 +280,10 @@ onMounted(() => {
   border-radius: 26px;
 }
 
+.profile-actions :deep(.ant-btn-primary) {
+  color: #000;
+}
+
 .profile-right {
   display: grid;
   grid-template-columns: 1fr 1fr;
