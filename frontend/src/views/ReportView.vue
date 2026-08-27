@@ -75,7 +75,7 @@
         <div class="section-title">身体素质达标要求</div>
         <div v-for="(item, index) in report.fitnessRequirements" :key="item.id" class="req-line">
           <span class="req-no" :style="{ background: careerColor }">{{ index + 1 }}</span>
-          {{ item.content }}
+          <span class="req-text">{{ item.content }}</span>
         </div>
       </div>
 
@@ -389,9 +389,6 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: rgba(0, 0, 0, 0.78);
   margin-bottom: 10px;
 }
 
@@ -407,6 +404,14 @@ onMounted(() => {
   font-size: 12px;
   font-weight: 600;
   margin-top: 2px;
+}
+
+.req-line .req-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.78);
 }
 
 .plan-stage {

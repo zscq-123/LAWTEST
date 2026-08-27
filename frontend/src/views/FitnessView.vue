@@ -25,12 +25,12 @@
               </div>
               <a-list :data-source="report.fitnessRequirements" :split="false">
                 <template #renderItem="{ item }">
-                  <a-list-item class="req-item">
-                    <span class="req-badge" :style="{ background: careerColor }">
-                      {{ item.seq }}
-                    </span>
-                    {{ item.content }}
-                  </a-list-item>
+                    <a-list-item class="req-item">
+                      <span class="req-badge" :style="{ background: careerColor }">
+                        {{ item.seq }}
+                      </span>
+                      <span class="req-text">{{ item.content }}</span>
+                    </a-list-item>
                 </template>
               </a-list>
             </div>
@@ -158,10 +158,8 @@ const careerTheme = computed(() => ({
 
 .req-item {
   padding: clamp(5px, 0.8vh, 12px) 0 !important;
-  font-size: clamp(13px, 1.15vw, 17px);
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.82);
-  display: flex;
+  display: flex !important;
+  justify-content: flex-start !important;
   align-items: flex-start;
   gap: clamp(8px, 0.8vw, 14px);
 }
@@ -177,7 +175,14 @@ const careerTheme = computed(() => ({
   justify-content: center;
   font-size: clamp(11px, 1vw, 15px);
   font-weight: 600;
-  margin-top: 2px;
+}
+
+.req-text {
+  flex: 1;
+  min-width: 0;
+  font-size: clamp(13px, 1.15vw, 17px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .plan-timeline {
