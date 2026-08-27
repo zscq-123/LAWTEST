@@ -103,3 +103,32 @@ export interface AiAnalysisVO {
   motto: string
   disclaimer: string
 }
+
+/** 参与者登记结果（学号去重） */
+export interface Participant {
+  id: number
+  name: string
+  studentNo: string
+  source: string
+  status: string
+  /** 学号已登记过（同一人再次登记） */
+  alreadyParticipated: boolean
+  /** 已完成时的报告编号（可直接跳转） */
+  reportCode: string | null
+}
+
+/** 大屏实时概览（3s 轮询） */
+export interface LiveOverview {
+  /** 已完成人数（学号去重） */
+  finishedCount: number
+  /** 目标人数 */
+  targetCount: number
+  /** 手机端活跃答题人数 */
+  activeMobileCount: number
+}
+
+/** 落地二维码（扫码进入手机端测试） */
+export interface LandingQr {
+  url: string
+  image: string
+}
