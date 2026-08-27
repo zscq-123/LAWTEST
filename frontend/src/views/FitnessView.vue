@@ -212,6 +212,10 @@ const careerTheme = computed(() => ({
   border-radius: 26px;
 }
 
+.fitness-actions :deep(.ant-btn-primary) {
+  color: #000;
+}
+
 .fitness-disclaimer {
   margin-top: clamp(6px, 1.2vh, 16px);
   text-align: center;
