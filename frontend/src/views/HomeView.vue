@@ -130,14 +130,14 @@ function goFavorites() {
 
 <style scoped>
 .home-page {
-  padding: clamp(20px, 3.6vh, 56px) clamp(20px, 4.6vw, 80px);
-  gap: clamp(12px, 1.6vh, 22px);
+  padding: clamp(28px, 5vh, 72px) clamp(32px, 6vw, 100px);
+  gap: clamp(18px, 2.6vh, 34px);
 }
 
 /* 顶部 */
 .home-head {
   text-align: center;
-  padding-top: clamp(8px, 1.4vh, 24px);
+  padding-top: clamp(10px, 1.8vh, 28px);
 }
 
 .home-tag {
@@ -162,7 +162,7 @@ function goFavorites() {
 }
 
 .home-title {
-  margin-top: clamp(10px, 1.6vh, 18px);
+  margin-top: clamp(14px, 2.2vh, 26px);
   font-size: var(--fs-display);
   font-weight: 800;
   letter-spacing: 6px;
@@ -170,7 +170,7 @@ function goFavorites() {
 }
 
 .home-subtitle {
-  margin-top: var(--space-3);
+  margin-top: clamp(12px, 1.8vh, 22px);
   font-size: var(--fs-body);
   color: var(--text-secondary);
   letter-spacing: 1px;
@@ -178,9 +178,9 @@ function goFavorites() {
 
 /* 步骤条 */
 .home-steps {
-  margin: clamp(4px, 0.8vh, 10px) auto 0;
-  max-width: 720px;
-  padding: clamp(10px, 1.4vh, 16px) clamp(16px, 2vw, 32px);
+  margin: clamp(14px, 2.2vh, 28px) auto 0;
+  max-width: 760px;
+  padding: clamp(14px, 2vh, 24px) clamp(20px, 2.6vw, 40px);
   background: var(--bg-panel);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
@@ -205,12 +205,12 @@ function goFavorites() {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: clamp(12px, 1.6vw, 26px);
+  gap: clamp(20px, 2.8vw, 44px);
 }
 
 .career-card {
   position: relative;
-  padding: clamp(14px, 2.2vw, 30px) clamp(12px, 1.6vw, 22px);
+  padding: clamp(20px, 3vh, 44px) clamp(18px, 2.4vw, 36px);
   text-align: center;
   border-top: 2px solid var(--career-color);
   border-radius: var(--radius-lg);
@@ -241,7 +241,7 @@ function goFavorites() {
 .career-illust {
   position: absolute;
   inset: 0 0 auto 0;
-  height: clamp(80px, 11vh, 170px);
+  height: clamp(96px, 13vh, 190px);
   overflow: hidden;
   pointer-events: none;
 }
@@ -273,8 +273,8 @@ function goFavorites() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: clamp(90px, 12vh, 180px);
-  gap: clamp(6px, 0.8vh, 12px);
+  padding-top: clamp(110px, 14vh, 210px);
+  gap: clamp(10px, 1.4vh, 20px);
 }
 
 .career-name {
@@ -294,13 +294,14 @@ function goFavorites() {
   font-size: clamp(13px, 1.15vw, 18px);
   color: var(--text-secondary);
   letter-spacing: 0.5px;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin-top: clamp(4px, 0.6vh, 10px);
 }
 
 /* 底部 */
 .home-footer {
   text-align: center;
-  padding-bottom: clamp(20px, 3vh, 32px);
+  padding-bottom: clamp(24px, 3.6vh, 40px);
 }
 
 .home-footer :deep(.ant-btn-lg) {
@@ -312,7 +313,7 @@ function goFavorites() {
 }
 
 .home-tip {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   font-size: 12px;
   color: var(--text-tertiary);
   letter-spacing: 1px;
