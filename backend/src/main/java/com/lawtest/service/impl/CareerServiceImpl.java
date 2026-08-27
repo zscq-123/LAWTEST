@@ -10,6 +10,7 @@ import com.lawtest.mapper.CareerKeywordMapper;
 import com.lawtest.mapper.CareerMapper;
 import com.lawtest.mapper.KeywordMapper;
 import com.lawtest.service.CareerService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,20 @@ public class CareerServiceImpl implements CareerService {
     private final KeywordMapper keywordMapper;
     private final CareerKeywordMapper careerKeywordMapper;
 
+    /** 职业词库为静态配置：启动时组装一次并缓存，listCareers 零 DB 查询 */
+    private volatile List<CareerVO> careerCache;
+
+    @PostConstruct
+    void init() {
+        careerCache = buildList();
+    }
+
     @Override
     public List<CareerVO> listCareers() {
+        return careerCache;
+    }
+
+    private List<CareerVO> buildList() {
         List<Career> careers = careerMapper.selectList(
                 Wrappers.<Career>lambdaQuery().orderByAsc(Career::getSortOrder));
 

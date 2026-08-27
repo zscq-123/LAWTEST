@@ -11,6 +11,9 @@ public interface ReportService {
     /** 生成报告（保存测试记录+报告编号+二维码） */
     ReportVO createReport(List<Long> keywordIds);
 
+    /** 生成报告并关联参与者（学号已登记则标记完成，同一人重复测试不重复计数） */
+    ReportVO createReport(List<Long> keywordIds, String studentNo);
+
     /** 按报告编号查询完整报告 */
     ReportVO getByCode(String code);
 

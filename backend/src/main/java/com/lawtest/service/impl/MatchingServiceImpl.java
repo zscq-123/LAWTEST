@@ -11,6 +11,7 @@ import com.lawtest.mapper.CareerKeywordMapper;
 import com.lawtest.mapper.CareerMapper;
 import com.lawtest.mapper.KeywordMapper;
 import com.lawtest.service.MatchingService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +37,23 @@ public class MatchingServiceImpl implements MatchingService {
     private final KeywordMapper keywordMapper;
     private final CareerKeywordMapper careerKeywordMapper;
 
+    /** 静态配置缓存：career/career_keyword/keyword 活动期间不变，启动时加载一次，match 全程零 DB 查询 */
+    private List<Career> careers;
+    private List<CareerKeyword> keywordLinks;
+    private Map<Long, Keyword> keywordMap;
+
+    @PostConstruct
+    void loadConfig() {
+        this.careers = careerMapper.selectList(
+                Wrappers.<Career>lambdaQuery().orderByAsc(Career::getSortOrder));
+        this.keywordLinks = careerKeywordMapper.selectList(null);
+        this.keywordMap = keywordMapper.selectList(null).stream()
+                .collect(Collectors.toMap(Keyword::getId, k -> k));
+    }
+
     @Override
     public MatchResultDTO match(List<Long> keywordIds) {
-        // 1. 参数校验：去重、排序、数量与合法性
+        // 1. 参数校验：去重、排序、数量与合法性（用缓存词库校验，不查库）
         List<Long> ids = keywordIds.stream().distinct().sorted().collect(Collectors.toList());
         if (ids.isEmpty()) {
             throw new BusinessException(400, "请至少选择一个特质词");
@@ -46,16 +61,12 @@ public class MatchingServiceImpl implements MatchingService {
         if (ids.size() > 10) {
             throw new BusinessException(400, "最多只能选择10个特质词");
         }
-        long validCount = keywordMapper.selectList(
-                        Wrappers.<Keyword>lambdaQuery().in(Keyword::getId, ids))
-                .stream().map(Keyword::getId).distinct().count();
+        long validCount = ids.stream().filter(keywordMap::containsKey).count();
         if (validCount != ids.size()) {
             throw new BusinessException(400, "包含无效的特质词");
         }
 
-        // 2. 逐职业累加命中词权重
-        List<Career> careers = careerMapper.selectList(
-                Wrappers.<Career>lambdaQuery().orderByAsc(Career::getSortOrder));
+        // 2. 逐职业累加命中词权重（配置已缓存，零 DB 查询）
         Map<Long, Career> careerMap = careers.stream()
                 .collect(Collectors.toMap(Career::getId, c -> c));
         Map<Long, Integer> scores = new LinkedHashMap<>();
@@ -63,7 +74,7 @@ public class MatchingServiceImpl implements MatchingService {
             scores.put(career.getId(), 0);
         }
         Set<Long> selected = Set.copyOf(ids);
-        for (CareerKeyword ck : careerKeywordMapper.selectList(null)) {
+        for (CareerKeyword ck : keywordLinks) {
             if (selected.contains(ck.getKeywordId())) {
                 scores.merge(ck.getCareerId(), ck.getWeight(), Integer::sum);
             }

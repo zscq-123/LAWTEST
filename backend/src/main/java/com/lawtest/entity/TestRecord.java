@@ -19,5 +19,7 @@ public class TestRecord {
     /** 五职业得分（JSON，key为职业ID） */
     private String scores;
     private Long resultCareerId;
+    /** 参与者ID（学号去重关联，可空） */
+    private Long participantId;
     private LocalDateTime createdAt;
 }

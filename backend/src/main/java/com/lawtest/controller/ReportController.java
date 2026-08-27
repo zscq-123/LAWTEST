@@ -21,10 +21,10 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    /** 生成报告（保存测试记录+编号+二维码），返回完整报告数据 */
+    /** 生成报告（保存测试记录+编号+二维码），可选携带学号关联参与者 */
     @PostMapping
     public ApiResponse<ReportVO> createReport(@Valid @RequestBody ReportRequest request) {
-        return ApiResponse.success(reportService.createReport(request.getKeywordIds()));
+        return ApiResponse.success(reportService.createReport(request.getKeywordIds(), request.getStudentNo()));
     }
 
     /** 按报告编号查询完整报告（手机扫码使用） */

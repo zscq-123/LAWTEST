@@ -15,6 +15,7 @@ import com.lawtest.entity.FitnessPlan;
 import com.lawtest.entity.FitnessRequirement;
 import com.lawtest.entity.Keyword;
 import com.lawtest.entity.Mentor;
+import com.lawtest.entity.Participant;
 import com.lawtest.entity.Profile;
 import com.lawtest.entity.Report;
 import com.lawtest.entity.TestRecord;
@@ -23,6 +24,7 @@ import com.lawtest.mapper.FitnessPlanMapper;
 import com.lawtest.mapper.FitnessRequirementMapper;
 import com.lawtest.mapper.KeywordMapper;
 import com.lawtest.mapper.MentorMapper;
+import com.lawtest.mapper.ParticipantMapper;
 import com.lawtest.mapper.ProfileMapper;
 import com.lawtest.mapper.ReportMapper;
 import com.lawtest.mapper.TestRecordMapper;
@@ -58,6 +60,7 @@ public class ReportServiceImpl implements ReportService {
     private final FitnessPlanMapper fitnessPlanMapper;
     private final MentorMapper mentorMapper;
     private final KeywordMapper keywordMapper;
+    private final ParticipantMapper participantMapper;
     private final MatchingService matchingService;
     private final AiAnalysisService aiAnalysisService;
     private final ObjectMapper objectMapper;
@@ -67,6 +70,11 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportVO createReport(List<Long> keywordIds) {
+        return createReport(keywordIds, null);
+    }
+
+    @Override
+    public ReportVO createReport(List<Long> keywordIds, String studentNo) {
         MatchResultDTO match = matchingService.match(keywordIds);
 
         TestRecord record = new TestRecord();
@@ -86,6 +94,24 @@ public class ReportServiceImpl implements ReportService {
         report.setCode(code);
         report.setQrUrl(qrUrl);
         reportMapper.insert(report);
+
+        // 关联参与者：学号已登记 → 回写记录并标记完成（同一人重复测试不重复计数）
+        if (studentNo != null && !studentNo.isBlank()) {
+            Participant participant = participantMapper.selectOne(
+                    Wrappers.<Participant>lambdaQuery().eq(Participant::getStudentNo, studentNo.trim()));
+            if (participant != null) {
+                TestRecord recordUpdate = new TestRecord();
+                recordUpdate.setId(record.getId());
+                recordUpdate.setParticipantId(participant.getId());
+                testRecordMapper.updateById(recordUpdate);
+
+                Participant participantUpdate = new Participant();
+                participantUpdate.setId(participant.getId());
+                participantUpdate.setStatus("FINISHED");
+                participantUpdate.setReportCode(code);
+                participantMapper.updateById(participantUpdate);
+            }
+        }
         // 回查数据库，拿到默认生成时间等完整字段
         report = reportMapper.selectById(report.getId());
 

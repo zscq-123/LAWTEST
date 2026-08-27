@@ -12,3 +12,6 @@ app:
   frontend-base-url: ${FRONTEND_BASE_URL:http://localhost}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+  target-participants: ${TARGET_PARTICIPANTS:200}
+  live:
+    active-ttl-seconds: ${LIVE_ACTIVE_TTL_SECONDS:90}

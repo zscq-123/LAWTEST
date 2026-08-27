@@ -13,4 +13,7 @@ public class ReportRequest {
     @NotEmpty(message = "请至少选择一个特质词")
     @Size(max = 10, message = "最多只能选择10个特质词")
     private List<Long> keywordIds;
+
+    /** 参与者学号（可选；传入且已登记时关联身份并标记完成，用于人数去重） */
+    private String studentNo;
 }

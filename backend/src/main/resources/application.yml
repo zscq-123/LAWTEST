@@ -25,6 +25,11 @@ app:
   frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+  # 活动现场目标人数（大屏进度 X/Y 的 Y）
+  target-participants: ${TARGET_PARTICIPANTS:200}
+  live:
+    # 手机端心跳活跃判定窗口（秒），超过则视为已离开
+    active-ttl-seconds: ${LIVE_ACTIVE_TTL_SECONDS:90}
   ai:
     base-url: ${AI_BASE_URL:https://api.xiaomimimo.com/v1}
     api-key: ${AI_API_KEY:}
