@@ -272,6 +272,36 @@ body {
   transform: translateY(-2px);
 }
 
+/* ============================================================
+ * Ghost 按钮（浅色主题修正）
+ * Ant Design 的 ghost 按钮在浅色背景上默认为白字白边，几乎不可见；
+ * 这里统一改为主色文字 + 主色描边，浅色背景清晰可读。
+ * ============================================================ */
+.ant-btn-background-ghost.ant-btn-default {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  background: rgba(22, 119, 255, 0.04);
+}
+
+.ant-btn-background-ghost.ant-btn-default:hover,
+.ant-btn-background-ghost.ant-btn-default:focus {
+  color: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
+  background: rgba(22, 119, 255, 0.08);
+}
+
+.ant-btn-background-ghost.ant-btn-primary {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.ant-btn-background-ghost.ant-btn-primary:hover,
+.ant-btn-background-ghost.ant-btn-primary:focus {
+  color: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
+}
+
+
 button,
 .word-card,
 .career-card,
