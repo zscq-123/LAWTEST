@@ -125,9 +125,16 @@
                 <header class="panel-header">
                   <check-circle-outlined class="panel-icon" :style="{ color: careerColor }" />
                   <h3 class="panel-title">你的能力优势</h3>
-                  <a-tag color="success" bordered>{{ report.profile.strengths.length }} 项</a-tag>
+                  <a-tag
+                    v-if="hasAi"
+                    :color="careerColor"
+                    bordered
+                    class="panel-tag"
+                    :style="{ color: textOnColor(careerColor) }"
+                  >AI 生成</a-tag>
+                  <a-tag v-else color="success" bordered>{{ displayStrengths.length }} 项</a-tag>
                 </header>
-                <a-list :data-source="report.profile.strengths" :split="false">
+                <a-list :data-source="displayStrengths" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="strength-item">
                       <span class="bullet-num" :style="{ background: careerColor }">
@@ -143,9 +150,14 @@
                 <header class="panel-header">
                   <bulb-outlined class="panel-icon" :style="{ color: '#faad14' }" />
                   <h3 class="panel-title">短板与提升建议</h3>
-                  <a-tag color="warning" bordered>{{ report.profile.improvements.length }} 项</a-tag>
+                  <a-tag
+                    v-if="hasAi"
+                    color="warning"
+                    bordered
+                  >AI 生成</a-tag>
+                  <a-tag v-else color="warning" bordered>{{ displayImprovements.length }} 项</a-tag>
                 </header>
-                <a-list :data-source="report.profile.improvements" :split="false">
+                <a-list :data-source="displayImprovements" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="improve-item">
                       <span class="bullet-num" :style="{ background: '#faad14' }">
@@ -184,51 +196,6 @@
                   <div class="ai-summary">
                     <robot-outlined :style="{ color: careerColor }" class="ai-summary-icon" />
                     <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
-                  </div>
-
-                  <div v-if="aiAnalysis.strengths.length" class="ai-section">
-                    <div class="ai-section-title">
-                      <check-circle-outlined :style="{ color: careerColor }" />
-                      核心优势解读
-                    </div>
-                    <a-list :data-source="aiAnalysis.strengths" :split="false">
-                      <template #renderItem="{ item, index }">
-                        <a-list-item class="ai-item">
-                          <span class="ai-badge" :style="{ background: careerColor }">{{ index + 1 }}</span>
-                          <span class="item-text">{{ item }}</span>
-                        </a-list-item>
-                      </template>
-                    </a-list>
-                  </div>
-
-                  <div v-if="aiAnalysis.improvements.length" class="ai-section">
-                    <div class="ai-section-title">
-                      <bulb-outlined style="color: #faad14" />
-                      成长建议
-                    </div>
-                    <a-list :data-source="aiAnalysis.improvements" :split="false">
-                      <template #renderItem="{ item, index }">
-                        <a-list-item class="ai-item">
-                          <span class="ai-badge" style="background: #faad14">{{ index + 1 }}</span>
-                          <span class="item-text">{{ item }}</span>
-                        </a-list-item>
-                      </template>
-                    </a-list>
-                  </div>
-
-                  <div v-if="aiAnalysis.plans.length" class="ai-section">
-                    <div class="ai-section-title">
-                      <rise-outlined :style="{ color: careerColor }" />
-                      四年发展建议
-                    </div>
-                    <a-list :data-source="aiAnalysis.plans" :split="false">
-                      <template #renderItem="{ item, index }">
-                        <a-list-item class="ai-item">
-                          <span class="ai-badge" :style="{ background: careerColor }">{{ index + 1 }}</span>
-                          <span class="item-text">{{ item }}</span>
-                        </a-list-item>
-                      </template>
-                    </a-list>
                   </div>
 
                   <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerColor }">
@@ -335,6 +302,19 @@ const careerTheme = computed(() => ({
     borderRadius: 8
   }
 }))
+
+/** 有 AI 分析时优先用 AI 结果，否则回退预设模板 */
+const displayStrengths = computed(() =>
+  aiAnalysis.value?.strengths?.length
+    ? aiAnalysis.value.strengths
+    : (report.value?.profile.strengths || [])
+)
+const displayImprovements = computed(() =>
+  aiAnalysis.value?.improvements?.length
+    ? aiAnalysis.value.improvements
+    : (report.value?.profile.improvements || [])
+)
+const hasAi = computed(() => !!aiAnalysis.value)
 
 async function ensureReport() {
   if (!store.matchResult) {

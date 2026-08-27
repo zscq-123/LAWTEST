@@ -77,6 +77,13 @@
                 <rise-outlined :style="{ color: careerColor }" class="panel-icon" />
                 <h3 class="panel-title">大学四年阶梯式锻炼计划</h3>
                 <a-tag
+                  v-if="hasAi"
+                  :color="careerColor"
+                  bordered
+                  :style="{ color: textOnColor(careerColor) }"
+                >AI 生成</a-tag>
+                <a-tag
+                  v-else
                   :color="careerColor"
                   bordered
                   :style="{ color: textOnColor(careerColor) }"
@@ -86,11 +93,11 @@
               </header>
               <a-timeline class="plan-timeline">
                 <a-timeline-item
-                  v-for="plan in report.fitnessPlans"
-                  :key="plan.id"
+                  v-for="(plan, index) in displayPlans"
+                  :key="index"
                   :color="careerColor"
                 >
-                  <div class="plan-stage">{{ plan.yearStage }}</div>
+                  <div class="plan-stage">{{ plan.stage }}</div>
                   <div class="plan-content">{{ plan.content }}</div>
                 </a-timeline-item>
               </a-timeline>
@@ -158,6 +165,24 @@ const report = computed(() => store.report)
 const career = computed(() => store.report?.career || null)
 const careerColor = computed(() => career.value?.colorCode || '#1677FF')
 const disclaimer = '本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。'
+
+/** AI 深度分析（由画像页生成后同步到 store.report） */
+const aiAnalysis = computed(() => report.value?.aiAnalysis || null)
+const hasAi = computed(() => !!aiAnalysis.value)
+
+/** 四年锻炼计划：有 AI 时用 AI 生成的个性化计划，否则回退预设模板 */
+const displayPlans = computed(() => {
+  if (aiAnalysis.value?.plans?.length) {
+    return aiAnalysis.value.plans.map((content, i) => ({
+      stage: `AI 建议 ${i + 1}`,
+      content
+    }))
+  }
+  return (report.value?.fitnessPlans || []).map((p) => ({
+    stage: p.yearStage,
+    content: p.content
+  }))
+})
 
 const careerTheme = computed(() => ({
   token: {
