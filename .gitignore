@@ -1,0 +1,35 @@
+# Node
+node_modules/
+dist/
+*.local
+npm-debug.log*
+
+# Java / Maven
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env & secrets
+.env
+*.pem
+*.key
+
+# Local temp
+_tmp/
+
+# Logs
+*.log
