@@ -308,11 +308,18 @@
             </div>
           </template>
 
-          <a-empty
-            v-else
-            description="在大屏端生成一次后，此处即可随时查看"
-            :image-style="{ height: '50px' }"
-          />
+          <a-button
+            v-else-if="!aiLoading"
+            type="primary"
+            block
+            size="large"
+            class="ai-run-btn"
+            :style="{ background: careerColor, borderColor: careerColor }"
+            @click="runAiAnalyze"
+          >
+            <template #icon><robot-outlined /></template>
+            {{ aiError ? '重试生成 AI 分析' : '生成 AI 深度分析' }}
+          </a-button>
         </section>
 
         <div class="report-disclaimer">{{ report.match.disclaimer }}</div>
@@ -369,7 +376,7 @@ import {
   WarningFilled
 } from '@ant-design/icons-vue'
 import RadarChart from '@/components/RadarChart.vue'
-import { getReport } from '@/api'
+import { aiAnalyze, getReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
 import { textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
@@ -477,6 +484,22 @@ async function copyLink() {
     message.success('报告链接已复制')
   } catch {
     message.warning('复制失败，请长按链接手动复制')
+  }
+}
+
+/** 手机端按报告编号生成 AI 分析（已缓存则直接返回并展示） */
+async function runAiAnalyze() {
+  if (!report.value) return
+  aiLoading.value = true
+  aiError.value = ''
+  try {
+    const data = await aiAnalyze(report.value.code)
+    aiAnalysis.value = data
+    if (report.value) report.value.aiAnalysis = data
+  } catch (e) {
+    aiError.value = e instanceof Error ? e.message : 'AI 分析失败，请稍后重试'
+  } finally {
+    aiLoading.value = false
   }
 }
 
@@ -949,5 +972,9 @@ onMounted(() => {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.45);
   line-height: 1.6;
+}
+
+.ai-run-btn {
+  margin-top: 8px;
 }
 </style>

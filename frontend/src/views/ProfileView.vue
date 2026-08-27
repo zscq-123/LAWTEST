@@ -132,9 +132,13 @@
                     class="panel-tag"
                     :style="{ color: textOnColor(careerColor) }"
                   >AI 生成</a-tag>
-                  <a-tag v-else color="success" bordered>{{ displayStrengths.length }} 项</a-tag>
+                  <a-tag v-else-if="aiLoading" color="processing" bordered>生成中</a-tag>
                 </header>
-                <a-list :data-source="displayStrengths" :split="false">
+                <div v-if="aiLoading" class="panel-loading">
+                  <a-spin size="small" />
+                  <span class="panel-loading-text">AI 正在分析你的优势…</span>
+                </div>
+                <a-list v-else :data-source="displayStrengths" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="strength-item">
                       <span class="bullet-num" :style="{ background: careerColor }">
@@ -155,9 +159,13 @@
                     color="warning"
                     bordered
                   >AI 生成</a-tag>
-                  <a-tag v-else color="warning" bordered>{{ displayImprovements.length }} 项</a-tag>
+                  <a-tag v-else-if="aiLoading" color="processing" bordered>生成中</a-tag>
                 </header>
-                <a-list :data-source="displayImprovements" :split="false">
+                <div v-if="aiLoading" class="panel-loading">
+                  <a-spin size="small" />
+                  <span class="panel-loading-text">AI 正在分析你的短板…</span>
+                </div>
+                <a-list v-else :data-source="displayImprovements" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="improve-item">
                       <span class="bullet-num" :style="{ background: '#faad14' }">
@@ -209,7 +217,7 @@
                 </template>
 
                 <a-button
-                  v-else
+                  v-if="aiError && !aiLoading && !aiAnalysis"
                   type="primary"
                   block
                   size="large"
@@ -217,8 +225,8 @@
                   :style="{ background: careerColor, borderColor: careerColor }"
                   @click="runAiAnalyze"
                 >
-                  <template #icon><robot-outlined /></template>
-                  生成 AI 深度分析
+                  <template #icon><reload-outlined /></template>
+                  重试 AI 分析
                 </a-button>
               </article>
             </div>
@@ -303,17 +311,9 @@ const careerTheme = computed(() => ({
   }
 }))
 
-/** 有 AI 分析时优先用 AI 结果，否则回退预设模板 */
-const displayStrengths = computed(() =>
-  aiAnalysis.value?.strengths?.length
-    ? aiAnalysis.value.strengths
-    : (report.value?.profile.strengths || [])
-)
-const displayImprovements = computed(() =>
-  aiAnalysis.value?.improvements?.length
-    ? aiAnalysis.value.improvements
-    : (report.value?.profile.improvements || [])
-)
+/** 展示内容全部来自 AI 分析（不再使用预设模板） */
+const displayStrengths = computed(() => aiAnalysis.value?.strengths || [])
+const displayImprovements = computed(() => aiAnalysis.value?.improvements || [])
 const hasAi = computed(() => !!aiAnalysis.value)
 
 async function ensureReport() {
@@ -323,9 +323,11 @@ async function ensureReport() {
   }
   const target = store.matchResult.first.careerId
   if (store.report && store.report.career.id === target) {
-    // 已有报告：若缓存了 AI 分析则直接展示
+    // 已有报告：若缓存了 AI 分析则直接展示，否则自动生成
     if (store.report.aiAnalysis) {
       aiAnalysis.value = store.report.aiAnalysis
+    } else {
+      runAiAnalyze()
     }
     return
   }
@@ -335,6 +337,9 @@ async function ensureReport() {
     store.setReport(data)
     if (data.aiAnalysis) {
       aiAnalysis.value = data.aiAnalysis
+    } else {
+      // 新报告无 AI 分析：自动生成
+      runAiAnalyze()
     }
   } finally {
     loading.value = false
@@ -643,6 +648,21 @@ onMounted(() => {
 
 .ai-loading-text {
   font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* 面板内加载态（优势/短板面板） */
+.panel-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: clamp(20px, 3.4vh, 40px) 0;
+  color: var(--text-tertiary);
+}
+
+.panel-loading-text {
+  font-size: 13px;
   letter-spacing: 1px;
 }
 

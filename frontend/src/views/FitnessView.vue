@@ -75,23 +75,22 @@
             <article class="panel glass-panel panel-in">
               <header class="panel-header">
                 <rise-outlined :style="{ color: careerColor }" class="panel-icon" />
-                <h3 class="panel-title">大学四年阶梯式锻炼计划</h3>
+                <h3 class="panel-title">大学四年锻炼计划</h3>
                 <a-tag
                   v-if="hasAi"
                   :color="careerColor"
                   bordered
                   :style="{ color: textOnColor(careerColor) }"
                 >AI 生成</a-tag>
-                <a-tag
-                  v-else
-                  :color="careerColor"
-                  bordered
-                  :style="{ color: textOnColor(careerColor) }"
-                >
-                  {{ report.fitnessPlans.length }} 年
-                </a-tag>
+                <a-tag v-else color="processing" bordered>待生成</a-tag>
               </header>
-              <a-timeline class="plan-timeline">
+              <a-empty
+                v-if="!displayPlans.length"
+                description="在画像页生成 AI 分析后，此处展示个性化锻炼计划"
+                :image-style="{ height: '50px' }"
+                class="plan-empty"
+              />
+              <a-timeline v-else class="plan-timeline">
                 <a-timeline-item
                   v-for="(plan, index) in displayPlans"
                   :key="index"
@@ -170,7 +169,7 @@ const disclaimer = '本内容为通识性建议，非医疗意见；如有健康
 const aiAnalysis = computed(() => report.value?.aiAnalysis || null)
 const hasAi = computed(() => !!aiAnalysis.value)
 
-/** 四年锻炼计划：有 AI 时用 AI 生成的个性化计划，否则回退预设模板 */
+/** 四年锻炼计划：全部来自 AI 生成的个性化计划（不再使用预设模板） */
 const displayPlans = computed(() => {
   if (aiAnalysis.value?.plans?.length) {
     return aiAnalysis.value.plans.map((content, i) => ({
@@ -178,10 +177,7 @@ const displayPlans = computed(() => {
       content
     }))
   }
-  return (report.value?.fitnessPlans || []).map((p) => ({
-    stage: p.yearStage,
-    content: p.content
-  }))
+  return []
 })
 
 const careerTheme = computed(() => ({
