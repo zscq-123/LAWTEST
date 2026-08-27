@@ -97,7 +97,7 @@
                   :color="careerColor"
                 >
                   <div class="plan-stage">{{ plan.stage }}</div>
-                  <div class="plan-content">{{ plan.content }}</div>
+                  <div class="plan-content pre-line">{{ plan.content }}</div>
                 </a-timeline-item>
               </a-timeline>
             </article>
@@ -171,17 +171,18 @@ const hasAi = computed(() => !!aiAnalysis.value)
 
 /** 四年锻炼计划：全部来自 AI 生成的个性化体育锻炼计划（不再使用预设模板） */
 const displayPlans = computed(() => {
-  if (aiAnalysis.value?.plans?.length) {
-    return aiAnalysis.value.plans.map((content, i) => {
-      // 解析 "大一·体能筑基：……" 形式的阶段名；无冒号则用「建议 N」
-      const m = content.match(/^(大一|大二|大三|大四)[·\s]*(.*?)[：:]\s*(.*)$/s)
-      if (m) {
-        return { stage: `${m[1]}·${m[2]}`, content: m[3] }
-      }
-      return { stage: `锻炼建议 ${i + 1}`, content }
-    })
-  }
-  return []
+  if (!aiAnalysis.value?.plans?.length) return []
+  return aiAnalysis.value.plans.map((content, i) => {
+    // 每条以换行分隔：第一行为阶段标题（如「大一：筑基适应年｜打好体能基础」），
+    // 其余行（核心目标 / 年度细分小目标）作为正文保留换行展示
+    const lines = content.split(/\n/).map((l) => l.trim()).filter(Boolean)
+    if (!lines.length) return { stage: `锻炼建议 ${i + 1}`, content: '', details: [] }
+    return {
+      stage: lines[0],
+      content: lines.slice(1).join('\n'),
+      details: lines.slice(1)
+    }
+  })
 })
 
 const careerTheme = computed(() => ({
@@ -371,6 +372,10 @@ const careerTheme = computed(() => ({
   line-height: 1.7;
   color: var(--text-secondary);
   margin-top: var(--space-1);
+}
+
+.plan-content.pre-line {
+  white-space: pre-line;
 }
 
 .fitness-actions {
