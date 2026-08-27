@@ -1,0 +1,226 @@
+:root {
+  --bg-deep: #0b1220;
+  --bg-panel: rgba(255, 255, 255, 0.06);
+  --text-main: rgba(255, 255, 255, 0.92);
+  --text-sub: rgba(255, 255, 255, 0.62);
+  --border-light: rgba(255, 255, 255, 0.14);
+  --primary: #1677ff;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-main);
+  overflow: hidden;
+}
+
+/* 大屏页面基础容器（深色科技感背景 + 五色光晕） */
+.screen-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(46, 107, 230, 0.22), transparent 60%),
+    radial-gradient(1000px 500px at 85% 0%, rgba(18, 181, 165, 0.16), transparent 55%),
+    radial-gradient(900px 600px at 50% 110%, rgba(123, 94, 167, 0.2), transparent 60%),
+    radial-gradient(700px 400px at 90% 90%, rgba(200, 16, 46, 0.14), transparent 55%),
+    linear-gradient(160deg, #0b1220 0%, #0e1626 55%, #0b1220 100%);
+  overflow: hidden;
+}
+
+.screen-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9), transparent 75%);
+  pointer-events: none;
+}
+
+/* 大屏 1920×1080 画布缩放 */
+.screen-canvas {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+}
+
+.screen-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 48px 72px;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-title {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin: 0;
+}
+
+.screen-subtitle {
+  font-size: 20px;
+  color: var(--text-sub);
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+.glass-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  backdrop-filter: blur(12px);
+}
+
+.glow-text {
+  background: linear-gradient(90deg, #7ab8ff, #12b5a5, #ffd166, #c8102e, #7b5ea7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-primary-glow {
+  box-shadow: 0 0 24px rgba(22, 119, 255, 0.45);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.btn-primary-glow:hover {
+  box-shadow: 0 0 40px rgba(22, 119, 255, 0.65);
+  transform: translateY(-2px);
+}
+
+/* 词卡光效 */
+.word-card {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.word-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.word-card.selected {
+  color: #fff;
+  animation: cardLight 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.word-card.core-tag {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes cardLight {
+  0% {
+    transform: scale(0.92);
+    filter: brightness(2);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.fade-in {
+  animation: floatUp 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 手机端报告页 */
+.mobile-page {
+  min-height: 100%;
+  background: #f5f7fa;
+  color: rgba(0, 0, 0, 0.88);
+  overflow-y: auto;
+  padding-bottom: 48px;
+}
+
+.report-section {
+  margin: 0 16px 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 18px 16px;
+}
+
+/* 触控大屏点击反馈 */
+button,
+.word-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

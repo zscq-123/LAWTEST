@@ -1,0 +1,29 @@
+{
+  "name": "lawtest-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "“五彩法途，筑梦未来”线上职业特质测评系统前端",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "ant-design-vue": "^4.2.6",
+    "axios": "^1.20.0",
+    "echarts": "^6.1.0",
+    "html2canvas": "^1.4.1",
+    "vue": "^3.5.41",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "~5.9.3",
+    "vite": "^8.2.2",
+    "vue-tsc": "^3.3.11"
+  }
+}

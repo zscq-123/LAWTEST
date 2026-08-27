@@ -1,0 +1,303 @@
+<template>
+  <ScreenFrame>
+    <div class="screen-page">
+      <div class="select-head">
+        <div>
+          <h1 class="screen-title" style="font-size: 34px">选择最像你的 10 个特质词</h1>
+          <p class="screen-subtitle" style="font-size: 16px">
+            每个词都属于一个职业方向，颜色代表该职业 · 核心词有虚线边框
+          </p>
+        </div>
+        <div class="select-count">
+          <a-badge :count="store.selectedCount" :max="10" show-zero>
+            <div class="count-box">已选</div>
+          </a-badge>
+        </div>
+      </div>
+
+      <div class="select-groups">
+        <div
+          v-for="career in store.careers"
+          :key="career.id"
+          class="word-group"
+          :style="{ '--career-color': career.colorCode }"
+        >
+          <div class="group-head">
+            <span class="group-dot" :style="{ background: career.colorCode }" />
+            {{ career.name }} · {{ career.colorName }}
+          </div>
+          <div class="group-words">
+            <div
+              v-for="keyword in career.keywords"
+              :key="keyword.id"
+              class="word-card"
+              :class="{
+                selected: isSelected(keyword.id),
+                'core-tag': keyword.core && !isSelected(keyword.id)
+              }"
+              :style="selectedStyle(career, keyword.id)"
+              @click="handleToggle(keyword.id)"
+            >
+              {{ keyword.word }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="energy-bar">
+        <div class="energy-label">实时职业能量池</div>
+        <div class="energy-tracks">
+          <div
+            v-for="career in store.careers"
+            :key="career.id"
+            class="energy-track"
+            :title="`${career.name}：${liveScores[career.id] || 0} 分`"
+          >
+            <div class="energy-fill-wrap">
+              <div
+                class="energy-fill"
+                :style="{
+                  height: pct(liveScores[career.id]),
+                  background: career.colorCode,
+                  boxShadow: `0 0 14px ${career.colorCode}88`
+                }"
+              />
+            </div>
+            <div class="energy-name">{{ career.name }}</div>
+            <div class="energy-score">{{ liveScores[career.id] || 0 }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="select-actions">
+        <span v-if="store.selectedCount < 3" class="hint-warn">再多选几个词，结果会更准确</span>
+        <span v-else class="hint-ok">已满足测试条件，可以开始匹配</span>
+        <a-space :size="24">
+          <a-button size="large" @click="router.push('/')">返回首页</a-button>
+          <a-button
+            type="primary"
+            size="large"
+            class="btn-primary-glow"
+            :disabled="store.selectedCount < 3"
+            @click="goMatching"
+          >
+            开始匹配
+          </a-button>
+        </a-space>
+      </div>
+    </div>
+  </ScreenFrame>
+</template>
+
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
+import ScreenFrame from '@/components/ScreenFrame.vue'
+import { postMatching } from '@/api'
+import { useTestStore } from '@/stores/test'
+import type { Career } from '@/types'
+
+const store = useTestStore()
+const router = useRouter()
+const liveScores = reactive<Record<string, number>>({})
+let debounceTimer: number | undefined
+
+function isSelected(id: number) {
+  return store.selectedIds.includes(id)
+}
+
+function selectedStyle(career: Career, id: number) {
+  if (!isSelected(id)) return {}
+  return {
+    background: career.colorCode + '2e',
+    borderColor: career.colorCode,
+    boxShadow: `0 0 16px ${career.colorCode}66`
+  }
+}
+
+function pct(score?: number) {
+  return Math.round(((score || 0) / 20) * 100) + '%'
+}
+
+function handleToggle(id: number) {
+  const ok = store.toggleKeyword(id)
+  if (!ok) {
+    message.warning('最多只能选择10个特质词')
+    return
+  }
+  scheduleLiveMatch()
+}
+
+function scheduleLiveMatch() {
+  window.clearTimeout(debounceTimer)
+  debounceTimer = window.setTimeout(async () => {
+    if (!store.selectedIds.length) {
+      Object.keys(liveScores).forEach((k) => (liveScores[k] = 0))
+      return
+    }
+    try {
+      const result = await postMatching(store.selectedIds)
+      Object.entries(result.scores).forEach(([key, value]) => (liveScores[key] = value))
+    } catch {
+      // 网络异常时能量池保持上次状态
+    }
+  }, 300)
+}
+
+function goMatching() {
+  router.push('/matching')
+}
+
+onMounted(async () => {
+  try {
+    await store.loadCareers()
+  } catch {
+    // 词库加载失败时页面给出空态，不影响后续重试
+  }
+  if (store.selectedIds.length) scheduleLiveMatch()
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(debounceTimer)
+})
+</script>
+
+<style scoped>
+.select-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.select-count :deep(.ant-badge-count) {
+  font-size: 20px;
+  height: 28px;
+  line-height: 28px;
+  min-width: 28px;
+  padding: 0 8px;
+}
+
+.count-box {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.select-groups {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  overflow: hidden;
+  margin-top: 14px;
+}
+
+.word-group {
+  border-left: 3px solid var(--career-color);
+  padding-left: 14px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.group-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.group-words {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  overflow-y: auto;
+  padding: 4px 4px 8px 0;
+}
+
+.word-card {
+  font-size: 15px;
+  padding: 8px 6px;
+}
+
+.energy-bar {
+  margin-top: 16px;
+  flex-shrink: 0;
+}
+
+.energy-label {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.energy-tracks {
+  display: flex;
+  gap: 24px;
+}
+
+.energy-track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.energy-fill-wrap {
+  width: 12px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.energy-fill {
+  width: 100%;
+  border-radius: 6px;
+  transition: height 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.energy-name {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.energy-score {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.select-actions {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.hint-warn {
+  color: #faad14;
+  font-size: 16px;
+}
+
+.hint-ok {
+  color: #52c41a;
+  font-size: 16px;
+}
+</style>
