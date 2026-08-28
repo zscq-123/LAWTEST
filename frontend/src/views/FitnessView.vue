@@ -5,7 +5,7 @@
         <header class="fitness-head">
           <div>
             <h1 class="screen-title">
-              <span :style="{ color: careerColor }">{{ report?.career?.name || '' }}</span>
+              <span :style="{ color: careerFg }">{{ report?.career?.name || '' }}</span>
               · 体能赋能方案
             </h1>
             <p class="screen-subtitle">身体是职业长跑的本钱，大学四年一步一步来</p>
@@ -31,11 +31,11 @@
                 <CareerAvatar
                   :id="report.career.id"
                   :name="report.career.name"
-                  :color="careerColor"
+                  :color="careerAccent"
                   size="md"
                   class="side-avatar"
                 />
-                <div class="side-name" :style="{ color: careerColor }">{{ report.career.name }}</div>
+                <div class="side-name" :style="{ color: careerFg }">{{ report.career.name }}</div>
                 <a-tag
                   :color="careerColor"
                   bordered
@@ -50,7 +50,7 @@
 
             <article class="panel glass-panel panel-in">
               <header class="panel-header">
-                <check-circle-outlined :style="{ color: careerColor }" class="panel-icon" />
+                <check-circle-outlined :style="{ color: careerAccent }" class="panel-icon" />
                 <h3 class="panel-title">身体素质达标要求</h3>
                 <a-tag
                   :color="careerColor"
@@ -63,7 +63,7 @@
               <a-list :data-source="report.fitnessRequirements" :split="false">
                 <template #renderItem="{ item }">
                   <a-list-item class="req-item">
-                    <span class="req-badge" :style="{ background: careerColor }">
+                    <span class="req-badge" :style="{ background: careerAccent }">
                       {{ item.seq }}
                     </span>
                     <span class="req-text">{{ item.content }}</span>
@@ -74,7 +74,7 @@
 
             <article class="panel glass-panel panel-in">
               <header class="panel-header">
-                <rise-outlined :style="{ color: careerColor }" class="panel-icon" />
+                <rise-outlined :style="{ color: careerAccent }" class="panel-icon" />
                 <h3 class="panel-title">大学四年锻炼计划</h3>
                 <a-tag
                   v-if="hasAi"
@@ -152,7 +152,7 @@ import ScreenFrame from '@/components/ScreenFrame.vue'
 import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { careerIllustration } from '@/utils/illustration'
-import { textOnColor } from '@/utils/color'
+import { isNearWhite, textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 
 const store = useTestStore()
@@ -163,6 +163,11 @@ const mentorOpen = ref(false)
 const report = computed(() => store.report)
 const career = computed(() => store.report?.career || null)
 const careerColor = computed(() => career.value?.colorCode || '#7C9AB8')
+/** 职业色接近纯白（如律师皓月白）时在浅色卡片上需用深色调文字保证可读 */
+const isLightCareer = computed(() => isNearWhite(careerColor.value))
+const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : careerColor.value))
+/** 职业强调色（图标/头像/序号底）：浅色职业用深蓝灰，深色职业用原职业色 */
+const careerAccent = computed(() => (isLightCareer.value ? '#5C7693' : careerColor.value))
 const disclaimer = '本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。'
 
 /** AI 深度分析（由画像页生成后同步到 store.report） */
@@ -187,7 +192,7 @@ const displayPlans = computed(() => {
 
 const careerTheme = computed(() => ({
   token: {
-    colorPrimary: careerColor.value,
+    colorPrimary: careerAccent.value,
     borderRadius: 8
   }
 }))

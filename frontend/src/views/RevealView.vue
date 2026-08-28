@@ -19,7 +19,7 @@
         />
 
         <div class="reveal-inner fade-in">
-          <div class="reveal-tag" :style="{ color: careerColor, borderColor: careerColor }">
+          <div class="reveal-tag" :style="{ color: careerAccent, borderColor: careerAccent }">
             <span class="tag-dot" />
             你的职业画像已生成
           </div>
@@ -28,12 +28,12 @@
             <CareerAvatar
               :id="first.careerId"
               :name="careerName"
-              :color="careerColor"
+              :color="careerAccent"
               size="xl"
               shape="rounded"
               class="reveal-avatar"
             />
-            <h1 class="reveal-name" :style="{ color: careerColor }">
+            <h1 class="reveal-name" :style="{ color: careerFg }">
               {{ careerName }}
             </h1>
             <div class="reveal-meta">
@@ -51,7 +51,7 @@
               class="reveal-stat"
               title="匹配度"
               :value="first.matchRate"
-              :value-style="{ color: careerColor, fontSize: 'clamp(64px, 7vw, 112px)', fontWeight: 800 }"
+              :value-style="{ color: careerFg, fontSize: 'clamp(64px, 7vw, 112px)', fontWeight: 800 }"
               :suffix="`%`"
               :title-style="{ color: 'rgba(52, 64, 84, 0.55)', fontSize: '14px', letterSpacing: '4px' }"
             />
@@ -130,7 +130,7 @@ import ScreenFrame from '@/components/ScreenFrame.vue'
 import ParticleCanvas from '@/components/ParticleCanvas.vue'
 import CareerAvatar from '@/components/CareerAvatar.vue'
 import { careerIllustration } from '@/utils/illustration'
-import { textOnColor } from '@/utils/color'
+import { isNearWhite, textOnColor } from '@/utils/color'
 import { createReport } from '@/api'
 import { useTestStore } from '@/stores/test'
 import { useIdentityStore } from '@/stores/identity'
@@ -146,6 +146,10 @@ const first = computed(() => store.matchResult!.first)
 const second = computed(() => store.matchResult!.second)
 const careerName = computed(() => first.value.name)
 const careerColor = computed(() => first.value.colorCode)
+/** 职业色接近纯白（如律师皓月白）时在浅色背景下需用深色调强调，保证可读 */
+const isLightCareer = computed(() => isNearWhite(careerColor.value))
+const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : '#ffffff'))
+const careerAccent = computed(() => (isLightCareer.value ? '#5C7693' : careerColor.value))
 const matchMeta = computed(() => store.matchResult!.first)
 const tieNames = computed(() => {
   if (!store.matchResult) return ''

@@ -17,6 +17,7 @@
       <!-- 职业主视觉 -->
       <section
         class="report-hero"
+        :class="{ 'hero-light': isLightCareer }"
         :style="{
           background: `linear-gradient(160deg, ${careerColor} 0%, ${careerColor}cc 45%, ${careerColor}88 100%)`
         }"
@@ -36,9 +37,9 @@
             class="hero-stat"
             title="匹配度"
             :value="first.matchRate"
-            :value-style="{ color: '#fff', fontSize: '52px', fontWeight: 800 }"
+            :value-style="{ color: careerFg, fontSize: '52px', fontWeight: 800 }"
             :suffix="`%`"
-            :title-style="{ color: 'rgba(255, 255, 255, 0.92)', fontSize: '13px', letterSpacing: '3px' }"
+            :title-style="{ color: careerFg, fontSize: '13px', letterSpacing: '3px', opacity: 0.75 }"
           />
           <a-divider class="hero-divider" />
           <div class="hero-second">
@@ -64,7 +65,7 @@
           <header class="section-head">
             <bulb-filled class="section-icon" />
             <h2 class="section-title">你勾选的特质词</h2>
-            <a-tag :color="careerColor" bordered>{{ report.match.keywordIds.length }} 个</a-tag>
+            <a-tag :color="careerColor" bordered :style="{ color: textOnColor(careerColor) }">{{ report.match.keywordIds.length }} 个</a-tag>
           </header>
           <div class="word-chips">
             <a-tag
@@ -91,9 +92,9 @@
         <!-- 能力优势（AI 生成，不再使用预设模板字段） -->
         <section class="report-section">
           <header class="section-head">
-            <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
+            <check-circle-filled :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">你的能力优势</h2>
-            <a-tag v-if="hasAi" :color="careerColor" bordered>{{ displayStrengths.length }} 项</a-tag>
+            <a-tag v-if="hasAi" :color="careerColor" bordered :style="{ color: textOnColor(careerColor) }">{{ displayStrengths.length }} 项</a-tag>
             <a-tag v-else-if="aiLoading" color="processing" bordered>AI 生成中</a-tag>
           </header>
           <div v-if="aiLoading" class="ai-loading">
@@ -103,7 +104,7 @@
           <a-list v-else :data-source="displayStrengths" :split="false">
             <template #renderItem="{ item, index }">
               <a-list-item class="check-line">
-                <span class="bullet-num" :style="{ background: careerColor }">{{ index + 1 }}</span>
+                <span class="bullet-num" :style="{ background: careerAccent }">{{ index + 1 }}</span>
                 <span class="line-text">{{ item }}</span>
               </a-list-item>
             </template>
@@ -135,7 +136,7 @@
         <!-- 雷达图 -->
         <section class="report-section">
           <header class="section-head">
-            <radar-chart-outlined :style="{ color: careerColor }" class="section-icon" />
+            <radar-chart-outlined :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">能力雷达图</h2>
             <a-tag
               :color="careerColor"
@@ -143,13 +144,13 @@
               :style="{ color: textOnColor(careerColor) }"
             >六维</a-tag>
           </header>
-          <RadarChart :axes="RADAR_AXES" :values="radar" :color="careerColor" :height="280" />
+          <RadarChart :axes="RADAR_AXES" :values="radar" :color="careerAccent" :height="280" />
         </section>
 
         <!-- 体能要求 -->
         <section class="report-section">
           <header class="section-head">
-            <check-circle-filled :style="{ color: careerColor }" class="section-icon" />
+            <check-circle-filled :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">身体素质达标要求</h2>
             <a-tag
               :color="careerColor"
@@ -160,7 +161,7 @@
           <a-list :data-source="report.fitnessRequirements" :split="false">
             <template #renderItem="{ item }">
               <a-list-item class="req-line">
-                <span class="req-no" :style="{ background: careerColor }">{{ item.seq }}</span>
+                <span class="req-no" :style="{ background: careerAccent }">{{ item.seq }}</span>
                 <span class="req-text">{{ item.content }}</span>
               </a-list-item>
             </template>
@@ -170,7 +171,7 @@
         <!-- 四年计划 -->
         <section class="report-section">
           <header class="section-head">
-            <rise-outlined :style="{ color: careerColor }" class="section-icon" />
+            <rise-outlined :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">大学四年锻炼计划</h2>
             <a-tag
               :color="careerColor"
@@ -197,7 +198,7 @@
         <!-- 导师 -->
         <section class="report-section">
           <header class="section-head">
-            <team-outlined :style="{ color: careerColor }" class="section-icon" />
+            <team-outlined :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">实务导师对接</h2>
             <a-tag
               :color="careerColor"
@@ -215,7 +216,7 @@
               <a-list-item class="mentor-item">
                 <a-card size="small" class="mentor-card" :bordered="false">
                   <div class="mentor-head">
-                    <a-avatar :size="44" :style="{ background: careerColor }">
+                    <a-avatar :size="44" :style="{ background: careerAccent }">
                       {{ item.name.charAt(0) }}
                     </a-avatar>
                     <div class="mentor-info">
@@ -233,7 +234,7 @@
                     :href="item.bookingUrl"
                     target="_blank"
                     class="mentor-btn"
-                    :style="{ background: careerColor, borderColor: careerColor }"
+                    :style="{ background: careerAccent, borderColor: careerAccent }"
                   >
                     预约交流
                   </a-button>
@@ -247,7 +248,7 @@
         <!-- AI 深度分析 -->
         <section class="report-section ai-section">
           <header class="section-head">
-            <robot-outlined :style="{ color: careerColor }" class="section-icon" />
+            <robot-outlined :style="{ color: careerAccent }" class="section-icon" />
             <h2 class="section-title">AI 深度分析</h2>
             <a-tag
               :color="careerColor"
@@ -278,23 +279,23 @@
 
           <template v-else-if="aiAnalysis">
             <div class="ai-summary">
-              <robot-outlined :style="{ color: careerColor }" class="ai-summary-icon" />
+              <robot-outlined :style="{ color: careerAccent }" class="ai-summary-icon" />
               <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
             </div>
 
             <!-- 优势/短板已在上方章节展示（AI 生成），此处仅保留四年发展建议 -->
             <div v-if="aiAnalysis.plans.length" class="ai-block">
               <div class="ai-block-title">
-                <rise-outlined :style="{ color: careerColor }" />
+                <rise-outlined :style="{ color: careerAccent }" />
                 四年发展建议
               </div>
               <div v-for="(s, i) in aiAnalysis.plans" :key="i" class="ai-line">
-                <span class="ai-badge" :style="{ background: careerColor }">{{ i + 1 }}</span>
+                <span class="ai-badge" :style="{ background: careerAccent }">{{ i + 1 }}</span>
                 <span class="ai-text">{{ s }}</span>
               </div>
             </div>
 
-            <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerColor }">
+            <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerAccent }">
               {{ aiAnalysis.motto }}
             </blockquote>
 
@@ -388,7 +389,7 @@ import {
 import RadarChart from '@/components/RadarChart.vue'
 import { aiAnalyze, getReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
-import { textOnColor } from '@/utils/color'
+import { isNearWhite, textOnColor } from '@/utils/color'
 import { isMobile } from '@/utils/device'
 import { useTestStore } from '@/stores/test'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
@@ -412,6 +413,12 @@ const first = computed(() => report.value!.match.first)
 const second = computed(() => report.value!.match.second)
 const career = computed(() => report.value!.career)
 const careerColor = computed(() => career.value.colorCode)
+/** 职业色接近纯白（如律师皓月白）：hero 区需用深色调文字/边框保证可读 */
+const isLightCareer = computed(() => isNearWhite(careerColor.value))
+/** hero 区前景色：浅色职业用深蓝灰，深色职业用白 */
+const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.95)' : '#ffffff'))
+/** 章节强调色（图标/序号/雷达图）：浅色职业用深蓝灰保证可见 */
+const careerAccent = computed(() => (isLightCareer.value ? '#5C7693' : careerColor.value))
 const radar = computed(() => radarValues(career.value.id, first.value.matchRate))
 const disclaimer = '本内容为通识性建议，非医疗意见；如有健康问题请遵医嘱。'
 
@@ -583,6 +590,23 @@ onMounted(() => {
   text-align: center;
   padding: 40px 20px 36px;
   overflow: hidden;
+}
+
+/* 浅色职业（如律师皓月白）：hero 底色接近白色，文字与描边换深色保证可读 */
+.report-hero.hero-light {
+  color: rgba(52, 64, 84, 0.95);
+}
+
+.report-hero.hero-light .hero-badge {
+  background: rgba(52, 64, 84, 0.1);
+}
+
+.report-hero.hero-light .hero-divider {
+  border-color: rgba(52, 64, 84, 0.2);
+}
+
+.report-hero.hero-light .hero-illust-mask {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(250, 247, 241, 0.85));
 }
 
 .hero-illust {

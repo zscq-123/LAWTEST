@@ -18,3 +18,14 @@ export function textOnColor(hex: string): string {
 export function isLightColor(hex: string): boolean {
   return textOnColor(hex).startsWith('rgba(52, 64, 84')
 }
+
+/** 颜色是否接近纯白（亮度 > 0.85）：此类职业色不能直接用作文字/强调色，需深色调替身 */
+export function isNearWhite(hex: string): boolean {
+  const h = hex.replace('#', '')
+  const v = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16)
+  const r = (v >> 16) & 255
+  const g = (v >> 8) & 255
+  const b = v & 255
+  const lum = 0.2126 * (r / 255) + 0.7152 * (g / 255) + 0.0722 * (b / 255)
+  return lum > 0.85
+}

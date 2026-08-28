@@ -1,10 +1,10 @@
 <template>
   <ScreenFrame>
     <a-config-provider :theme="careerTheme">
-      <div class="screen-page profile-page">
+      <div class="screen-page profile-page" :style="{ '--career-fg': careerFg }">
         <header class="profile-head">
           <div>
-            <h1 class="screen-title" :style="{ color: careerColor }">我的职业画像</h1>
+            <h1 class="screen-title" :style="{ color: careerFg }">我的职业画像</h1>
             <p class="screen-subtitle">
               生成于 {{ formattedCreatedAt }} · 报告编号 {{ report?.code }}
             </p>
@@ -32,7 +32,7 @@
                 :style="{
                   '--career-color': careerColor,
                   background: `linear-gradient(150deg, ${careerColor}1f 0%, rgba(255,255,255,0.03) 70%)`,
-                  borderColor: careerColor
+                  borderColor: careerBorder
                 }"
               >
                 <div v-if="careerIllustration(report.career.id)" class="hero-illust">
@@ -44,12 +44,12 @@
                   <CareerAvatar
                     :id="report.career.id"
                     :name="report.career.name"
-                    :color="careerColor"
+                    :color="careerAccent"
                     size="lg"
                     class="hero-avatar"
                   />
                   <div class="hero-titles">
-                    <h2 class="hero-name" :style="{ color: careerColor }">{{ report.career.name }}</h2>
+                    <h2 class="hero-name" :style="{ color: careerFg }">{{ report.career.name }}</h2>
                     <a-tag
                       :color="careerColor"
                       bordered
@@ -65,7 +65,7 @@
                   class="hero-stat"
                   title="匹配度"
                   :value="firstSafe.matchRate"
-                  :value-style="{ color: '#fff', fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
+                  :value-style="{ color: careerFg, fontSize: 'clamp(54px, 5vw, 84px)', fontWeight: 800 }"
                   :suffix="`%`"
                   :title-style="{ color: 'rgba(52, 64, 84, 0.55)', fontSize: '13px', letterSpacing: '3px' }"
                 />
@@ -104,7 +104,7 @@
             <div class="profile-right">
               <article class="panel glass-panel panel-in">
                 <header class="panel-header">
-                  <radar-chart-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <radar-chart-outlined class="panel-icon" :style="{ color: careerAccent }" />
                   <h3 class="panel-title">能力雷达图</h3>
                   <a-tag
                     :color="careerColor"
@@ -116,14 +116,14 @@
                 <RadarChart
                   :axes="RADAR_AXES"
                   :values="radar"
-                  :color="careerColor"
+                  :color="careerAccent"
                   :height="320"
                 />
               </article>
 
               <article class="panel glass-panel panel-in">
                 <header class="panel-header">
-                  <check-circle-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <check-circle-outlined class="panel-icon" :style="{ color: careerAccent }" />
                   <h3 class="panel-title">你的能力优势</h3>
                   <a-tag
                     v-if="hasAi"
@@ -141,7 +141,7 @@
                 <a-list v-else :data-source="displayStrengths" :split="false">
                   <template #renderItem="{ item, index }">
                     <a-list-item class="strength-item">
-                      <span class="bullet-num" :style="{ background: careerColor }">
+                      <span class="bullet-num" :style="{ background: careerColor, color: careerFg }">
                         {{ index + 1 }}
                       </span>
                       <span class="item-text">{{ item }}</span>
@@ -180,7 +180,7 @@
               <!-- AI 深度分析 -->
               <article class="panel glass-panel panel-in ai-panel">
                 <header class="panel-header">
-                  <robot-outlined class="panel-icon" :style="{ color: careerColor }" />
+                  <robot-outlined class="panel-icon" :style="{ color: careerAccent }" />
                   <h3 class="panel-title">AI 深度分析</h3>
                   <a-tag :color="careerColor" bordered class="panel-tag" :style="{ color: textOnColor(careerColor) }">
                     MiMo
@@ -202,11 +202,11 @@
 
                 <template v-else-if="aiAnalysis">
                   <div class="ai-summary">
-                    <robot-outlined :style="{ color: careerColor }" class="ai-summary-icon" />
+                    <robot-outlined :style="{ color: careerAccent }" class="ai-summary-icon" />
                     <p class="ai-summary-text">{{ aiAnalysis.summary }}</p>
                   </div>
 
-                  <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerColor }">
+                  <blockquote v-if="aiAnalysis.motto" class="ai-motto" :style="{ borderColor: careerAccent }">
                     {{ aiAnalysis.motto }}
                   </blockquote>
 
@@ -222,7 +222,7 @@
                   block
                   size="large"
                   class="ai-run-btn"
-                  :style="{ background: careerColor, borderColor: careerColor }"
+                  :style="{ background: careerColor, borderColor: careerBorder, color: careerFg }"
                   @click="runAiAnalyze"
                 >
                   <template #icon><reload-outlined /></template>
@@ -274,7 +274,7 @@ import QrPanel from '@/components/QrPanel.vue'
 import MentorModal from '@/components/MentorModal.vue'
 import { aiAnalyze, createReport } from '@/api'
 import { careerIllustration } from '@/utils/illustration'
-import { textOnColor } from '@/utils/color'
+import { isNearWhite, textOnColor } from '@/utils/color'
 import { useTestStore } from '@/stores/test'
 import { useIdentityStore } from '@/stores/identity'
 import { RADAR_AXES, radarValues } from '@/utils/radar'
@@ -294,6 +294,14 @@ const first = computed(() => store.matchResult?.first)
 const second = computed(() => store.matchResult?.second)
 const career = computed(() => store.report?.career || null)
 const careerColor = computed(() => career.value?.colorCode || '#7C9AB8')
+/** 职业色是否接近纯白（如律师皓月白）：浅色职业的强调文字/边框需用深色调保证可读 */
+const isLightCareer = computed(() => isNearWhite(careerColor.value))
+/** 职业色上的可读前景色：浅色职业用深蓝灰文字，深色职业用白字 */
+const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : '#ffffff'))
+/** 职业强调边框：浅色职业用深蓝灰边框（白色边框在白底上不可见） */
+const careerBorder = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.45)' : careerColor.value))
+/** 职业强调色（图表/图标/主按钮）：浅色职业用深蓝灰保证可见，深色职业用原职业色 */
+const careerAccent = computed(() => (isLightCareer.value ? '#5C7693' : careerColor.value))
 const report = computed(() => store.report)
 const firstSafe = computed(() => first.value!)
 const secondSafe = computed(() => second.value!)
@@ -308,7 +316,7 @@ const formattedCreatedAt = computed(() => {
 
 const careerTheme = computed(() => ({
   token: {
-    colorPrimary: careerColor.value,
+    colorPrimary: careerAccent.value,
     borderRadius: 8
   }
 }))
@@ -555,7 +563,7 @@ onMounted(() => {
 }
 
 .profile-actions :deep(.ant-btn-primary) {
-  color: var(--text-inverse);
+  color: var(--career-fg, var(--text-inverse));
   font-weight: var(--fw-bold);
 }
 
@@ -613,7 +621,7 @@ onMounted(() => {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  color: #fff;
+  color: var(--career-fg, #fff);
   display: inline-flex;
   align-items: center;
   justify-content: center;

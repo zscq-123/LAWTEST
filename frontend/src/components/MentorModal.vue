@@ -10,7 +10,7 @@
       <div class="modal-title">
         <team-outlined />
         <span>实务导师对接</span>
-        <a-tag :color="careerColor" bordered>{{ mentors.length }} 位</a-tag>
+        <a-tag :color="careerColor" bordered :style="{ color: textOnColor(careerColor) }">{{ mentors.length }} 位</a-tag>
       </div>
     </template>
 
@@ -24,7 +24,7 @@
         <a-card class="mentor-card" :bordered="false" size="small">
           <template #title>
             <div class="mentor-head">
-              <a-avatar :size="48" :style="{ background: careerColor }">
+              <a-avatar :size="48" :style="{ background: accent }">
                 {{ mentor.name.charAt(0) }}
               </a-avatar>
               <div class="mentor-info">
@@ -43,7 +43,7 @@
             :href="mentor.bookingUrl"
             target="_blank"
             class="mentor-btn"
-            :style="{ background: careerColor, borderColor: careerColor }"
+            :style="{ background: accent, borderColor: accent }"
           >
             预约交流
           </a-button>
@@ -55,10 +55,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { TeamOutlined, PhoneOutlined } from '@ant-design/icons-vue'
+import { isNearWhite, textOnColor } from '@/utils/color'
 import type { Mentor } from '@/types'
 
-defineProps<{
+const props = defineProps<{
   open: boolean
   mentors: Mentor[]
   careerColor: string
@@ -67,6 +69,9 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'update:open', value: boolean): void
 }>()
+
+/** 职业色接近纯白（如律师皓月白）时用深蓝灰作为头像/按钮底色，保证白字可读 */
+const accent = computed(() => (isNearWhite(props.careerColor) ? '#5C7693' : props.careerColor))
 </script>
 
 <style scoped>
