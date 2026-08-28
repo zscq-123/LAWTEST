@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-    /** 理论最高分：10个词全部命中核心词（2分） */
+    /** 理论最高分：某职业组内最多10个词全部命中核心词（2分） */
     private static final int MAX_SCORE = 20;
     private static final String DISCLAIMER = "本结果为兴趣初步画像，仅供参考";
     private static final String TIP_FEW_WORDS = "再多选几个词，结果会更准确";
@@ -58,22 +59,35 @@ public class MatchingServiceImpl implements MatchingService {
         if (ids.isEmpty()) {
             throw new BusinessException(400, "请至少选择一个特质词");
         }
-        if (ids.size() > 10) {
-            throw new BusinessException(400, "最多只能选择10个特质词");
+        if (ids.size() > 50) {
+            throw new BusinessException(400, "选词数量超出上限");
         }
         long validCount = ids.stream().filter(keywordMap::containsKey).count();
         if (validCount != ids.size()) {
             throw new BusinessException(400, "包含无效的特质词");
         }
+        // 2. 每组（职业）最多选 10 个：按 career_keyword 关联统计各职业命中词数
+        //    （跨职业共享词会在其所属的多个组内分别计数）
+        Set<Long> selected = Set.copyOf(ids);
+        Map<Long, Integer> groupHits = new HashMap<>();
+        for (CareerKeyword ck : keywordLinks) {
+            if (selected.contains(ck.getKeywordId())) {
+                groupHits.merge(ck.getCareerId(), 1, Integer::sum);
+            }
+        }
+        for (Map.Entry<Long, Integer> entry : groupHits.entrySet()) {
+            if (entry.getValue() > 10) {
+                throw new BusinessException(400, "每组最多只能选择10个特质词");
+            }
+        }
 
-        // 2. 逐职业累加命中词权重（配置已缓存，零 DB 查询）
+        // 3. 逐职业累加命中词权重（配置已缓存，零 DB 查询）
         Map<Long, Career> careerMap = careers.stream()
                 .collect(Collectors.toMap(Career::getId, c -> c));
         Map<Long, Integer> scores = new LinkedHashMap<>();
         for (Career career : careers) {
             scores.put(career.getId(), 0);
         }
-        Set<Long> selected = Set.copyOf(ids);
         for (CareerKeyword ck : keywordLinks) {
             if (selected.contains(ck.getKeywordId())) {
                 scores.merge(ck.getCareerId(), ck.getWeight(), Integer::sum);

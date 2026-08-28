@@ -76,7 +76,7 @@
             <template v-else>
               <h2 class="live-idle-title">选择你的测试方式</h2>
               <p class="live-idle-sub">
-                上台直接勾选 10 个特质词，或扫码在手机上完成 · 已完成 {{ live.finishedCount }} 人
+                上台直接勾选特质词（每组最多 10 个），或扫码在手机上完成 · 已完成 {{ live.finishedCount }} 人
               </p>
             </template>
           </div>

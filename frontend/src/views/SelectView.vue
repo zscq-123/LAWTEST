@@ -13,10 +13,10 @@
           <div class="progress-label">
             <a-statistic :value="store.selectedCount" :value-style="{ color: '#fff', fontSize: '30px', fontWeight: 700 }">
               <template #suffix>
-                <span class="progress-suffix">/ 10</span>
+                <span class="progress-suffix">个词</span>
               </template>
             </a-statistic>
-            <span class="progress-hint">已选 {{ store.selectedCount }} 个词 · 选满 10 个即可开始匹配</span>
+            <span class="progress-hint">已选 {{ store.selectedCount }} 个词 · 每组最多选 10 个，可跨组选词</span>
           </div>
           <a-progress
             :percent="progressPercent"
@@ -45,6 +45,9 @@
           <header class="group-head">
             <span class="group-dot" />
             <span class="group-name">第 {{ index + 1 }} 组</span>
+            <span class="group-count" :class="{ full: groupCount(career) >= 10 }">
+              已选 {{ groupCount(career) }}/10
+            </span>
           </header>
           <div class="group-words">
             <button
@@ -167,7 +170,7 @@ import { message } from 'ant-design-vue'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 import ScreenFrame from '@/components/ScreenFrame.vue'
 import { postMatching } from '@/api'
-import { useTestStore } from '@/stores/test'
+import { MAX_PER_GROUP, useTestStore } from '@/stores/test'
 import type { Career } from '@/types'
 
 const store = useTestStore()
@@ -203,12 +206,18 @@ interface FlyDot {
 const flyingDots = ref<FlyDot[]>([])
 let dotId = 0
 
-const progressPercent = computed(() => (store.selectedCount / 10) * 100)
+const progressPercent = computed(() => Math.min(100, Math.round((store.selectedCount / (MAX_PER_GROUP * store.careers.length)) * 100)))
 const progressColor = computed(() => {
   if (store.selectedCount < 3) return '#e0a464'
-  if (store.selectedCount >= 8) return '#7ab87a'
+  if (store.selectedCount >= 25) return '#7ab87a'
   return '#7c9ab8'
 })
+
+/** 某职业组内已选词数（共享词在所属各组分别计数） */
+function groupCount(career: Career): number {
+  const groupIds = new Set((career.keywords ?? []).map((k) => k.id))
+  return store.selectedIds.filter((id) => groupIds.has(id)).length
+}
 
 function isSelected(id: number) {
   return store.selectedIds.includes(id)
@@ -260,7 +269,7 @@ function handleToggle(career: Career, id: number, e: MouseEvent) {
   const wasSelected = isSelected(id)
   const ok = store.toggleKeyword(id)
   if (!ok) {
-    message.warning('最多只能选择 10 个特质词')
+    message.warning('每组最多只能选择 10 个特质词')
     return
   }
   if (!wasSelected) {
@@ -407,6 +416,22 @@ onBeforeUnmount(() => {
 .group-name {
   flex: 1;
   letter-spacing: 1px;
+}
+
+.group-count {
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-weight: var(--fw-semibold);
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  background: rgba(124, 154, 184, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  flex-shrink: 0;
+}
+
+.group-count.full {
+  color: #b3572f;
+  background: rgba(244, 200, 163, 0.28);
 }
 
 .group-color {

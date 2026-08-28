@@ -33,6 +33,24 @@ async function loadCareers(force = false) {
   return careers.value
 }
 
+/** 每组（职业）最多可选词数 */
+export const MAX_PER_GROUP = 10
+
+/** 词 ID 所属的职业组列表（词库按职业分组，跨职业共享词属于多个组） */
+function careerIdsOfKeyword(id: number): number[] {
+  return careers.value
+    .filter((c) => c.keywords?.some((k) => k.id === id))
+    .map((c) => c.id)
+}
+
+/** 某职业组内已选词数 */
+function groupSelectedCount(careerId: number): number {
+  const groupIds = new Set(
+    (careers.value.find((c) => c.id === careerId)?.keywords ?? []).map((k) => k.id)
+  )
+  return selectedIds.value.filter((id) => groupIds.has(id)).length
+}
+
 function toggleKeyword(id: number): boolean {
   const idx = selectedIds.value.indexOf(id)
   if (idx >= 0) {
@@ -40,7 +58,9 @@ function toggleKeyword(id: number): boolean {
     persist()
     return true
   }
-  if (selectedIds.value.length >= 10) {
+  // 每组最多选 10 个：该词所属的任一职业组已达上限则拒绝
+  const owns = careerIdsOfKeyword(id)
+  if (owns.length && owns.some((cid) => groupSelectedCount(cid) >= MAX_PER_GROUP)) {
     return false
   }
   selectedIds.value.push(id)
