@@ -70,6 +70,8 @@ export interface Mentor {
   title: string
   contact: string
   bookingUrl: string
+  bio?: string
+  message?: string
 }
 
 /** 完整报告 */

@@ -3,7 +3,7 @@
     :open="open"
     title="实务导师对接"
     :footer="null"
-    width="720px"
+    width="880px"
     @cancel="emit('update:open', false)"
   >
     <template #title>
@@ -35,6 +35,24 @@
           </template>
           <div v-if="mentor.contact" class="mentor-contact">
             <phone-outlined /> {{ mentor.contact }}
+          </div>
+          <a-collapse
+            v-if="mentor.bio"
+            class="mentor-bio"
+            ghost
+            :bordered="false"
+            expand-icon-position="end"
+          >
+            <a-collapse-panel key="bio">
+              <template #header>
+                <span class="bio-label">个人简介</span>
+              </template>
+              <p class="bio-text">{{ mentor.bio }}</p>
+            </a-collapse-panel>
+          </a-collapse>
+          <div v-if="mentor.message" class="mentor-message">
+            <div class="message-label">导师寄语</div>
+            <p class="message-text">{{ mentor.message }}</p>
           </div>
           <a-button
             v-if="mentor.bookingUrl"
@@ -123,6 +141,47 @@ const accent = computed(() => (isNearWhite(props.careerColor) ? '#5C7693' : prop
   margin-top: 12px;
   color: rgba(52, 64, 84, 0.68);
   font-size: 13px;
+}
+
+.mentor-bio {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.bio-label {
+  color: rgba(52, 64, 84, 0.72);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.bio-text {
+  margin: 0;
+  color: rgba(52, 64, 84, 0.72);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.mentor-message {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-left: 3px solid v-bind(accent);
+  background: rgba(124, 154, 184, 0.10);
+  border-radius: 6px;
+}
+
+.message-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(52, 64, 84, 0.55);
+}
+
+.message-text {
+  margin: 4px 0 0;
+  color: rgba(52, 64, 84, 0.78);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 .mentor-btn {

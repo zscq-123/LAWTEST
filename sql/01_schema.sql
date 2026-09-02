@@ -113,6 +113,8 @@ CREATE TABLE mentor (
     title       VARCHAR(128)    NOT NULL COMMENT '头衔/职业背景',
     contact     VARCHAR(256)    NOT NULL DEFAULT '' COMMENT '联系方式（微信/企业微信）',
     booking_url VARCHAR(512)    NOT NULL DEFAULT '' COMMENT '预约入口地址',
+    bio         TEXT            NULL COMMENT '个人简介/简历',
+    message     TEXT            NULL COMMENT '导师寄语',
     PRIMARY KEY (id),
     KEY idx_mentor_career (career_id),
     CONSTRAINT fk_mentor_career FOREIGN KEY (career_id) REFERENCES career (id)

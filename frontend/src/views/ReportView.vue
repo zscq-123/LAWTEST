@@ -227,6 +227,24 @@
                   <div v-if="item.contact" class="mentor-contact">
                     <phone-outlined /> {{ item.contact }}
                   </div>
+                  <a-collapse
+                    v-if="item.bio"
+                    class="mentor-bio"
+                    ghost
+                    :bordered="false"
+                    expand-icon-position="end"
+                  >
+                    <a-collapse-panel key="bio">
+                      <template #header>
+                        <span class="bio-label">个人简介</span>
+                      </template>
+                      <p class="bio-text">{{ item.bio }}</p>
+                    </a-collapse-panel>
+                  </a-collapse>
+                  <div v-if="item.message" class="mentor-message">
+                    <div class="message-label">导师寄语</div>
+                    <p class="message-text">{{ item.message }}</p>
+                  </div>
                   <a-button
                     v-if="item.bookingUrl"
                     type="primary"
@@ -885,6 +903,47 @@ onMounted(() => {
   margin-top: 10px;
   font-size: 13px;
   color: rgba(52, 64, 84, 0.68);
+}
+
+.mentor-bio {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.bio-label {
+  color: rgba(52, 64, 84, 0.72);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.bio-text {
+  margin: 0;
+  color: rgba(52, 64, 84, 0.72);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.mentor-message {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-left: 3px solid v-bind(careerAccent);
+  background: rgba(124, 154, 184, 0.10);
+  border-radius: 6px;
+}
+
+.message-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(52, 64, 84, 0.55);
+}
+
+.message-text {
+  margin: 4px 0 0;
+  color: rgba(52, 64, 84, 0.78);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 .mentor-btn {

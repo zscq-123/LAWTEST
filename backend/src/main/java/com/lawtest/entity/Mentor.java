@@ -17,4 +17,6 @@ public class Mentor {
     private String title;
     private String contact;
     private String bookingUrl;
+    private String bio;
+    private String message;
 }
