@@ -325,23 +325,23 @@ function goFavorites() {
 .home-steps :deep(.ant-steps-item-title) {
   font-size: 13px;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #0a0a0a !important;
   font-family: "黑体", "SimHei", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
   letter-spacing: 1.5px;
 }
 
 .home-steps :deep(.ant-steps-item-wait .ant-steps-item-title) {
-  color: #0a0a0a;
+  color: #0a0a0a !important;
   font-family: "黑体", "SimHei", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
 }
 
 .home-steps :deep(.ant-steps-item-icon) {
-  border-color: rgba(52, 64, 84, 0.42);
+  border-color: rgba(30, 40, 52, 0.75);
   background: #ffffff;
 }
 
 .home-steps :deep(.ant-steps-item-icon .ant-steps-icon) {
-  color: #0a0a0a;
+  color: #0a0a0a !important;
   font-weight: 700;
   font-family: "黑体", "SimHei", "Microsoft YaHei", sans-serif;
 }
