@@ -114,6 +114,13 @@ const accent = computed(() => (isNearWhite(props.careerColor) ? '#5C7693' : prop
   transform: translateY(-2px);
 }
 
+/* 卡片标题区默认单行省略，长头衔改为自动换行完整显示 */
+.mentor-card :deep(.ant-card-head-title) {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
 .mentor-head {
   display: flex;
   align-items: center;
