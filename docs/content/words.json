@@ -1,5 +1,5 @@
 {
-  "说明": "75个特质词（含跨职业复用词共73个唯一词条）。core=true 为该词所属职业的核心词（权重2分）。",
+  "说明": "90个特质词（含跨职业复用词共85个唯一词条）。core=true 为该词所属职业的核心词（权重2分）。",
   "careers": [
     {
       "name": "律师",
@@ -108,6 +108,28 @@
         { "word": "数据敏感", "core": true },
         { "word": "合规前瞻", "core": false },
         { "word": "跨界思辨", "core": false },
+        { "word": "求真务实", "core": false, "note": "与检察官共享词条" }
+      ]
+    },
+    {
+      "name": "法学研究",
+      "color": "黛青",
+      "color_code": "#3D5A80",
+      "words": [
+        { "word": "求知若渴", "core": true },
+        { "word": "问题意识", "core": true },
+        { "word": "严谨求证", "core": true },
+        { "word": "沉潜钻研", "core": true },
+        { "word": "逻辑缜密", "core": true, "note": "与律师共享词条" },
+        { "word": "独立思考", "core": false },
+        { "word": "批判思辨", "core": false },
+        { "word": "文献深耕", "core": false },
+        { "word": "跨学科视野", "core": false },
+        { "word": "学术规范", "core": false },
+        { "word": "追根溯源", "core": false },
+        { "word": "善于归纳", "core": false },
+        { "word": "持之以恒", "core": false },
+        { "word": "文笔流畅", "core": false, "note": "与律师共享词条" },
         { "word": "求真务实", "core": false, "note": "与检察官共享词条" }
       ]
     }

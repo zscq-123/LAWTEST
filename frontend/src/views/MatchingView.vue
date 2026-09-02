@@ -10,7 +10,7 @@
 
       <header class="matching-head fade-in">
         <h1 class="screen-title shine-title">正在为你匹配职业方向…</h1>
-        <p class="screen-subtitle">五色能量柱正在竞速 · 你的特质正在汇聚成答案</p>
+        <p class="screen-subtitle">六色能量柱正在竞速 · 你的特质正在汇聚成答案</p>
       </header>
 
       <section class="matching-body">

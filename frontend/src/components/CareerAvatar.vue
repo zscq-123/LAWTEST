@@ -20,7 +20,7 @@ import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    /** 职业ID（1=律师 2=法官 3=检察官 4=企业法务 5=AI伦理） */
+    /** 职业ID（1=律师 2=法官 3=检察官 4=企业法务 5=AI伦理 6=法学研究） */
     id?: number
     /** 显式提供的图片地址（优先级最高） */
     src?: string
@@ -44,7 +44,8 @@ const ICON_MAP: Record<number, string> = {
   2: '/icons/judge.png',
   3: '/icons/prosecutor.png',
   4: '/icons/legal.png',
-  5: '/icons/ai-ethics.png'
+  5: '/icons/ai-ethics.png',
+  6: '/icons/research.png'
 }
 
 const iconSrc = computed(() => {

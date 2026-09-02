@@ -9,7 +9,7 @@
         </div>
         <h1 class="home-title glow-text fade-in">五彩法途 · 筑梦未来</h1>
         <p class="home-subtitle fade-in">
-          75 个特质词 · 5 大法律职业方向 · 3 分钟生成专属职业画像
+          90 个特质词 · 6 大法律职业方向 · 3 分钟生成专属职业画像
         </p>
       </header>
 
