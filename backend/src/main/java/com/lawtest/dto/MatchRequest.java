@@ -11,6 +11,6 @@ import java.util.List;
 public class MatchRequest {
 
     @NotEmpty(message = "请至少选择一个特质词")
-    @Size(max = 50, message = "选词数量超出上限")
+    @Size(max = 60, message = "选词数量超出上限")
     private List<Long> keywordIds;
 }

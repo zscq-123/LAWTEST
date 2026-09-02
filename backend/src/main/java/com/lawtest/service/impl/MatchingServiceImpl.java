@@ -59,7 +59,8 @@ public class MatchingServiceImpl implements MatchingService {
         if (ids.isEmpty()) {
             throw new BusinessException(400, "请至少选择一个特质词");
         }
-        if (ids.size() > 50) {
+        // 六大职业每组最多10个，理论最大60个
+        if (ids.size() > 60) {
             throw new BusinessException(400, "选词数量超出上限");
         }
         long validCount = ids.stream().filter(keywordMap::containsKey).count();
