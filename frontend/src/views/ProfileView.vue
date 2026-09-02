@@ -4,7 +4,7 @@
       <div class="screen-page profile-page" :style="{ '--career-fg': careerFg }">
         <header class="profile-head">
           <div>
-            <h1 class="screen-title" :style="{ color: careerFg }">我的职业画像</h1>
+            <h1 class="screen-title" :style="{ color: titleFg }">我的职业画像</h1>
             <p class="screen-subtitle">
               生成于 {{ formattedCreatedAt }} · 报告编号 {{ report?.code }}
             </p>
@@ -298,6 +298,8 @@ const careerColor = computed(() => career.value?.colorCode || '#7C9AB8')
 const isLightCareer = computed(() => isNearWhite(careerColor.value))
 /** 职业色上的可读前景色：浅色职业用深蓝灰文字，深色职业用白字 */
 const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : '#ffffff'))
+/** 页面上方标题（浅色页面背景）：深色职业用职业色，近白职业用深蓝灰 */
+const titleFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : careerColor.value))
 /** 职业强调边框：浅色职业用深蓝灰边框（白色边框在白底上不可见） */
 const careerBorder = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.45)' : careerColor.value))
 /** 职业强调色（图表/图标/主按钮）：浅色职业用深蓝灰保证可见，深色职业用原职业色 */

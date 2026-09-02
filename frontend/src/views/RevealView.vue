@@ -148,7 +148,8 @@ const careerName = computed(() => first.value.name)
 const careerColor = computed(() => first.value.colorCode)
 /** 职业色接近纯白（如律师皓月白）时在浅色背景下需用深色调强调，保证可读 */
 const isLightCareer = computed(() => isNearWhite(careerColor.value))
-const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : '#ffffff'))
+/** 揭晓页为浅色背景：深色职业用职业色标题，近白职业用深蓝灰保证可读 */
+const careerFg = computed(() => (isLightCareer.value ? 'rgba(52, 64, 84, 0.92)' : careerColor.value))
 const careerAccent = computed(() => (isLightCareer.value ? '#5C7693' : careerColor.value))
 const matchMeta = computed(() => store.matchResult!.first)
 const tieNames = computed(() => {
