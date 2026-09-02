@@ -88,7 +88,7 @@
         <a-spin v-if="!store.careers.length" />
         <div v-else class="home-grid">
           <article
-            v-for="(career, index) in store.careers"
+            v-for="(career, index) in homeCareers"
             :key="career.id"
             class="career-card"
             :style="{
@@ -189,6 +189,17 @@ const stepItems = [
   { title: '扫码保存' }
 ]
 
+/** 首页卡片顺序：法学研究（id=6）固定放第二位，其余保持数据库顺序 */
+const homeCareers = computed(() => {
+  const list = [...store.careers]
+  const idx = list.findIndex((c) => c.id === 6)
+  if (idx !== -1 && idx !== 1) {
+    const [research] = list.splice(idx, 1)
+    list.splice(1, 0, research)
+  }
+  return list
+})
+
 watch(
   () => live.state,
   (s) => {
@@ -262,7 +273,7 @@ function goFavorites() {
   background: rgba(124, 154, 184, 0.08);
   font-size: var(--fs-caption);
   letter-spacing: 2px;
-  color: var(--text-secondary);
+  color: rgba(30, 40, 52, 1);
 }
 
 .tag-dot {
@@ -281,10 +292,21 @@ function goFavorites() {
   line-height: 1.1;
 }
 
+/* 深色渐变：提高标题可读性（雾蓝→墨蓝→古铜），颜色整体加深保证大屏对比度 */
+.home-title.glow-text {
+  background-image: linear-gradient(
+    100deg,
+    #2c3f56 0%,
+    #425a72 35%,
+    #79502c 65%,
+    #273749 100%
+  );
+}
+
 .home-subtitle {
   margin-top: clamp(12px, 1.8vh, 22px);
   font-size: var(--fs-body);
-  color: var(--text-secondary);
+  color: rgba(30, 40, 52, 1);
   letter-spacing: 1px;
 }
 
@@ -302,7 +324,30 @@ function goFavorites() {
 
 .home-steps :deep(.ant-steps-item-title) {
   font-size: 13px;
-  color: var(--text-secondary);
+  font-weight: 700;
+  color: #0a0a0a;
+  font-family: "黑体", "SimHei", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  letter-spacing: 1.5px;
+}
+
+.home-steps :deep(.ant-steps-item-wait .ant-steps-item-title) {
+  color: #0a0a0a;
+  font-family: "黑体", "SimHei", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+}
+
+.home-steps :deep(.ant-steps-item-icon) {
+  border-color: rgba(52, 64, 84, 0.42);
+  background: #ffffff;
+}
+
+.home-steps :deep(.ant-steps-item-icon .ant-steps-icon) {
+  color: #0a0a0a;
+  font-weight: 700;
+  font-family: "黑体", "SimHei", "Microsoft YaHei", sans-serif;
+}
+
+.home-steps :deep(.ant-steps-item-tail::after) {
+  background-color: rgba(52, 64, 84, 0.28) !important;
 }
 
 /* 职业卡片网格 */
@@ -317,7 +362,7 @@ function goFavorites() {
 .home-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(20px, 2.8vw, 44px);
 }
 
